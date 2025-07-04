@@ -1,0 +1,20 @@
+{
+  "name": "SvelteKit",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "forwardPorts": [5173],
+  "mounts": [
+    "source=sveltekit_node_modules,target=/app/node_modules,type=volume"
+  ],
+  "containerEnv": {
+    "SHELL": "/bin/bash"
+  },
+  "remoteUser": "root",
+  "remoteEnv": {
+    "TERM": "xterm"
+  },
+  "overrideCommand": true
+
+}
