@@ -25,6 +25,8 @@
         }
     }
 
+    let toggledButton : boolean = false;
+
     $: dateValue = new Date()
     $: dateValueFrom = new Date()
     $: dateValueTo = new Date()
@@ -63,7 +65,8 @@
         <p>Valor de la textarea: {textAreaValue}</p>
 
         <Button icon="icons/check.png" action={() => alert("Hola!")}>Botón</Button>
-        <Button icon="icons/check.png"></Button>
+        <Button icon="icons/check.png" toggable bind:active={toggledButton}></Button>
+        <p>Valor del botón: {toggledButton ? "Activo" : "No activo"}</p>
         <Button classes="bg-orange w-full">Botón</Button>
         <Button disabled>Botón deshabilitado</Button>
 
