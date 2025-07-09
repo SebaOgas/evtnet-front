@@ -21,6 +21,10 @@
         filter: brightness(0) invert(1);
     }
 
+    button {
+        user-select: none;
+    }
+
     button:disabled {
         background-color: var(--color-dark);
     }

@@ -30,6 +30,11 @@
 	font-family: "Montserrat";
 }
 
+*::selection {
+	background-color: var(--color-dark);
+	color: var(--color-white);
+}
+
 .icon-white {
 	filter: brightness(0) invert(1);
 }

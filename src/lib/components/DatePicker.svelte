@@ -11,6 +11,11 @@
 
 <script lang="ts">
     import { DatePicker } from "@svelte-plugins/datepicker";
+	import Warning from "./Warning.svelte";
+
+    export let label : string | null = "Label";
+
+    export let validate : (start: Date | null, end: Date | null) => {valid: boolean; reason: string | null | undefined} = (start: Date | null, end: Date | null) => {return {valid: true, reason: undefined}};
 
     export let range : boolean = false;
 
@@ -22,11 +27,13 @@
     export let time : boolean = false;
 
     export let classes : string = "";
-    export let width : string = "300px";
+    export let width : string = "350px";
 
-    let isOpen = false;
+    $: isOpen = false;
 
-    const toggleDatePicker = () => (isOpen = !isOpen);
+    const toggleDatePicker = () => {
+        isOpen = !isOpen;
+    };
 
     let formattedValue : string = "";
     let formattedStartDate : string = "";
@@ -43,42 +50,67 @@
     let dowLabels = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
 
     let monthLabels = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre'
-  ];
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+    ];
+
+    $: valido = true;
+    $: razonInvalidez = "";
+
+
+    $: (() => {
+        let result;
+        if (!range) {
+            result = validate(value, null);
+        } else {
+            result = validate(startDate, endDate);
+        }
+        
+        valido = result.valid;
+        if (result.reason === null || result.reason === undefined) {
+            razonInvalidez = "";
+        } else {
+            razonInvalidez = result.reason;
+        }
+    })()
     
 </script>
 
-
-{#if !range}
-    <DatePicker bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
-        <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
-            <input type="text" placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} />
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-            <img src="icons/calendar.svg" alt="Calendario" on:click={toggleDatePicker}>
-        </div>
-    </DatePicker>
-{:else}
-    <DatePicker bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
-        <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
-            <input type="text" placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} />            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-            <img src="icons/calendar.svg" alt="Calendario" on:click={toggleDatePicker}>
-        </div>
-    </DatePicker>
-{/if}
-
+<label class="flex flex-col gap-2 md:flex-row">
+    {#if label !== null}
+        <span>{label}</span>
+    {/if}
+    {#if !range}
+        <DatePicker bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
+            <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
+                <input type="text" placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} />
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                <img src="icons/calendar.svg" alt="Calendario">
+            </div>
+        </DatePicker>
+    {:else}
+        <DatePicker bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
+            <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
+                <input type="text" placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} />            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                <img src="icons/calendar.svg" alt="Calendario">
+            </div>
+        </DatePicker>
+    {/if}
+    <Warning visible={!valido} text={razonInvalidez}/>
+    
+</label>
 
 
 
@@ -107,6 +139,10 @@
         .datepicker {
             width: 100% !important;
         }
+    }
+
+    img {
+        user-select: none;
     }
 
 

@@ -24,6 +24,33 @@
             reason: reason
         }
     }
+
+    $: dateValue = new Date()
+    $: dateValueFrom = new Date()
+    $: dateValueTo = new Date()
+
+    function validarDate(val: Date | null) {
+        let valid = true;
+        let reason = null;
+        if (val === null) {
+            valid = false;
+            reason = "Ingrese la fecha"
+        }
+
+        let currDate = new Date();
+        currDate.setMinutes(currDate.getMinutes() - 1)
+        
+
+        if (val !== null && val < currDate) {
+            valid = false;
+            reason = "La fecha no debe haber pasado"
+        }
+        
+        return {
+            valid: valid,
+            reason: reason
+        }
+    }
 </script>
 
 
@@ -39,11 +66,8 @@
 <Button classes="bg-orange w-full">Botón</Button>
 <Button disabled>Botón deshabilitado</Button>
 
-<DatePicker/>
+<DatePicker label="Fecha" bind:value={dateValue} validate={validarDate}/>
+<p>Fecha formateada: {formatDate(dateValue)}</p>
 
-<DatePicker range/>
-
-<DatePicker range time/>
-
-<p>Fecha formateada: {formatDate(new Date())}</p>
-<p>Fecha formateada con hora: {formatDate(new Date(), true)}</p>
+<DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
+<p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>

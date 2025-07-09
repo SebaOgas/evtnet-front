@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { FocusEventHandler } from "svelte/elements";
 	import Warning from "./Warning.svelte";
 
-    export let label : string = "Label"
+    export let label : string | null = "Label"
     export let min : number = 0
     export let max : number = 50
     export let placeholder : string = ""
@@ -31,7 +30,9 @@
 
 
 <label class="flex flex-col gap-2 md:flex-row">
-    <span>{label}</span>
+    {#if label !== null}
+        <span>{label}</span>
+    {/if}
     {#if !multiline}
         <input type="text" on:focusout={validar} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg">
     {:else}
