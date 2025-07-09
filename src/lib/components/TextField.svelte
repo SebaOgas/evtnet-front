@@ -30,10 +30,10 @@
 </script>
 
 
-<label class="flex flex-col gap-2 md:flex-row md:w-lg">
+<label class="flex flex-col gap-2 md:flex-row">
     <span>{label}</span>
     {#if !multiline}
-        <input type="text" on:focusout={validar} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg w-full">
+        <input type="text" on:focusout={validar} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg">
     {:else}
         <textarea placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}
@@ -45,6 +45,7 @@
     input, textarea {
         padding-left: 4px;
         padding-right: 4px;
+        flex: 1 1 auto;
     }
 </style>
 

@@ -25,7 +25,6 @@
 </script>
 
 
-
 <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
 <p>Valor del textfield: {textValue}</p>
 
