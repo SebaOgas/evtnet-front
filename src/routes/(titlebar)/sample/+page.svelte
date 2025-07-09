@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
+	import CheckBox from "$lib/components/CheckBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 
@@ -26,6 +27,7 @@
     }
 
     let toggledButton : boolean = false;
+    let toggledCheckbox : boolean = false;
 
     $: dateValue = new Date()
     $: dateValueFrom = new Date()
@@ -75,6 +77,9 @@
 
         <DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
         <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
+    
+        <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
+        <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
