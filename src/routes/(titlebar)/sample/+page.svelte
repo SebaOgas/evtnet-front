@@ -53,21 +53,30 @@
     }
 </script>
 
+<div id="content">
+    <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+        <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
+        <p>Valor del textfield: {textValue}</p>
 
-<TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
-<p>Valor del textfield: {textValue}</p>
 
+        <TextField label="Leyenda" multiline bind:value={textAreaValue}/>
+        <p>Valor de la textarea: {textAreaValue}</p>
 
-<TextField label="Leyenda" multiline bind:value={textAreaValue}/>
-<p>Valor de la textarea: {textAreaValue}</p>
+        <Button icon="icons/check.png" action={() => alert("Hola!")}>Botón</Button>
+        <Button icon="icons/check.png"></Button>
+        <Button classes="bg-orange w-full">Botón</Button>
+        <Button disabled>Botón deshabilitado</Button>
 
-<Button icon="icons/check.png" action={() => alert("Hola!")}>Botón</Button>
-<Button icon="icons/check.png"></Button>
-<Button classes="bg-orange w-full">Botón</Button>
-<Button disabled>Botón deshabilitado</Button>
+        <DatePicker label="Fecha" bind:value={dateValue} validate={validarDate}/>
+        <p>Fecha formateada: {formatDate(dateValue)}</p>
 
-<DatePicker label="Fecha" bind:value={dateValue} validate={validarDate}/>
-<p>Fecha formateada: {formatDate(dateValue)}</p>
+        <DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
+        <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
+    </div>
 
-<DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
-<p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
+    <div class="flex gap-2 h-fit p-2 justify-center items-center">
+        <Button>Acción 1</Button>
+        <Button>Acción 2</Button>
+    </div>
+
+</div>

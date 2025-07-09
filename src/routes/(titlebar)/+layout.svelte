@@ -6,6 +6,5 @@ import '../../app.css';
 
 <TitleBar/>
 
-<div id="content" class="p-2 text-xs flex flex-col gap-2 overflow-y-auto">
-	{@render children()}
-</div>
+
+{@render children()}

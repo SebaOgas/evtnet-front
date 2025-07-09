@@ -28,6 +28,7 @@
 
 * {
 	font-family: "Montserrat";
+	scrollbar-color: var(--color-light) var(--color-white);
 }
 
 *::selection {
@@ -41,8 +42,12 @@
 
 #content {
 	position: fixed;
-	top: 10vh;
+	top: 60px;
 	left: 0;
 	width: 100vw;
-	height: 90vh;
+	height: calc(100vh - 60px);
+	display: flex;
+	flex-direction: column;
 }
+
+
