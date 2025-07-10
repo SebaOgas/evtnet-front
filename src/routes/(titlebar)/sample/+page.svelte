@@ -2,6 +2,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 
     $: textValue = "Hola"
@@ -55,6 +56,8 @@
             reason: reason
         }
     }
+
+    $: popupVisible = false;
 </script>
 
 <div id="content">
@@ -69,7 +72,7 @@
         <Button icon="icons/check.png" action={() => alert("Hola!")}>Botón</Button>
         <Button icon="icons/check.png" toggable bind:active={toggledButton}></Button>
         <p>Valor del botón: {toggledButton ? "Activo" : "No activo"}</p>
-        <Button classes="bg-orange w-full">Botón</Button>
+        <Button classes="bg-orange w-full" action={() => {popupVisible = !popupVisible}}>Mostrar popup</Button>
         <Button disabled>Botón deshabilitado</Button>
 
         <DatePicker label="Fecha" bind:value={dateValue} validate={validarDate}/>
@@ -80,6 +83,11 @@
     
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
+
+        <Popup title="Título" visible={popupVisible} fitH={true}>
+            <p>Lorem ipsum y esas cosas</p>
+            <Button action={() => {popupVisible = !popupVisible}}>Cerrar</Button>
+        </Popup>
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
