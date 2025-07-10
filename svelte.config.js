@@ -18,6 +18,12 @@ const config = {
 		prerender: {
 			handleHttpError: "warn"
 		}
+	},
+
+	// Disable accessibility warnings 
+	onwarn: (warning, handler) => {
+		if (warning.code.includes("a11y")) return;
+		handler(warning);
 	}
 };
 
