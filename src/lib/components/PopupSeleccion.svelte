@@ -9,6 +9,11 @@
     export let title : string | undefined = "";
 
     export let visible : boolean = false;
+    
+    export let fitW : boolean = false;
+    export let fitH : boolean = false;
+    
+    export let classes : string = ""
 
     export let selected : Map<number, string> = new Map<number, string>();
 
@@ -59,7 +64,7 @@
 
 
 
-<Popup bind:visible bind:title>
+<Popup bind:visible bind:title {fitW} {fitH} {classes}>
     {#if !noSearch}
         <SearchField disabled searchFunction={searchFunction} bind:results={found}/>
     {/if}

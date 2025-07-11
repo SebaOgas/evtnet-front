@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
 	import CheckBox from "$lib/components/CheckBox.svelte";
+	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
@@ -87,6 +88,19 @@
     let selectedOptionsU : Map<number, string> = new Map<number, string>();
 
     selectedOptionsU.set(2, "Opción 2");
+
+    let cbOptions : Map<number, string> = new Map<number, string>();
+
+    cbOptions.set(1, "Opción 1");
+    cbOptions.set(2, "Opción 2");
+    cbOptions.set(3, "Opción 3");
+    cbOptions.set(4, "Opción 4");
+    cbOptions.set(5, "Opción 5");
+    cbOptions.set(6, "Opción 6");
+    cbOptions.set(7, "Opción 7");
+
+    let cbSelected : number | undefined = undefined;
+
 </script>
 
 <div id="content">
@@ -112,6 +126,11 @@
     
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
+
+        <ComboBox options={cbOptions} bind:selected={cbSelected} placeholder="Seleccionar opción" maxHeight={5}/>
+        <p>
+            Valor seleccionado: {cbSelected !== undefined ? cbOptions.get(cbSelected) : "Ninguno"}
+        </p>
 
         <Popup title="Título" bind:visible={popupVisible} fitH={true}>
             <p>Lorem ipsum y esas cosas</p>
