@@ -19,6 +19,7 @@
 <style>
     #bg {
         background-color: #1D4E89b0;
+        z-index: 10;
     }
 
     #popup {
