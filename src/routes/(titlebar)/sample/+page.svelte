@@ -3,6 +3,7 @@
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 
     $: textValue = "Hola"
@@ -58,6 +59,34 @@
     }
 
     $: popupVisible = false;
+
+
+    $: popupSMVisible = false;
+
+    async function searchSM(val: string) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        let m : Map<number, string> = new Map<number, string>();
+
+        m.set(1, "Opción 1");
+        m.set(2, "Opción 2");
+        m.set(3, "Opción 3");
+
+        return m;
+    }
+
+    let selectedOptions : Map<number, string> = new Map<number, string>();
+
+    selectedOptions.set(2, "Opción 2");
+    selectedOptions.set(4, "Opción 4");
+    selectedOptions.set(5, "Opción 5");
+
+    $: popupSUVisible = false;
+    $: popupSUSBVisible = false;
+
+    let selectedOptionsU : Map<number, string> = new Map<number, string>();
+
+    selectedOptionsU.set(2, "Opción 2");
 </script>
 
 <div id="content">
@@ -84,10 +113,33 @@
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
 
-        <Popup title="Título" visible={popupVisible} fitH={true}>
+        <Popup title="Título" bind:visible={popupVisible} fitH={true}>
             <p>Lorem ipsum y esas cosas</p>
             <Button action={() => {popupVisible = !popupVisible}}>Cerrar</Button>
         </Popup>
+
+        <Button classes="w-full" action={() => {popupSMVisible = !popupSMVisible}}>Mostrar popup de selección múltiple</Button>
+        <PopupSeleccion title="Selección múltiple" multiple={true} bind:visible={popupSMVisible} searchFunction={searchSM} bind:selected={selectedOptions}/>
+        <div>
+            Opciones seleccionadas:
+            <ul>
+                {#each selectedOptions as s}
+                    <li>{s[1]}</li>
+                {/each}
+            </ul>
+        </div>
+
+        <Button classes="w-full" action={() => {popupSUVisible = !popupSUVisible}}>Mostrar popup de selección única</Button>
+        <PopupSeleccion title="Selección única" multiple={false} bind:visible={popupSUVisible} searchFunction={searchSM} bind:selected={selectedOptionsU}/>
+        
+        <Button classes="w-full" action={() => {popupSUSBVisible = !popupSUSBVisible}}>Mostrar popup de selección única sin buscador</Button>
+        <PopupSeleccion title="Selección única" multiple={false} noSearch={true} bind:visible={popupSUSBVisible} searchFunction={searchSM} bind:selected={selectedOptionsU}/>
+        <div>
+            Opción seleccionada:
+                {#each selectedOptionsU as s}
+                    {s[1]}
+                {/each}
+        </div>
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">

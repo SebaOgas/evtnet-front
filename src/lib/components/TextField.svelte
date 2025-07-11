@@ -9,6 +9,12 @@
 
     export let validate : (v: string) => {valid: boolean; reason: string | null | undefined} = (v: string) => {return {valid: true, reason: undefined}};
 
+    export let classes : string = ""
+    
+    export let action : () => void = () => {}
+
+    export let change : () => void = () => {}
+
     //Para textarea
     export let multiline : boolean = false
     export let resize : boolean = false
@@ -26,17 +32,23 @@
             razonInvalidez = result.reason;
         }
     }
+
+    function onKeyDown(event: KeyboardEvent) {
+        change();
+        if (event.key === "Enter")
+            action();
+    }
 </script>
 
 
-<label class="flex flex-col gap-2 md:flex-row">
+<label class="{classes} flex flex-col gap-2 md:flex-row">
     {#if label !== null}
         <span>{label}</span>
     {/if}
     {#if !multiline}
-        <input type="text" on:focusout={validar} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg">
+        <input type="text" on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
     {:else}
-        <textarea placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
+        <textarea on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}
     <Warning visible={!valido} text={razonInvalidez}/>
     

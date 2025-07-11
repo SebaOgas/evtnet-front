@@ -4,10 +4,12 @@
     export let maxWidth : string = "100%"
 </script>
 
-<div id="warning" class="items-center w-fit" style="display:{visible?"flex":"none"}">
-    <img src="icons/warning.svg" alt="!">
-    <div class="text-orange font-bold text-xs w-fit" style="max-width:{maxWidth}">{text}</div>
-</div>
+{#if visible}
+    <div id="warning" class="items-center w-fit">
+        <img src="icons/warning.svg" alt="!">
+        <div class="text-orange font-bold text-xs w-fit" style="max-width:{maxWidth}">{text}</div>
+    </div>
+{/if}
 
 <style>
     #warning {
