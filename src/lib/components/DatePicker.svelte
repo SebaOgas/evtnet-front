@@ -28,6 +28,8 @@
 
     export let classes : string = "";
     export let width : string = "350px";
+    
+    export let disabled : boolean = false
 
     $: isOpen = false;
 
@@ -91,18 +93,18 @@
         <span>{label}</span>
     {/if}
     {#if !range}
-        <DatePicker bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
-            <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
-                <input type="text" placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} />
+        <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center {classes}" style="width: {width};">
+                <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} />
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="icons/calendar.svg" alt="Calendario">
             </div>
         </DatePicker>
     {:else}
-        <DatePicker bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
-            <div class="datepicker border flex flex-row items-center {classes}" style="width: {width};">
-                <input type="text" placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} />            <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center {classes}" style="width: {width};">
+                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} />            <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="icons/calendar.svg" alt="Calendario">
             </div>
@@ -121,6 +123,10 @@
         background-color: var(--color-white);
         font-size: var(--text-xs);
         padding: 4px;
+    }
+
+    :disabled, .disabled img {
+        cursor: not-allowed !important;
     }
 
     .datepicker>input[type=text] {

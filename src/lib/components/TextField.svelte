@@ -14,6 +14,8 @@
     export let action : () => void = () => {}
 
     export let change : () => void = () => {}
+    
+    export let disabled : boolean = false
 
     //Para textarea
     export let multiline : boolean = false
@@ -46,9 +48,9 @@
         <span>{label}</span>
     {/if}
     {#if !multiline}
-        <input type="text" on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
+        <input {disabled} type="text" on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
     {:else}
-        <textarea on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
+        <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}
     <Warning visible={!valido} text={razonInvalidez}/>
     
@@ -59,6 +61,12 @@
         padding-left: 4px;
         padding-right: 4px;
         flex: 1 1 auto;
+    }
+
+    input:disabled, textarea:disabled {
+        border-color: var(--color-dark);
+        color: var(--color-dark);
+        cursor: not-allowed;
     }
 </style>
 

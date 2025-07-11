@@ -8,6 +8,8 @@
 
     export let results : Map<number, string> = new Map<number, string>() //Map to bind with the results of the search
 
+    export let disabled : boolean = false
+
     $: searchValue = ""
 
     async function search() {
@@ -24,6 +26,6 @@
 
 
 <div class="flex w-full gap-2">
-    <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={searchValue} action={search} change={autoSearchFn}></TextField>
-    <Button icon="icons/search.svg" action={search}></Button>
+    <TextField {disabled} label={null} placeholder="Buscar..." classes="w-full" bind:value={searchValue} action={search} change={autoSearchFn}></TextField>
+    <Button {disabled} icon="icons/search.svg" action={search}></Button>
 </div>

@@ -100,6 +100,7 @@ menu>li:hover>a {
     #titlebar>menu {
         position: static;
         display: flex !important;
+        z-index: 0;
     }
 
     #titlebar>menu>li {
