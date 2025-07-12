@@ -3,6 +3,7 @@
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
@@ -101,6 +102,8 @@
 
     let cbSelected : number | undefined = undefined;
 
+    let mapSelectedPos : {x: number, y: number} = {x: -32.89713443095706, y: -68.85353962902123}
+    let mapMarkerRadius : string = "100";
 </script>
 
 <div id="content">
@@ -159,6 +162,17 @@
                     {s[1]}
                 {/each}
         </div>
+
+        <MapDisplay latitude={-32.89713443095706} longitude={-68.85353962902123} bind:marked={mapSelectedPos} radius={Number(mapMarkerRadius)}/>
+        <TextField bind:value={mapMarkerRadius} label="Radio"/>
+        <p>
+            Posición seleccionada: 
+            <br/>
+            x: {mapSelectedPos.x}
+            <br/>
+            y: {mapSelectedPos.y}
+        </p>
+
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
