@@ -1,0 +1,38 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+arg1 : val1
+arg2 : val2
+
+REQUEST BODY
+
+{
+    "key1": "val1",
+    "key2": {
+        "key2_1": 1.5,
+        "key2_2": null
+    },
+    "key3": [
+        "a",
+        "b",
+        "c"
+    ]
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "key1": "val1",
+    "key2": {
+        "key2_1": 1.5,
+        "key2_2": null
+    },
+    "key3": [
+        "a",
+        "b",
+        "c"
+    ]
+}
