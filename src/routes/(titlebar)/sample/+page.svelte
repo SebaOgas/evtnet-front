@@ -7,6 +7,7 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import { TestService } from "$lib/services/TestService";
 
     $: textValue = "Hola"
     $: textAreaValue = "Hola"
@@ -104,6 +105,14 @@
 
     let mapSelectedPos : {x: number, y: number} = {x: -32.89713443095706, y: -68.85353962902123}
     let mapMarkerRadius : string = "100";
+
+
+    $: response = ""
+    async function makeRequest() {
+        let resp = await TestService.endpoint();
+        console.log(resp);
+        response = "Respuesta recibida: " + JSON.stringify(resp);
+    }
 </script>
 
 <div id="content">
@@ -171,6 +180,11 @@
             x: {mapSelectedPos.x}
             <br/>
             y: {mapSelectedPos.y}
+        </p>
+
+        <Button action={makeRequest}>Realizar solicitud</Button>
+        <p>
+            {response}
         </p>
 
     </div>

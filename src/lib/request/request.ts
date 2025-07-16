@@ -1,3 +1,5 @@
+import {loading} from "$lib/stores"
+
 export enum HttpRequestType {
     GET = "GET",
     POST = "POST",
@@ -34,6 +36,7 @@ export class ProxyError {
 export async function request(
     type: HttpRequestType, //GET, POST, PUT, DELETE
     path: string, //Ruta dentro de la API
+    block: boolean = true, //Mostrar spinner; impedir que se interactúe con la página
     args: Map<string, string> | null = null, //Lista de argumentos a pasar en la URL
     body: string | FormData | null = null, //Cuerpo de la solicitud
     baseUrl : string = BASE_URL, //Ruta base de la API, es concatenada antes de path
@@ -72,7 +75,7 @@ export async function request(
 
     url = encodeURI(url)
 
-    
+    if (block) loading.set(true);
     
     let response = await fetch(url, data)
     .catch((error) => {
@@ -88,6 +91,8 @@ export async function request(
         const dummy_url = `proxy/${path}.txt`
         const dummy = await fetch(dummy_url)
         const dummy_txt = await dummy.text()
+
+        if (block) loading.set(false);
 
         const dummy_regex : RegExp = /REQUEST TYPE\s+(\w+)\s+REQUEST ARGS\s+([\s\S]*?)REQUEST BODY\s+({[\s\S]*?})\s+RESPONSE TYPE\s+(\w+)\s+RESPONSE BODY\s+({[\s\S]*})/
     
@@ -147,5 +152,9 @@ export async function request(
         }
     }
 
-    return <HttpError> await response.json();
+    let res = await response.json()
+
+    if (block) loading.set(false);
+
+    return <HttpError> res;
 }

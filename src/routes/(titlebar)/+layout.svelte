@@ -1,10 +1,9 @@
 <script lang="ts">
 	import TitleBar from '$lib/components/TitleBar.svelte';
-import '../../app.css';
-	let { children } = $props();
+	import '../../app.css';
 </script>
 
 <TitleBar/>
 
 
-{@render children()}
+<slot/>

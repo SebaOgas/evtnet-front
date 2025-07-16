@@ -1,3 +1,3 @@
-<p>Contenido de la página</p>
+<p>Página de inicio de sesión</p>
 
 <a href="/sample">Ir a sample</a>
