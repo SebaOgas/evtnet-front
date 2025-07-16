@@ -38,7 +38,7 @@
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
-		"svelte": "^5.0.0",
+		"svelte": "^5.35.5",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.0.0",
@@ -49,6 +49,7 @@
 	"dependencies": {
 		"@capacitor/android": "^7.1.0",
 		"@capacitor/core": "^7.1.0",
+		"@svelte-plugins/datepicker": "^1.0.11",
 		"leaflet": "^1.9.4"
 	}
 }
