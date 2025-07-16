@@ -2,6 +2,36 @@
 	import '../app.css';
 	import {Shadow} from 'svelte-loading-spinners'
 	import {loading} from "$lib/stores"
+	import { onMount } from 'svelte';
+
+	onMount(async () => {
+		try {
+			const { StatusBar, Style } = await import('@capacitor/status-bar');
+			const {SafeArea} = await import('@capacitor-community/safe-area');
+			
+
+			await StatusBar.setOverlaysWebView({overlay: false})
+			await StatusBar.setBackgroundColor({color: "#00b2ca"})
+			await StatusBar.setStyle({ style: Style.Light });
+
+
+			await SafeArea.enable({
+				config: {
+					customColorsForSystemBars: true,
+					statusBarColor: '#00b2ca',
+					statusBarContent: 'dark',
+					navigationBarColor: '#ffffff',
+					navigationBarContent: 'dark',
+					offset: 0
+				},
+			});
+		} catch (error) {
+			//console.log('StatusBar not available');
+		}
+	})
+
+	
+
 </script>
 
 <slot/>

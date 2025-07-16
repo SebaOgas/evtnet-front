@@ -26,7 +26,7 @@ let toggleMenu = () => {
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <img on:click={toggleMenu} id="burger" src="icons/menu.png" alt="Logo" class="icon-white object-contain cursor-pointer"/>
 	<menu bind:this={menu} class="bg-light flex items-end lg:gap-2 cursor-pointer text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit">
-		<li><a href="./IniciarSesion">Iniciar Sesión</a></li>
+		<li><a href="/">Iniciar Sesión</a></li>
 		<li>
             <span>Eventos</span>
             <menu>

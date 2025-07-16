@@ -48,6 +48,11 @@
 	height: calc(100vh - 60px);
 	display: flex;
 	flex-direction: column;
+	padding-top: var(--safe-area-inset-top);
+	padding-bottom: var(--safe-area-inset-bottom);
 }
 
-
+body {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+}
