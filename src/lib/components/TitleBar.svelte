@@ -54,7 +54,14 @@ let toggleMenu = () => {
 #titlebar {
 	width: 100vw;
 	height: 60px;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+a {
+    color: var(--color-white);
+    text-decoration: none;
 }
 
 #titlebar img {
@@ -86,7 +93,6 @@ menu>li:hover>a {
     flex-direction: column;
     align-items: end;
 }
-
 
 
 

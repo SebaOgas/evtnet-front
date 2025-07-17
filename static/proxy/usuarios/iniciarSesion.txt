@@ -1,0 +1,23 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+mail : string
+password : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "token": "dbokausdobaousidoasuda",
+    "permisos": [
+        "Permiso1",
+        "Permiso2",
+        "Permiso3"
+    ]
+}

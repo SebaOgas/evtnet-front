@@ -3,7 +3,9 @@
 	import '../../app.css';
 </script>
 
-<TitleBar/>
+
 
 
 <slot/>
+
+<TitleBar/>
