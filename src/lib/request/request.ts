@@ -1,4 +1,5 @@
-import {loading} from "$lib/stores"
+import {loading, token} from "$lib/stores"
+import { get } from "svelte/store";
 
 export enum HttpRequestType {
     GET = "GET",
@@ -46,8 +47,8 @@ export async function request(
         'Content-Type': 'application/json'
     }
 
-    if (useAuth) {
-        headers["Authorization"] = "Bearer " +  localStorage.getItem("token")
+    if (useAuth) {  
+        headers["Authorization"] = "Bearer " +  get(token)
     }
 
     let data : RequestInit = {

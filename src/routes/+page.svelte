@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { token } from "$lib/stores";
+	import { get } from "svelte/store";
 
     function validateMail(mail: string) {
         let regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -32,7 +35,8 @@
         let resp : DTOAuth;
         try {
             resp = await UsuariosService.iniciarSesion(mail, password);
-            window.location.href = "/Eventos"
+            console.log(get(token))
+            goto("/sample")
         } catch(e) {
             if (e instanceof HttpError) {
                 inicioSesionError = e.message

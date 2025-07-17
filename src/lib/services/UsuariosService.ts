@@ -1,5 +1,6 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import {HttpRequestType, request } from "$lib/request/request";
+import { permisos, token } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -12,6 +13,9 @@ export const UsuariosService = {
 
         let response : DTOAuth = await request(HttpRequestType.POST, "usuarios/iniciarSesion", true, args, null, false);
         
+        token.set(response.token);
+        permisos.set(response.permisos);
+
         return response;
     }
 }

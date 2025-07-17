@@ -54,9 +54,7 @@ let toggleMenu = () => {
 #titlebar {
 	width: 100vw;
 	height: 60px;
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: relative;
 }
 
 a {

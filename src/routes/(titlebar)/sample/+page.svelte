@@ -8,6 +8,7 @@
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import { TestService } from "$lib/services/TestService";
+	import { token } from "$lib/stores";
 
     $: textValue = "Hola"
     $: textAreaValue = "Hola"
@@ -113,6 +114,7 @@
         console.log(resp);
         response = "Respuesta recibida: " + JSON.stringify(resp);
     }
+
 </script>
 
 <div id="content">
@@ -120,6 +122,7 @@
         <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
         <p>Valor del textfield: {textValue}</p>
 
+        {$token}
 
         <TextField label="Leyenda" multiline bind:value={textAreaValue}/>
         <p>Valor de la textarea: {textAreaValue}</p>
