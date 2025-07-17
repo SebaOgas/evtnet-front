@@ -8,8 +8,15 @@ REQUEST BODY
 
 {}
 
-RESPONSE TYPE TEXT
+RESPONSE TYPE JSON
 
 RESPONSE BODY
 
-
+{
+    "token": "dbokausdobaousidoasuda",
+    "permisos": [
+        "Permiso1",
+        "Permiso2",
+        "Permiso3"
+    ]
+}

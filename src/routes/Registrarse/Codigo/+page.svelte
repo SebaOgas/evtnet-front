@@ -5,6 +5,16 @@
 	import Warning from "$lib/components/Warning.svelte";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { permisos } from "$lib/stores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+
+    onMount(() => {
+        if (!get(permisos).includes("HabilitarCuenta")) {
+            goto("/Registrarse")
+        }
+    })
+    
 
     $: codigo = ""
     $: registracionError = ""

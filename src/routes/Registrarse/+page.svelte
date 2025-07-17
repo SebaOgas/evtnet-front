@@ -4,7 +4,6 @@
 	import DatePicker from "$lib/components/DatePicker.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
-	import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 	import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
@@ -168,9 +167,8 @@
     })()
 
     async function registrarse() {
-        let resp : DTOAuth;
         try {
-            resp = await UsuariosService.registrarse(data);
+            await UsuariosService.registrarse(data);
             goto("/Registrarse/Codigo")
         } catch(e) {
             if (e instanceof HttpError) {

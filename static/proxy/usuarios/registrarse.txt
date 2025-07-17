@@ -20,8 +20,6 @@ RESPONSE BODY
 {
     "token": "dbokausdobaousidoasuda",
     "permisos": [
-        "Permiso1",
-        "Permiso2",
-        "Permiso3"
+        "HabilitarCuenta"
     ]
 }

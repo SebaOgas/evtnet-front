@@ -16,8 +16,6 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
-
-        return response;
     },
 
     registrarse: async (
@@ -27,8 +25,6 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
-
-        return response;
     },
 
     ingresarCodigo: async (
@@ -37,8 +33,10 @@ export const UsuariosService = {
         let args = new Map<string, string>();
         args.set("codigo", codigo);
 
-        await request(HttpRequestType.POST, "usuarios/ingresarCodigo", true, args);
-        return;
+        let response : DTOAuth = await request(HttpRequestType.POST, "usuarios/ingresarCodigo", true, args);
+        
+        token.set(response.token);
+        permisos.set(response.permisos);
     },
 
     enviarCodigo: async () => {
