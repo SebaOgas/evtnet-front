@@ -139,6 +139,8 @@
         <DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
         <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
     
+        <DatePicker range label={null}/>
+        
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
 

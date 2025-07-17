@@ -1,4 +1,5 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
+import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import {HttpRequestType, request } from "$lib/request/request";
 import { permisos, token } from "$lib/stores";
 
@@ -17,5 +18,31 @@ export const UsuariosService = {
         permisos.set(response.permisos);
 
         return response;
+    },
+
+    registrarse: async (
+        data: DTORegistrarse
+    ) => {
+        let response : DTOAuth = await request(HttpRequestType.POST, "usuarios/registrarse", true, null, JSON.stringify(data), false);
+        
+        token.set(response.token);
+        permisos.set(response.permisos);
+
+        return response;
+    },
+
+    ingresarCodigo: async (
+        codigo: string
+    ) => {
+        let args = new Map<string, string>();
+        args.set("codigo", codigo);
+
+        await request(HttpRequestType.POST, "usuarios/ingresarCodigo", true, args);
+        return;
+    },
+
+    enviarCodigo: async () => {
+        await request(HttpRequestType.PUT, "usuarios/enviarCodigo", false);
+        return;
     }
 }

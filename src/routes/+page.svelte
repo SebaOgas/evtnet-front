@@ -35,8 +35,7 @@
         let resp : DTOAuth;
         try {
             resp = await UsuariosService.iniciarSesion(mail, password);
-            console.log(get(token))
-            goto("/sample")
+            goto("/Eventos")
         } catch(e) {
             if (e instanceof HttpError) {
                 inicioSesionError = e.message

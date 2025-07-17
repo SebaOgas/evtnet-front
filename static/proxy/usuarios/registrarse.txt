@@ -1,0 +1,27 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "dni": "12345678",
+    "fechaNacimiento": 1752775303742,
+    "mail": "mail@example.com",
+    "password": "12345678"
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "token": "dbokausdobaousidoasuda",
+    "permisos": [
+        "Permiso1",
+        "Permiso2",
+        "Permiso3"
+    ]
+}

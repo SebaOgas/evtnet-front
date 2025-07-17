@@ -89,13 +89,13 @@ export async function request(
     });
 
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {
-        const dummy_url = `proxy/${path}.txt`
+        const dummy_url = `/proxy/${path}.txt`
         const dummy = await fetch(dummy_url)
         const dummy_txt = await dummy.text()
 
         if (block) loading.set(false);
 
-        const dummy_regex : RegExp = /REQUEST TYPE\s+(\w+)\s+REQUEST ARGS\s+([\s\S]*?)REQUEST BODY\s+({[\s\S]*?})\s+RESPONSE TYPE\s+(\w+)\s+RESPONSE BODY\s+({[\s\S]*})/
+        const dummy_regex : RegExp = /REQUEST TYPE\s+(\w+)\s+REQUEST ARGS\s+([\s\S]*?)REQUEST BODY\s+({[\s\S]*?})\s+RESPONSE TYPE\s+(\w+)\s+RESPONSE BODY\s+([\w\s\S]*)/
     
         let dummy_parts = dummy_regex.exec(dummy_txt)
 
