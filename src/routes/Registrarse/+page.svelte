@@ -34,6 +34,45 @@
             reason: undefined
         }
     }
+
+    $: usernameDisponible = true;
+    $: usernameValid = false;
+    function validateUsername(username: string) {
+        username = username.trim();
+        if (username.length === 0) {
+            usernameValid = false;
+            return {
+                valid: false,
+                reason: "Debe ingresar el nombre de usuario"
+            }
+        }
+
+        if (/\s/g.test(username)) {
+            usernameValid = false;
+            return {
+                valid: false,
+                reason: "No puede contener espacios"
+            }
+        }
+
+        if (!/^[a-zA-Z0-9\-]+$/.test(username)) {
+            usernameValid = false;
+            return {
+                valid: false,
+                reason: "Solo debe tener letras mayúsculas, minúsculas, números y guiones"
+            }
+        }
+
+        (async () => {
+            usernameDisponible = (await UsuariosService.verificarUsernameDisponible(username));
+        })();
+
+        usernameValid = true;
+        return {
+            valid: true,
+            reason: ""
+        };
+    }
     function validateDNI(dni: string) {
         let val = dni.trim()
         if (val.length === 0) {
@@ -140,6 +179,7 @@
     let data : DTORegistrarse = {
 		nombre: "",
 		apellido: "",
+		username: "",
 		dni: "",
 		fechaNacimiento: new Date("2000-01-02"),
 		mail: "",
@@ -155,6 +195,7 @@
         if (
             validateNombre(data.nombre).valid
             && validateApellido(data.apellido).valid
+            && validateUsername(data.username).valid
             && validateDNI(data.dni).valid
             && validateFechaNacimiento(data.fechaNacimiento).valid
             && validateMail(data.mail).valid
@@ -178,8 +219,8 @@
     }
 </script>
 
-<div class="flex flex-col md:flex-row md:gap-30 items-center justify-center h-full md:h-screen p-1 pt-10 pb-10">
-    <div class="flex flex-col items-center justify-center">
+<div class="flex flex-col md:flex-row items-center justify-center md:justify-between h-full md:h-screen md:max-h-screen p-1 pt-10 pb-10">
+    <div class="flex flex-col items-center justify-center md:p-[5vw] box-content">
         <div class="logo flex flex-col justify-center items-center w-[194px] md:w-[300px]">
             <img src="logo.png" alt="Logo" class="object-contain"/>
             <span class="text-xl font-bold text-light">evtnet</span>
@@ -188,9 +229,11 @@
             Registrarse
         </h1>
     </div>
-    <div class="flex flex-col items-center justify-center w-[90vw] sm:w-[70vw] md:w-[40vw]">
+    <div class="flex flex-col items-center justify-center md:justify-start w-[90vw] sm:w-[70vw] md:w-[40vw] md:h-screen overflow-y-auto overflow-x-hidden md:p-4">
         <TextField label="Nombre" bind:value={data.nombre} classes="w-full" validate={validateNombre} disableLinearDisplay max={50}/>
         <TextField label="Apellido" bind:value={data.apellido} classes="w-full" validate={validateApellido} disableLinearDisplay max={50}/>
+        <TextField label="Nombre de usuario" bind:value={data.username} classes="w-full" validate={validateUsername} disableLinearDisplay max={50}/>
+        <Warning text="No disponible, pruebe con otro" visible={usernameValid && !usernameDisponible}/>
         <TextField label="DNI N.°" bind:value={data.dni} classes="w-full" validate={validateDNI} disableLinearDisplay min={8} max={9}/>
         <DatePicker label="Fecha de nacimiento" bind:value={data.fechaNacimiento} classes="w-full" validate={validateFechaNacimiento} disableLinearDisplay width="100%"/>
         <TextField label="Correo electrónico" bind:value={data.mail} placeholder="mail@example.com" classes="w-full" validate={validateMail} disableLinearDisplay max={200}/>

@@ -1,0 +1,17 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "disponible": true
+}

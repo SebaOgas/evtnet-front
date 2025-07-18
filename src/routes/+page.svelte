@@ -9,12 +9,16 @@
     function validateMail(mail: string) {
         let regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-        let valid : boolean = regex.test(mail.toLowerCase())
-
+        let valid : boolean = true;
         let reason = null;
+
+        let validMail = regex.test(mail.toLowerCase())
         
-        if (!valid) {
-            reason = "Formato de correo incorrecto"
+        if (!validMail) {
+            if (/\s/g.test(mail) || !/^[a-zA-Z0-9\-]+$/.test(mail)) {
+                valid = false;
+                reason = "Formato incorrecto"
+            }
         }
 
         return {
@@ -50,7 +54,7 @@
         </h1>
     </div>
     <div class="flex flex-col items-center justify-center w-[90vw] sm:w-[70vw] md:w-[40vw]">
-        <TextField label="Correo electrónico" bind:value={mail} placeholder="mail@example.com" classes="w-full" validate={validateMail} disableLinearDisplay/>
+        <TextField label="Usuario" bind:value={mail} placeholder="Nombre de usuario o correo electrónico" classes="w-full" validate={validateMail} disableLinearDisplay/>
         <TextField label="Contraseña" bind:value={password} classes="w-full" isPassword disableLinearDisplay/>
         <div class="flex w-full">
             <Warning text={inicioSesionError} visible={inicioSesionError !== ""}/>

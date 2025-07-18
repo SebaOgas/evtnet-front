@@ -42,5 +42,13 @@ export const UsuariosService = {
     enviarCodigo: async () => {
         await request(HttpRequestType.PUT, "usuarios/enviarCodigo", false);
         return;
+    },
+
+    verificarUsernameDisponible: async (username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let resp : {disponible: boolean} = await request(HttpRequestType.GET, "usuarios/verificarUsernameDisponible", false, args, null, false);
+        return resp.disponible;
     }
 }

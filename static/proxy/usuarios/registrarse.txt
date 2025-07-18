@@ -7,6 +7,7 @@ REQUEST BODY
 {
     "nombre": "Sergio",
     "apellido": "Albino",
+    "username": "SergioAlbino",
     "dni": "12345678",
     "fechaNacimiento": 1752775303742,
     "mail": "mail@example.com",
