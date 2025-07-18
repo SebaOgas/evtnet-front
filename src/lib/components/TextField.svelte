@@ -17,10 +17,15 @@
     
     export let disabled : boolean = false
 
+    export let disableLinearDisplay : boolean = false;
+
     //Para textarea
     export let multiline : boolean = false
     export let resize : boolean = false
     export let rows : number = 4
+
+    //Para password
+    export let isPassword : boolean = false;
 
     $: valido = true;
     $: razonInvalidez = "";
@@ -43,12 +48,12 @@
 </script>
 
 
-<label class="{classes} flex flex-col gap-2 md:flex-row">
+<label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"} mt-2 mb-2">
     {#if label !== null}
         <span>{label}</span>
     {/if}
     {#if !multiline}
-        <input {disabled} type="text" on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
+        <input {disabled} type="{!isPassword ? "text" : "password"}" on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
     {:else}
         <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}

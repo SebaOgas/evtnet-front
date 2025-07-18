@@ -7,6 +7,8 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import { TestService } from "$lib/services/TestService";
+	import { token } from "$lib/stores";
 
     $: textValue = "Hola"
     $: textAreaValue = "Hola"
@@ -104,6 +106,15 @@
 
     let mapSelectedPos : {x: number, y: number} = {x: -32.89713443095706, y: -68.85353962902123}
     let mapMarkerRadius : string = "100";
+
+
+    $: response = ""
+    async function makeRequest() {
+        let resp = await TestService.endpoint();
+        console.log(resp);
+        response = "Respuesta recibida: " + JSON.stringify(resp);
+    }
+
 </script>
 
 <div id="content">
@@ -111,6 +122,7 @@
         <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
         <p>Valor del textfield: {textValue}</p>
 
+        {$token}
 
         <TextField label="Leyenda" multiline bind:value={textAreaValue}/>
         <p>Valor de la textarea: {textAreaValue}</p>
@@ -127,6 +139,8 @@
         <DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
         <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
     
+        <DatePicker range label={null}/>
+        
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>
 
@@ -171,6 +185,11 @@
             x: {mapSelectedPos.x}
             <br/>
             y: {mapSelectedPos.y}
+        </p>
+
+        <Button action={makeRequest}>Realizar solicitud</Button>
+        <p>
+            {response}
         </p>
 
     </div>

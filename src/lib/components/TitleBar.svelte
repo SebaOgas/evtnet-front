@@ -1,17 +1,24 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
+	import { permisos, token } from "$lib/stores";
 
-let menu : HTMLElement;
-let toggleMenu = () => {
-    let display = menu.style.display;
 
-    if (display === "flex") {
-        menu.style.display = "none";
-        return;
+    let menu : HTMLElement;
+    let toggleMenu = () => {
+        let display = menu.style.display;
+
+        if (display === "flex") {
+            menu.style.display = "none";
+            return;
+        }
+        menu.style.display = "flex";
     }
-    menu.style.display = "flex";
-}
 
-    
+    function cerrarSesion() {
+        token.set("");
+        permisos.set([]);
+        goto("/");
+    }
     
 </script>
 
@@ -26,7 +33,6 @@ let toggleMenu = () => {
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <img on:click={toggleMenu} id="burger" src="icons/menu.png" alt="Logo" class="icon-white object-contain cursor-pointer"/>
 	<menu bind:this={menu} class="bg-light flex items-end lg:gap-2 cursor-pointer text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit">
-		<li><a href="./IniciarSesion">Iniciar Sesión</a></li>
 		<li>
             <span>Eventos</span>
             <menu>
@@ -46,7 +52,9 @@ let toggleMenu = () => {
 		<li><a href="./Administracion">Administración</a></li>
 		<li><a href="./Reportes">Reportes</a></li>
 		<li><a href="./Registros">Registros</a></li>
-		<li><a href="./MiPerfil">Mi Perfil</a></li>
+		<li><a href="./Perfil">Mi Perfil</a></li>
+        <!-- svelte-ignore a11y_invalid_attribute -->
+        <li><a href="#" on:click={cerrarSesion}>Cerrar Sesión</a></li>
 	</menu>
 </div>
 
@@ -55,6 +63,11 @@ let toggleMenu = () => {
 	width: 100vw;
 	height: 60px;
     position: relative;
+}
+
+a {
+    color: var(--color-white);
+    text-decoration: none;
 }
 
 #titlebar img {
@@ -86,7 +99,6 @@ menu>li:hover>a {
     flex-direction: column;
     align-items: end;
 }
-
 
 
 

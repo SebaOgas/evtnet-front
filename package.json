@@ -40,6 +40,7 @@
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"svelte": "^5.35.5",
 		"svelte-check": "^4.0.0",
+		"svelte-loading-spinners": "^0.3.6",
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
@@ -47,8 +48,10 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
+		"@capacitor-community/safe-area": "^7.0.0-alpha.1",
 		"@capacitor/android": "^7.1.0",
 		"@capacitor/core": "^7.1.0",
+		"@capacitor/status-bar": "^7.0.1",
 		"@svelte-plugins/datepicker": "^1.0.11",
 		"leaflet": "^1.9.4"
 	}

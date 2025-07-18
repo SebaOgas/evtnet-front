@@ -2,8 +2,8 @@ REQUEST TYPE GET
 
 REQUEST ARGS
 
-arg1 : val1
-arg2 : val2
+arg1 : type1
+arg2 : type2
 
 REQUEST BODY
 

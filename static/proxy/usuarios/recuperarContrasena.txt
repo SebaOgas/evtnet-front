@@ -1,0 +1,24 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+mail: string
+password: string
+codigo: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "token": "dbokausdobaousidoasuda",
+    "permisos": [
+        "Permiso1",
+        "Permiso2",
+        "Permiso3"
+    ]
+}

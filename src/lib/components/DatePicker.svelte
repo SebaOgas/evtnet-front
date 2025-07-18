@@ -30,6 +30,8 @@
     export let width : string = "350px";
     
     export let disabled : boolean = false
+    
+    export let disableLinearDisplay : boolean = false;
 
     $: isOpen = false;
 
@@ -85,17 +87,66 @@
             razonInvalidez = result.reason;
         }
     })()
+
+    function parseDate(dateString: string): Date | null {
+        if (!dateString.trim()) return null;
+        
+        try {
+            // Handle DD/MM/YYYY format (es-AR format)
+            const ddmmyyyy = dateString.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (ddmmyyyy) {
+                const [, day, month, year] = ddmmyyyy;
+                // Create date with correct order: year, month-1, day
+                const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                return isNaN(date.getTime()) ? null : date;
+            }
+            
+            // Handle DD/MM/YYYY HH:MM format (with time)
+            const withTime = dateString.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\,\s+(\d{1,2}):(\d{2})$/);
+            
+            if (withTime) {
+                const [, day, month, year, hour, minute] = withTime;
+                // Create date with correct order: year, month-1, day, hour, minute
+                const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));                
+                return isNaN(date.getTime()) ? null : date;
+            }            
+            return null; // Don't use fallback parsing as it might flip day/month
+        } catch {
+            return null;
+        }
+    }
+
+    function handleSingleDateInput(event: Event) {
+        const target = event.target as HTMLInputElement;
+        const parsed = parseDate(target.value);
+        if (parsed) {
+            value = parsed;
+        }
+    }
+
+    function handleRangeDateInput(event: Event) {
+        const target = event.target as HTMLInputElement;
+        const rangeParts = target.value.split(' - ');
+        
+        if (rangeParts.length === 2) {
+            const start = parseDate(rangeParts[0]);
+            const end = parseDate(rangeParts[1]);
+            
+            if (start) startDate = start;
+            if (end) endDate = end;
+        }
+    }
     
 </script>
 
-<label class="flex flex-col gap-2 md:flex-row">
+<label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"}">
     {#if label !== null}
         <span>{label}</span>
     {/if}
     {#if !range}
         <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center {classes}" style="width: {width};">
-                <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} />
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
+                <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="icons/calendar.svg" alt="Calendario">
@@ -103,8 +154,8 @@
         </DatePicker>
     {:else}
         <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center {classes}" style="width: {width};">
-                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} />            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
+                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="icons/calendar.svg" alt="Calendario">
             </div>
