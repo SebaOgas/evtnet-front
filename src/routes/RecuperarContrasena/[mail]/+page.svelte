@@ -17,6 +17,7 @@
     $: repeatPassword = ""
     
     $: error = ""
+    $: errorVisible = false
 
     function validatePassword(password: string) {
 
@@ -46,6 +47,12 @@
     $: popupExitoVisible = false;
 
     async function recuperarContrasena() {
+        if (password.trim() !== repeatPassword.trim()) {
+            error = "Las contraseñas no son iguales"
+            errorVisible = true
+            return;
+        }
+
         try {
             await UsuariosService.recuperarContrasena(mail, password, codigo);
             popupExitoVisible = true;
@@ -107,7 +114,7 @@
     </div>
 </Popup>
 
-<PopupError visible={error !== ""}>
+<PopupError bind:visible={errorVisible}>
     {error}
 </PopupError>
 

@@ -16,6 +16,7 @@
     $: repeatPassword = ""
     
     $: error = ""
+    $: errorVisible = false
 
     function validateCurrentPassword(password: string) {
         if (password.trim().length === 0) {
@@ -42,7 +43,7 @@
 
         let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
 
-        let valid : boolean = regex.test(password)
+        let valid : boolean = regex.test(password.trim())
 
         let reason = null;
         
@@ -59,8 +60,14 @@
     $: popupExitoVisible = false;
 
     async function restablecerContrasena() {
+        if (newPassword.trim() !== repeatPassword.trim()) {
+            error = "Las contraseñas no son iguales"
+            errorVisible = true
+            return;
+        }
+
         try {
-            await UsuariosService.restablecerContrasena(currentPassword, newPassword);
+            await UsuariosService.restablecerContrasena(currentPassword.trim(), newPassword.trim());
             popupExitoVisible = true;
         } catch(e) {
             if (e instanceof HttpError) {
@@ -102,6 +109,6 @@
     </div>
 </Popup>
 
-<PopupError visible={error !== ""}>
+<PopupError bind:visible={errorVisible}>
     {error}
 </PopupError>
