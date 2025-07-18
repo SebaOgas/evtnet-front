@@ -8,6 +8,9 @@
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
 
+    
+    $: repeatPassword = ""
+
     function validateNombre(nombre: string) {
         if (nombre.trim().length === 0) {
             return {
@@ -37,7 +40,7 @@
 
     $: usernameDisponible = true;
     $: usernameValid = false;
-    function validateUsername(username: string) {
+    function validateUsername(username: string, preventRequest = false) {
         username = username.trim();
         if (username.length === 0) {
             usernameValid = false;
@@ -62,10 +65,13 @@
                 reason: "Solo debe tener letras mayúsculas, minúsculas, números y guiones"
             }
         }
-
-        (async () => {
-            usernameDisponible = (await UsuariosService.verificarUsernameDisponible(username));
-        })();
+        
+        if (!preventRequest) {
+            (async () => {
+                usernameDisponible = (await UsuariosService.verificarUsernameDisponible(username));
+            })();
+        }
+        
 
         usernameValid = true;
         return {
@@ -195,11 +201,12 @@
         if (
             validateNombre(data.nombre).valid
             && validateApellido(data.apellido).valid
-            && validateUsername(data.username).valid
+            && validateUsername(data.username, true).valid
             && validateDNI(data.dni).valid
             && validateFechaNacimiento(data.fechaNacimiento).valid
             && validateMail(data.mail).valid
             && validatePassword(data.password).valid
+            && data.password.trim() === repeatPassword.trim()
         ) {
             completado = true;
         } else {
@@ -246,6 +253,10 @@
                 <li>1 minúscula</li>
                 <li>1 número</li>
             </ul>     
+        </div>
+        <TextField label="Repetir contraseña:" bind:value={repeatPassword} classes="w-full" isPassword disableLinearDisplay max={50}/>
+        <div class="flex w-full">
+            <Warning text={"Las contraseñas no son iguales"} visible={data.password.trim() !== repeatPassword.trim()}/>
         </div>
         <div class="flex w-full">
             <Warning text={registracionError} visible={registracionError !== ""}/>
