@@ -6,17 +6,30 @@
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
 
-    import {page} from "$app/state"
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 
-    $: codigo = ""
-    $: mail = page.params.mail;
-    $: password = ""
+
+    $: currentPassword = ""
+    $: newPassword = ""
 
     $: repeatPassword = ""
     
     $: error = ""
+
+    function validateCurrentPassword(password: string) {
+        if (password.trim().length === 0) {
+            return {
+                valid: false,
+                reason: "Debe ingresar la contraseña"
+            }
+        }
+
+        return {
+            valid: true,
+            reason: undefined
+        }
+    }
 
     function validatePassword(password: string) {
 
@@ -45,9 +58,9 @@
 
     $: popupExitoVisible = false;
 
-    async function recuperarContrasena() {
+    async function restablecerContrasena() {
         try {
-            await UsuariosService.recuperarContrasena(mail, password, codigo);
+            await UsuariosService.restablecerContrasena(currentPassword, newPassword);
             popupExitoVisible = true;
         } catch(e) {
             if (e instanceof HttpError) {
@@ -55,31 +68,12 @@
             }            
         }
     }
-
-    async function enviarCodigo() {
-        try {
-            await UsuariosService.enviarCodigoRecuperarContrasena(mail);
-        } catch(e) {
-            if (e instanceof HttpError) {
-                error = e.message
-            }
-        }
-    }
 </script>
 
-<div class="flex flex-col md:flex-row md:gap-30 items-center justify-start md:justify-center min-h-screen p-1 pt-10 pb-10">
-    <div class="flex flex-col items-center justify-center">
-        <div class="logo flex flex-col justify-center items-center w-[194px] md:w-[300px]">
-            <img src="/logo.png" alt="Logo" class="object-contain"/>
-            <span class="text-xl font-bold text-light">evtnet</span>
-        </div>
-        <h1 class="text-m m-2">
-            Recuperar contraseña
-        </h1>
-    </div>
-    <div class="flex flex-col items-center justify-center w-[90vw] sm:w-[70vw] md:w-[40vw]">
-        <TextField label="Código:" bind:value={codigo} classes="w-full" disableLinearDisplay max={6}/>
-        <TextField label="Ingrese su nueva contraseña:" bind:value={password} classes="w-full" isPassword validate={validatePassword} disableLinearDisplay max={50}/>
+<div id="content">
+    <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+        <TextField label="Contraseña actual:" bind:value={currentPassword} classes="w-full" isPassword validate={validateCurrentPassword} disableLinearDisplay max={50}/>
+        <TextField label="Ingrese su nueva contraseña:" bind:value={newPassword} classes="w-full" isPassword validate={validatePassword} disableLinearDisplay max={50}/>
         <div class="text-left w-full">
             Requisitos:
             <ul class="list-disc pl-8">
@@ -90,12 +84,13 @@
             </ul>     
         </div><TextField label="Repetir contraseña:" bind:value={repeatPassword} classes="w-full" isPassword disableLinearDisplay max={50}/>
         <div class="flex w-full">
-            <Warning text={"Las contraseñas no son iguales"} visible={password.trim() !== repeatPassword.trim()}/>
+            <Warning text={"Las contraseñas no son iguales"} visible={newPassword.trim() !== repeatPassword.trim()}/>
         </div>
-        <div class="flex flex-col items-center justify-center gap-2">
-            <Button classes="text-lg" action={recuperarContrasena}>Aceptar</Button>
-            <Button classes="text-md" action={enviarCodigo}>Reenviar código</Button>
-        </div>
+    </div>
+
+    <div class="flex gap-2 h-fit p-2 justify-center items-center">
+        <Button action={() => {goto("/Perfil")}}>Cancelar</Button>
+        <Button action={restablecerContrasena}>Confirmar</Button>
     </div>
     
 </div>
@@ -110,9 +105,3 @@
 <PopupError visible={error !== ""}>
     {error}
 </PopupError>
-
-<style>
-    .logo {
-        user-select: none;
-    }
-</style>

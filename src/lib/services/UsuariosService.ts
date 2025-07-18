@@ -56,7 +56,7 @@ export const UsuariosService = {
         let args = new Map<string, string>();
         args.set("mail", mail);
 
-        await request(HttpRequestType.PUT, "usuarios/enviarCodigoRecuperarContrasena", false, args);
+        await request(HttpRequestType.PUT, "usuarios/enviarCodigoRecuperarContrasena", true, args);
     },
 
     recuperarContrasena: async (mail: string, password: string, codigo: string) => {
@@ -65,7 +65,18 @@ export const UsuariosService = {
         args.set("password", password);
         args.set("codigo", codigo);
 
-        await request(HttpRequestType.PUT, "usuarios/recuperarContrasena", true, args);
+        let response : DTOAuth = await request(HttpRequestType.PUT, "usuarios/recuperarContrasena", true, args, null, false);
+
+        token.set(response.token);
+        permisos.set(response.permisos);
+    },
+
+    restablecerContrasena: async (currentPassword: string, newPassword: string) => {
+        let args = new Map<string, string>();
+        args.set("currentPassword", currentPassword);
+        args.set("newPassword", newPassword);
+
+        await request(HttpRequestType.PUT, "usuarios/restablecerContrasena", true, args);
     },
 
 }
