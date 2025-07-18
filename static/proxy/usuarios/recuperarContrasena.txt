@@ -1,0 +1,16 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+mail: string
+password: string
+codigo: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY
+

@@ -6,7 +6,7 @@
 
 {#if visible}
     <div id="warning" class="flex items-center w-fit">
-        <img src="icons/warning.svg" alt="!">
+        <img src="/icons/warning.svg" alt="!">
         <div class="text-orange font-bold text-xs w-fit" style="max-width:{maxWidth}">{text}</div>
     </div>
 {/if}

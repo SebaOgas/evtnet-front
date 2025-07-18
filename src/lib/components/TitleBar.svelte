@@ -46,7 +46,7 @@ let toggleMenu = () => {
 		<li><a href="./Administracion">Administración</a></li>
 		<li><a href="./Reportes">Reportes</a></li>
 		<li><a href="./Registros">Registros</a></li>
-		<li><a href="./MiPerfil">Mi Perfil</a></li>
+		<li><a href="./Perfil">Mi Perfil</a></li>
 	</menu>
 </div>
 

@@ -50,5 +50,22 @@ export const UsuariosService = {
 
         let resp : {disponible: boolean} = await request(HttpRequestType.GET, "usuarios/verificarUsernameDisponible", false, args, null, false);
         return resp.disponible;
-    }
+    },
+
+    enviarCodigoRecuperarContrasena: async (mail: string) => {
+        let args = new Map<string, string>();
+        args.set("mail", mail);
+
+        await request(HttpRequestType.PUT, "usuarios/enviarCodigoRecuperarContrasena", false, args);
+    },
+
+    recuperarContrasena: async (mail: string, password: string, codigo: string) => {
+        let args = new Map<string, string>();
+        args.set("mail", mail);
+        args.set("password", password);
+        args.set("codigo", codigo);
+
+        await request(HttpRequestType.PUT, "usuarios/recuperarContrasena", true, args);
+    },
+
 }
