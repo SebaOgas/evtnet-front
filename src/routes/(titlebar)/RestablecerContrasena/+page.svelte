@@ -8,8 +8,16 @@
 
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
+	import { token } from "$lib/stores";
+	import { get } from "svelte/store";
+	import { onMount } from "svelte";
 
-
+    onMount(() => {
+        if (get(token) === "") {
+            goto("/");
+        }
+    })
+    
     $: currentPassword = ""
     $: newPassword = ""
 

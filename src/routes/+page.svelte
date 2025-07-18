@@ -5,6 +5,16 @@
 	import Warning from "$lib/components/Warning.svelte";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { token } from "$lib/stores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+
+    onMount(() => {
+        if (get(token) !== "") {
+            goto("/Perfil");
+        }
+    }) 
+    
 
     function validateMail(mail: string) {
         let regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
