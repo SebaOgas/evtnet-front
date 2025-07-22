@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { permisos, token } from "$lib/stores";
+	import { permisos, token, username } from "$lib/stores";
 
 
     let menu : HTMLElement;
@@ -17,6 +17,7 @@
     function cerrarSesion() {
         token.set("");
         permisos.set([]);
+        username.set("");
         goto("/");
     }
     

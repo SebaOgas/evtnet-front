@@ -1,7 +1,7 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import {HttpRequestType, request } from "$lib/request/request";
-import { permisos, token } from "$lib/stores";
+import { permisos, token, username } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -16,6 +16,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     registrarse: async (
@@ -25,6 +26,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     ingresarCodigo: async (
@@ -37,6 +39,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     enviarCodigo: async () => {
@@ -69,6 +72,7 @@ export const UsuariosService = {
 
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     restablecerContrasena: async (currentPassword: string, newPassword: string) => {

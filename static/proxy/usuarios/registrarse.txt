@@ -22,5 +22,6 @@ RESPONSE BODY
     "token": "dbokausdobaousidoasuda",
     "permisos": [
         "HabilitarCuenta"
-    ]
+    ],
+    "username": "usuario"
 }
