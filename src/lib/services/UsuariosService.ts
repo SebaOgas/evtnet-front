@@ -1,4 +1,5 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
+import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import {HttpRequestType, request } from "$lib/request/request";
 import { permisos, token, username } from "$lib/stores";
@@ -83,4 +84,49 @@ export const UsuariosService = {
         await request(HttpRequestType.PUT, "usuarios/restablecerContrasena", true, args);
     },
 
+    obtenerPerfil: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let response : DTOPerfil = await request(HttpRequestType.GET, "usuarios/obtenerPerfil", true, args);
+
+        return response;
+    },
+
+    obtenerFotoDePerfil: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+        
+        let response = await request(HttpRequestType.GET, "usuarios/obtenerFotoDePerfil", false, args);
+
+        const bytes = new Uint8Array(response.content.length);
+    
+        for (let i = 0; i < response.content.length; i++) {
+            bytes[i] = response.content.charCodeAt(i);
+        }
+        
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+
+        return url;
+    },
+
+    obtenerImagenDeCalificacion: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+        
+        let response = await request(HttpRequestType.GET, "usuarios/obtenerImagenDeCalificacion", false, args, null, false);
+        
+        const bytes = new Uint8Array(response.content.length);
+
+        for (let i = 0; i < response.content.length; i++) {
+            bytes[i] = response.content.charCodeAt(i);
+        }
+        
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+
+
+        return url;
+    }
 }

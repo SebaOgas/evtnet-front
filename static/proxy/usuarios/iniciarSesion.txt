@@ -19,7 +19,8 @@ RESPONSE BODY
         "VisionPerfilPropio",
         "ModificacionPerfilPropio",
         "VisionPerfilTercero",
-        "VisionPerfilTerceroCompleta"
+        "VisionPerfilTerceroCompleta",
+        "ParticipacionGrupos"
     ],
     "username": "usuario"
 }

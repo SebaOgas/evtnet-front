@@ -1,0 +1,36 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "username": "usuario",
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "mail": "sergioalbino@gmail.com",
+    "dni": "38302820",
+    "fechaNacimiento": 1753225458732,
+    "calificaciones": [
+        {
+            "nombre": "Buena",
+            "porcentaje": 50.0
+        },
+        {
+            "nombre": "Media",
+            "porcentaje": 20.0
+        },
+        {
+            "nombre": "Mala",
+            "porcentaje": 30.0
+        }
+    ]
+}
