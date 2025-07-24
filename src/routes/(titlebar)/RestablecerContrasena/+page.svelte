@@ -80,6 +80,7 @@
         } catch(e) {
             if (e instanceof HttpError) {
                 error = e.message
+                errorVisible = true
             }            
         }
     }

@@ -1,4 +1,5 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
+import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import {HttpRequestType, request } from "$lib/request/request";
@@ -128,5 +129,20 @@ export const UsuariosService = {
 
 
         return url;
+    },
+
+
+    obtenerPerfilParaEditar: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let response : DTOEditarPerfil = await request(HttpRequestType.GET, "usuarios/obtenerPerfilParaEditar", true, args);
+
+        return response;
+    },
+
+    editarPerfil: async(data: FormData) => {
+        await request(HttpRequestType.PUT, "usuarios/editarPerfil", true, null, data);
     }
+
 }
