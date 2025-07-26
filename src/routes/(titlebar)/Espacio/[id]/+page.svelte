@@ -13,6 +13,8 @@
 
     import { goto, afterNavigate } from '$app/navigation';
     import { base } from '$app/paths'
+	import { ImagenesEspaciosService } from "$lib/services/ImagenesEspaciosService";
+	import Carousel from "$lib/components/Carousel.svelte";
 
     let previousPage : string = base ;
 
@@ -45,6 +47,8 @@
 
     $: caracteristicas = [] as {nombre: string, imgUrl: string}[]
 
+    $: imagenes = [] as {id: number, src: string}[]
+
     onMount(async () => {     
         if (get(token) === "") {
             goto("/");
@@ -58,6 +62,20 @@
 
         try {
             data = await EspaciosService.obtenerEspacio(id);
+            
+            for (let i = 0; i < data.cantidadImagenes; i++) {
+
+                let src = await ImagenesEspaciosService.obtener(id, i+1);
+                
+                imagenes.push({
+                    id: i+1,
+                    src: src
+                });
+            }
+            
+            imagenes = [...imagenes]
+
+            
             listo = true;
             
             data.caracteristicas?.forEach(async car => {
@@ -95,6 +113,11 @@
         </p>
         
         <!--Carrusel-->
+
+        {#if listo}
+            <Carousel slides={imagenes}/>
+        {/if}
+
         <div>
             <span class="text-s">Dirección:</span>
             <span class="text-xs">{data.direccion}</span>
