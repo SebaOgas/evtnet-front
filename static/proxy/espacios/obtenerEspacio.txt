@@ -1,0 +1,40 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombre": "Nombre del espacio",
+    "tipoEspacio": "Espacio Privado",
+    "descripcion": "Descripción del espacio",
+    "direccion": "Dirección del espacio",
+    "latitud": -32.89713443095706,
+    "longitud": -68.85353962902123,
+    "cantidadImagenes": 3,
+    "disciplinas": ["Fútbol", "Pádel", "Ping Pong"],
+    "caracteristicas": [
+        {
+            "imagenId": 0,
+            "nombre": "Característica 1"
+        },
+        {
+            "imagenId": 1,
+            "nombre": "Característica 2"
+        },
+        {
+            "imagenId": 2,
+            "nombre": "Característica 3"
+        }
+    ],
+    "esAdmin": true,
+    "idChat": 123456
+}

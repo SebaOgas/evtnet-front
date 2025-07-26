@@ -75,9 +75,7 @@
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
                 errorGenericoVisible = true;
-            }
-            console.log(e);
-            
+            }            
         }
     });
 </script>
