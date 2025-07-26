@@ -123,6 +123,17 @@ export async function request(
             throw new ProxyError(4, `Tipo de contenido de respuesta HTTP no soportado: ${dummy_res_type}`, dummy_url)
         
         let dummy_res_body = dummy_parts[5];
+
+        let dummy_res_body_blob_type;
+        let dummy_res_body_blob_content;
+
+        if (dummy_res_type === "BLOB") {
+            let index : number | undefined = dummy_res_body.indexOf("\r\n")
+            if (index === -1) index = 0;
+            dummy_res_body_blob_type = dummy_res_body.substring(0, index);
+            dummy_res_body_blob_content = window.atob(dummy_res_body.substring(index + 2).trim().replace(/\s/g, ''));
+        }
+
         switch (dummy_res_type) {
             case "TEXT":
                 return dummy_res_body        
@@ -133,7 +144,7 @@ export async function request(
                     throw new ProxyError(5, `Respuesta JSON no válida`, dummy_url)
                 }
             case "BLOB":
-                return dummy_res_body  
+                return {content: dummy_res_body_blob_content, contentType: dummy_res_body_blob_type}
             default:
                 break;
         }        
@@ -149,7 +160,7 @@ export async function request(
             case "application/json":
                 return await response.json()
             default:
-                return await response.blob()
+                return await {content: response.blob(), contentType: response.headers.get("content-type")};
         }
     }
 

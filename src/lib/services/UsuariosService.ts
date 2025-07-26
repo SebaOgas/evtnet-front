@@ -1,7 +1,9 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
+import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
+import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import {HttpRequestType, request } from "$lib/request/request";
-import { permisos, token } from "$lib/stores";
+import { permisos, token, username } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -16,6 +18,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     registrarse: async (
@@ -25,6 +28,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     ingresarCodigo: async (
@@ -37,6 +41,7 @@ export const UsuariosService = {
         
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     enviarCodigo: async () => {
@@ -69,6 +74,7 @@ export const UsuariosService = {
 
         token.set(response.token);
         permisos.set(response.permisos);
+        username.set(response.username);
     },
 
     restablecerContrasena: async (currentPassword: string, newPassword: string) => {
@@ -78,5 +84,65 @@ export const UsuariosService = {
 
         await request(HttpRequestType.PUT, "usuarios/restablecerContrasena", true, args);
     },
+
+    obtenerPerfil: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let response : DTOPerfil = await request(HttpRequestType.GET, "usuarios/obtenerPerfil", true, args);
+
+        return response;
+    },
+
+    obtenerFotoDePerfil: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+        
+        let response = await request(HttpRequestType.GET, "usuarios/obtenerFotoDePerfil", false, args);
+
+        const bytes = new Uint8Array(response.content.length);
+    
+        for (let i = 0; i < response.content.length; i++) {
+            bytes[i] = response.content.charCodeAt(i);
+        }
+        
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+
+        return url;
+    },
+
+    obtenerImagenDeCalificacion: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+        
+        let response = await request(HttpRequestType.GET, "usuarios/obtenerImagenDeCalificacion", false, args, null, false);
+        
+        const bytes = new Uint8Array(response.content.length);
+
+        for (let i = 0; i < response.content.length; i++) {
+            bytes[i] = response.content.charCodeAt(i);
+        }
+        
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+
+
+        return url;
+    },
+
+
+    obtenerPerfilParaEditar: async(username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let response : DTOEditarPerfil = await request(HttpRequestType.GET, "usuarios/obtenerPerfilParaEditar", true, args);
+
+        return response;
+    },
+
+    editarPerfil: async(data: FormData) => {
+        await request(HttpRequestType.PUT, "usuarios/editarPerfil", true, null, data);
+    }
 
 }

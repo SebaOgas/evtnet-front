@@ -1,0 +1,21 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "dni": "38302820",
+    "fechaNacimiento": 1753225458732,
+    "cbu": "1234567890123456789012"
+}

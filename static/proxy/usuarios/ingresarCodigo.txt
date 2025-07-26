@@ -18,5 +18,6 @@ RESPONSE BODY
         "Permiso1",
         "Permiso2",
         "Permiso3"
-    ]
+    ],
+    "username": "usuario"
 }
