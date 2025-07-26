@@ -19,6 +19,8 @@
 
     export let disableLinearDisplay : boolean = false;
 
+    export let forceValidate : boolean = false;
+
     //Para textarea
     export let multiline : boolean = false
     export let resize : boolean = false
@@ -45,6 +47,13 @@
         if (event.key === "Enter")
             action();
     }
+
+    $: (() => {
+        if (forceValidate) {
+            validar();
+        }
+    })()
+
 </script>
 
 

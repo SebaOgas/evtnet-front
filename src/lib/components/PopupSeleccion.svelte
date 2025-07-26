@@ -66,7 +66,7 @@
 
 <Popup bind:visible bind:title {fitW} {fitH} {classes}>
     {#if !noSearch}
-        <SearchField disabled searchFunction={searchFunction} bind:results={found}/>
+        <SearchField disabled={noSearch} searchFunction={searchFunction} bind:results={found}/>
     {/if}
     <div class="grow overflow-y-auto">
         {#if found.size > 0}

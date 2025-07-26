@@ -55,8 +55,26 @@ import { onMount } from 'svelte';
         }
         if (!disableMarking) {
             map.on("click", (e) => {
-                marker.setLatLng([e.latlng.lat, e.latlng.lng]);
-                markerRadius.setLatLng([e.latlng.lat, e.latlng.lng]);
+                if (marked === undefined) {
+                    marker = L.circleMarker([e.latlng.lat, e.latlng.lng], {
+                        color: "#00b2ca",
+                        fillColor: "#00b2ca",
+                        fillOpacity: 1,
+                        radius: 10
+                    })
+                    marker.addTo(map)
+                    markerRadius = L.circle([e.latlng.lat, e.latlng.lng], {
+                        color: "#00b2ca",
+                        fillColor: "#00b2ca",
+                        fillOpacity: 0.4,
+                        stroke: true,
+                        radius: radius
+                    })
+                    markerRadius.addTo(map)
+                } else {
+                    marker.setLatLng([e.latlng.lat, e.latlng.lng]);
+                    markerRadius.setLatLng([e.latlng.lat, e.latlng.lng]);
+                }
                 /*map.removeLayer(marker);
                 map.removeLayer(markerRadius);
                 marker = L.circleMarker([e.latlng.lat, e.latlng.lng], {
