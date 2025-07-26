@@ -20,7 +20,10 @@ RESPONSE BODY
         "ModificacionPerfilPropio",
         "VisionPerfilTercero",
         "VisionPerfilTerceroCompleta",
-        "ParticipacionGrupos"
+        "ParticipacionGrupos",
+        "VisionEspacios",
+        "CreacionEspaciosPrivados",
+        "AdministracionEspaciosPrivados"
     ],
     "username": "usuario"
 }

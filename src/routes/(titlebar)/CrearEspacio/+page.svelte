@@ -11,6 +11,19 @@
 	import { HttpError } from "$lib/request/request";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EspaciosService } from "$lib/services/EspaciosService";
+	import { permisos, token } from "$lib/stores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+
+    onMount(async () => {     
+        if (get(token) === "") {
+            goto("/");
+        }
+
+        if(!get(permisos).includes("CreacionEspaciosPrivados")) {
+            goto("/Espacios")
+        }
+    });
 
     let data : DTOCrearEspacio = {
 		nombre: "",
