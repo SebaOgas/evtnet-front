@@ -61,3 +61,7 @@ a {
 	text-decoration: underline;
 	color: var(--color-dark)
 }
+
+.commaList>*:not(:last-child)::after {
+	content: ", ";
+}

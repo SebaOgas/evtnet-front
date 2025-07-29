@@ -177,10 +177,3 @@
 <PopupError bind:visible={errorGenericoVisible}>
     {errorGenerico}
 </PopupError>
-
-
-<style>
-    .commaList>*:not(:last-child)::after {
-        content: ", ";
-    }
-</style>

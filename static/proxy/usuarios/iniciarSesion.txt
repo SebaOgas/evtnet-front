@@ -23,7 +23,8 @@ RESPONSE BODY
         "ParticipacionGrupos",
         "VisionEspacios",
         "CreacionEspaciosPrivados",
-        "AdministracionEspaciosPrivados"
+        "AdministracionEspaciosPrivados",
+        "AdministracionEspaciosPublicos"
     ],
     "username": "usuario"
 }

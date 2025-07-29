@@ -78,7 +78,7 @@
                         <span data-value={f[0]}>{f[1]}</span>
                         {#if selectedCopy.has(f[0])}
                             <span class="checkContainer">
-                                <img src={"icons/check.png"} alt="Ícono" class="object-contain">
+                                <img src={"/icons/check.png"} alt="Ícono" class="object-contain">
                             </span>
                         {/if}
                     </div>
@@ -95,7 +95,7 @@
                     <div class="item flex shrink gap-2 cursor-pointer hover:text-dark" on:click={() => {toggleItem(s[0], s[1])}}>
                         <span data-value={s[0]}>{s[1]}</span>
                         <span class="checkContainer">
-                            <img src={"icons/check.png"} alt="Ícono" class="object-contain">
+                            <img src={"/icons/check.png"} alt="Ícono" class="object-contain">
                         </span>
                     </div>
                     {/if}

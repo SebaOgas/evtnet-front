@@ -27,5 +27,5 @@
 
 <div class="flex w-full gap-2">
     <TextField {disabled} label={null} placeholder="Buscar..." classes="w-full" bind:value={searchValue} action={search} change={autoSearchFn}></TextField>
-    <Button {disabled} icon="icons/search.svg" action={search}></Button>
+    <Button {disabled} icon="/icons/search.svg" action={search}></Button>
 </div>
