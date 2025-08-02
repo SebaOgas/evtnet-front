@@ -1,0 +1,20 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "cronogramasSuperpuestos": true,
+    "eventosProgramados": true
+}

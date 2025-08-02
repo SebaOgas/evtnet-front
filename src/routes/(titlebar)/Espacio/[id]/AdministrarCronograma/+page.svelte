@@ -1,4 +1,7 @@
 <script lang="ts">
+    /*
+        Built with assistance from Claude
+    */
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";

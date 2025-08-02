@@ -1,6 +1,7 @@
 import type DTOCronogramasEspacio from "$lib/dtos/espacios/DTOCronogramasEspacio";
 import type DTODetalleCronograma from "$lib/dtos/espacios/DTODetalleCronograma";
 import type DTOExcepcionesCronograma from "$lib/dtos/espacios/DTOExcepcionesCronograma";
+import type DTOVerificacionVigencia from "$lib/dtos/espacios/DTOVerificacionVigencia";
 import { HttpRequestType, request } from "$lib/request/request";
 
 
@@ -41,4 +42,31 @@ export const CronogramaService = {
 
         await request(HttpRequestType.DELETE, "cronogramas/eliminarExcepcion", true, args);
     },
+    verificarVigencia: async (idEspacio: number, fechaDesde: Date, fechaHasta: Date) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("fechaDesde", `${fechaDesde}`);
+        args.set("fechaHasta", `${fechaHasta}`);
+
+        let response : DTOVerificacionVigencia = await request(HttpRequestType.GET, "cronogramas/verificarVigencia", true, args);
+
+        return response;
+    },
+    crearCronograma: async (
+        idEspacio: number, 
+        fechaDesde: Date, 
+        fechaHasta: Date, 
+        diasHaciaAdelante: number
+    ) => {
+        let data = {
+            idEspacio: idEspacio,
+            fechaDesde: fechaDesde,
+            fechaHasta: fechaHasta,
+            diasHaciaAdelante: diasHaciaAdelante
+        }
+
+        let response : {id: number}= await request(HttpRequestType.POST, "cronogramas/crearCronograma", true, null, JSON.stringify(data));
+        
+        return response.id;
+    }
 }

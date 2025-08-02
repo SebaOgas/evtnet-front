@@ -39,5 +39,13 @@ export const EspaciosService = {
         args.set("espacioId", `${espacioId}`);
 
         await request(HttpRequestType.DELETE, "espacios/dejarDeAdministrar", true, args);
+    },
+    obtenerNombreEspacio: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : {nombre: string} = await request(HttpRequestType.GET, "espacios/obtenerNombreEspacio", false, args);
+
+        return response.nombre;
     }
 }

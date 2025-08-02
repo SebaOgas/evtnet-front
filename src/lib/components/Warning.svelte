@@ -13,6 +13,6 @@
 
 <style>
     #warning {
-        height: 27px;
+        min-height: 27px;
     }
 </style>
