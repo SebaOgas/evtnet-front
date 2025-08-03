@@ -7,6 +7,7 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import TimeRangePicker from "$lib/components/TimeRangePicker.svelte";
 	import { TestService } from "$lib/services/TestService";
 	import { token } from "$lib/stores";
 
@@ -115,11 +116,27 @@
         response = "Respuesta recibida: " + JSON.stringify(resp);
     }
 
+    let s1: string | null = null, e1: string | null = null;
+    let s2: string | null = "09:00", e2: string | null = "17:00";
+    let s3: string | null = null, e3: string | null = null;
+    let s4: string | null = null, e4: string | null = null;
+    let s5: string | null = null, e5: string | null = null;
+
+    const validateTime = (start: string | null, end: string | null) => 
+        !start || !end ? {valid: false, reason: "Required"} : 
+        start >= end ? {valid: false, reason: "Start must be before end"} : 
+        {valid: true, reason: undefined};
+
+
+    function textFieldChange() {
+        console.log("A");
+    }
+
 </script>
 
 <div id="content">
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-        <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField}/>
+        <TextField label="Leyenda" placeholder="Placeholder" bind:value={textValue} validate={validarTextField} change={textFieldChange}/>
         <p>Valor del textfield: {textValue}</p>
 
         {$token}
@@ -140,6 +157,17 @@
         <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
     
         <DatePicker range label={null}/>
+
+        <TimeRangePicker bind:startTime={s1} bind:endTime={e1} />
+        {s1} - {e1}
+
+        <TimeRangePicker bind:startTime={s2} bind:endTime={e2} disabled={true} />
+
+        <TimeRangePicker bind:startTime={s3} bind:endTime={e3} width="500px" />
+
+        <TimeRangePicker bind:startTime={s4} bind:endTime={e4} validate={validateTime} />
+
+        <TimeRangePicker bind:startTime={s5} bind:endTime={e5} label={null} classes="text-orange" disableLinearDisplay={true} />
         
         <CheckBox bind:checked={toggledCheckbox}>Checkbox</CheckBox>
         <p>Valor del checkbox: {toggledCheckbox ? "Activo" : "No activo"}</p>

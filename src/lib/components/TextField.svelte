@@ -58,7 +58,7 @@
 
 
 <label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"} mt-2 mb-2">
-    {#if label !== null}
+    {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
     {#if !multiline}

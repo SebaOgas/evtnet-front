@@ -12,6 +12,8 @@
     export let maxHeight : number = 4;
 
     export let options : Map<number, string> = new Map<number, string>();
+    
+    export let change : () => void = () => {}
 
     export let selected : number | undefined = undefined;
     $: selectedText = "";
@@ -24,6 +26,7 @@
         selOptPopup.clear();
         selOptPopup.set(val, txt);
         selOptPopup = new Map(selOptPopup);
+        change();
     }
 
     async function searchPopup(val: string) {
@@ -61,7 +64,7 @@
             </div>
         {/if}
     </div>
-    <img src="icons/comboboxarrow.svg" alt="Desplegar" style="{shown ? "transform: rotate(-90deg)" : ""}" />
+    <img src="/icons/comboboxarrow.svg" alt="Desplegar" style="{shown ? "transform: rotate(-90deg)" : ""}" />
 </div>
 
 

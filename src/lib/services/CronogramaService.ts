@@ -1,4 +1,5 @@
 import type DTOCronogramasEspacio from "$lib/dtos/espacios/DTOCronogramasEspacio";
+import type DTODatosCreacionHorario from "$lib/dtos/espacios/DTODatosCreacionHorario";
 import type DTODetalleCronograma from "$lib/dtos/espacios/DTODetalleCronograma";
 import type DTOExcepcionesCronograma from "$lib/dtos/espacios/DTOExcepcionesCronograma";
 import type DTOVerificacionVigencia from "$lib/dtos/espacios/DTOVerificacionVigencia";
@@ -68,5 +69,30 @@ export const CronogramaService = {
         let response : {id: number}= await request(HttpRequestType.POST, "cronogramas/crearCronograma", true, null, JSON.stringify(data));
         
         return response.id;
+    },
+    obtenerDatosCreacionHorario: async (idCronograma: number) => {
+        let args = new Map<string, string>();
+        args.set("idCronograma", `${idCronograma}`);
+
+        let response : DTODatosCreacionHorario = await request(HttpRequestType.GET, "cronogramas/obtenerDatosCreacionHorario", true, args);
+
+        return response;
+    },
+    crearHorario: async (
+        idCronograma: number, 
+        diaSemana: number,
+        horaDesde: Date, 
+        horaHasta: Date, 
+        precio: number
+    ) => {
+        let data = {
+            idCronograma: idCronograma,
+            diaSemana: diaSemana,
+            horaDesde: horaDesde,
+            horaHasta: horaHasta,
+            precio: precio
+        }
+
+        await request(HttpRequestType.POST, "cronogramas/crearHorario", true, null, JSON.stringify(data));
     }
 }

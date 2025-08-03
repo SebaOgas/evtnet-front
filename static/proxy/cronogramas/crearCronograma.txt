@@ -2,10 +2,6 @@ REQUEST TYPE POST
 
 REQUEST ARGS
 
-idEspacio: int
-fechaDesde: Date
-fechaHasta: Date
-
 REQUEST BODY
 
 {

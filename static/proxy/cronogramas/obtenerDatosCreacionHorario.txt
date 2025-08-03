@@ -1,0 +1,20 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idCronograma: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Nombre del espacio",
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753326458732,
+    "comision": 0.1
+}
