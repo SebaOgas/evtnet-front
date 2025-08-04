@@ -12,6 +12,7 @@
 <script lang="ts">
     import { DatePicker } from "@svelte-plugins/datepicker";
 	import Warning from "./Warning.svelte";
+	import { onMount } from "svelte";
 
     export let label : string | null = "Label";
 
@@ -32,17 +33,39 @@
     export let disabled : boolean = false
     
     export let disableLinearDisplay : boolean = false;
+
+    export let minDate : Date | number | null = null;
+    export let maxDate : Date | number | null = null;
+
+    $: enabledDates = [] as string[]
+
+    onMount(() => {
+        let from = ""
+        if (minDate !== null) {
+            from = new Date(minDate).toLocaleDateString("en-US");
+        } else {
+            let d = new Date()
+            d.setFullYear(d.getFullYear() - 10)
+            from = d.toLocaleDateString("en-US");
+        }
+
+        let to = ""
+        if (maxDate !== null) {
+            to = new Date(maxDate).toLocaleDateString("en-US");
+        } else {
+            let d = new Date()
+            d.setFullYear(d.getFullYear() + 10)
+            to = d.toLocaleDateString("en-US");
+        }
+
+        enabledDates = [`${from}:${to}`]              
+    })
     
     $: isOpen = false;
 
     const toggleDatePicker = () => {
         isOpen = !isOpen;
     };
-
-    let formattedValue : string = "";
-    let formattedStartDate : string = "";
-    let formattedEndDate : string = "";
-    let formattedDateRange : string = "";
 
     $: formattedValue = formatDate(value, time);
     $: formattedStartDate = formatDate(startDate, time);
@@ -71,12 +94,33 @@
     $: valido = true;
     $: razonInvalidez = "";
 
+    function validarMinMax() {
+        if (!range) {
+            if (value !== null) {
+                if (minDate !== null && value < minDate) value = new Date(minDate);
+                if (maxDate !== null && value > maxDate) value = new Date(maxDate);
+            }
+        } else {
+            if (startDate !== null) {
+                if (minDate !== null && startDate < minDate) startDate = new Date(minDate);
+                if (maxDate !== null && startDate > maxDate) startDate = new Date(maxDate);
+            }
+            if (endDate !== null) {
+                if (minDate !== null && endDate < minDate) endDate = new Date(minDate);
+                if (maxDate !== null && endDate > maxDate) endDate = new Date(maxDate);
+            }
+            if (startDate !== null && endDate !== null) {
+                if (endDate < startDate) endDate = startDate;
+            }
+        }
+    }
+
     function validar() {
+        validarMinMax();
         let result;
         if (!range) {
             result = validate(value, null);
         } else {
-            if (endDate !== null && startDate !== null && endDate < startDate) endDate = startDate;
             result = validate(startDate, endDate);
         }
         
@@ -133,7 +177,6 @@
         } else {
             value = null;
         }
-        validar()
     }
 
     function handleRangeDateInput(event: Event) {
@@ -150,7 +193,6 @@
             startDate = null;
             endDate = null;
         }
-        validar();
     }
     
 </script>
@@ -160,7 +202,7 @@
         <span>{label}</span>
     {/if}
     {#if !range}
-        <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
+        <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} {enabledDates}>
             <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
                 <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -169,7 +211,7 @@
             </div>
         </DatePicker>
     {:else}
-        <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
+        <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange {enabledDates}>
             <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
                 <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            
                 <!-- svelte-ignore a11y-click-events-have-key-events -->

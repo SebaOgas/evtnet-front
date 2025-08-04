@@ -156,7 +156,7 @@
         <DatePicker range time label={null} bind:startDate={dateValueFrom} bind:endDate={dateValueTo}/>
         <p>Rango de fechas formateadas con hora: {formatDate(dateValueFrom, true)} - {formatDate(dateValueTo, true)}</p>
     
-        <DatePicker range label={null}/>
+        <DatePicker range label={null} minDate={new Date()} maxDate={1755318199514}/>
 
         <TimeRangePicker bind:startTime={s1} bind:endTime={e1} />
         {s1} - {e1}

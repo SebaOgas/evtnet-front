@@ -1,4 +1,5 @@
 import type DTOCronogramasEspacio from "$lib/dtos/espacios/DTOCronogramasEspacio";
+import type DTODatosCreacionExcepcion from "$lib/dtos/espacios/DTODatosCreacionExcepcion";
 import type DTODatosCreacionHorario from "$lib/dtos/espacios/DTODatosCreacionHorario";
 import type DTODetalleCronograma from "$lib/dtos/espacios/DTODetalleCronograma";
 import type DTOExcepcionesCronograma from "$lib/dtos/espacios/DTOExcepcionesCronograma";
@@ -94,5 +95,28 @@ export const CronogramaService = {
         }
 
         await request(HttpRequestType.POST, "cronogramas/crearHorario", true, null, JSON.stringify(data));
-    }
+    },
+    obtenerDatosCreacionExcepcion: async (idCronograma: number) => {
+        let args = new Map<string, string>();
+        args.set("idCronograma", `${idCronograma}`);
+
+        let response : DTODatosCreacionExcepcion = await request(HttpRequestType.GET, "cronogramas/obtenerDatosCreacionExcepcion", true, args);
+
+        return response;
+    },
+    crearExcepcion: async (
+        idCronograma: number, 
+        fechaDesde: Date, 
+        fechaHasta: Date, 
+        tipoExcepcion: number
+    ) => {
+        let data = {
+            idCronograma: idCronograma,
+            fechaDesde: fechaDesde,
+            fechaHasta: fechaHasta,
+            tipoExcepcion: tipoExcepcion
+        }
+
+        await request(HttpRequestType.POST, "cronogramas/crearExcepcion", true, null, JSON.stringify(data));
+    },
 }

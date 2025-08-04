@@ -70,15 +70,6 @@
 			};
 		}
 
-		const hoy = new Date();
-		hoy.setHours(0, 0, 0, 0);
-
-		if (desde < hoy) {
-			return {
-				valid: false,
-				reason: "La vigencia debe ser a futuro"
-			};
-		}
 
 		return {
 			valid: true,
@@ -192,6 +183,7 @@
 			bind:startDate={fechaDesde} 
 			bind:endDate={fechaHasta}
 			validate={() => validateVigencia(fechaDesde, fechaHasta)}
+			minDate={new Date()}
 		/>
 
 		<div>

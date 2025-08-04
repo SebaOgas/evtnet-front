@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import PopupSeleccion from "./PopupSeleccion.svelte";
 
     export let placeholder: string = "";
@@ -38,6 +39,17 @@
         if (entry !== undefined) 
             select(entry[0], entry[1]);
     })();
+
+    onMount(() => {
+        if (selected !== undefined) {
+            let lab = options.get(selected);
+            if (lab === undefined) {
+                selected = undefined;
+                return;
+            }
+            select(selected, lab);
+        }
+    })
 
 </script>
 
