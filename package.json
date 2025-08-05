@@ -41,6 +41,7 @@
 		"svelte": "^5.35.5",
 		"svelte-check": "^4.0.0",
 		"svelte-loading-spinners": "^0.3.6",
+		"svelte-range-slider-pips": "^4.0.7",
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",

@@ -22,20 +22,122 @@ RESPONSE BODY
 [
     {
         "id": 0,
-        "nombre": "Espacio 0",
-        "tipo": "Privado",
-        "disciplinas": ["Esgrima", "Fútbol", "Pádel"]
+        "nombre": "Centro Deportivo Municipal Norte",
+        "tipo": "Público",
+        "disciplinas": ["Fútbol", "Básquet", "Atletismo"]
     },
     {
         "id": 1,
-        "nombre": "Espacio 1",
-        "tipo": "Público",
-        "disciplinas": ["Esgrima", "Fútbol", "Pádel"]
+        "nombre": "Club Náutico Riverside",
+        "tipo": "Privado",
+        "disciplinas": ["Natación", "Remo", "Vela"]
     },
     {
         "id": 2,
-        "nombre": "Espacio 2",
+        "nombre": "Polideportivo San Martín",
+        "tipo": "Público",
+        "disciplinas": ["Vóley", "Handball", "Gimnasia"]
+    },
+    {
+        "id": 3,
+        "nombre": "Academia Elite Tennis",
         "tipo": "Privado",
-        "disciplinas": ["Esgrima", "Fútbol", "Pádel"]
+        "disciplinas": ["Tenis", "Pádel"]
+    },
+    {
+        "id": 4,
+        "nombre": "Complejo Deportivo Las Flores",
+        "tipo": "Público",
+        "disciplinas": ["Fútbol", "Rugby", "Hockey"]
+    },
+    {
+        "id": 5,
+        "nombre": "Gimnasio Iron Fitness",
+        "tipo": "Privado",
+        "disciplinas": ["Musculación", "CrossFit", "Boxeo"]
+    },
+    {
+        "id": 6,
+        "nombre": "Centro Acuático Municipal",
+        "tipo": "Público",
+        "disciplinas": ["Natación", "Aquaeróbicos", "Waterpolo"]
+    },
+    {
+        "id": 7,
+        "nombre": "Club de Esgrima Excalibur",
+        "tipo": "Privado",
+        "disciplinas": ["Esgrima", "Kendo"]
+    },
+    {
+        "id": 8,
+        "nombre": "Estadio Regional",
+        "tipo": "Público",
+        "disciplinas": ["Fútbol", "Atletismo", "Ceremonias"]
+    },
+    {
+        "id": 9,
+        "nombre": "Dojo Samurai",
+        "tipo": "Privado",
+        "disciplinas": ["Karate", "Judo", "Aikido"]
+    },
+    {
+        "id": 10,
+        "nombre": "Parque Deportivo Central",
+        "tipo": "Público",
+        "disciplinas": ["Ciclismo", "Running", "Skate"]
+    },
+    {
+        "id": 11,
+        "nombre": "Club Hípico Los Robles",
+        "tipo": "Privado",
+        "disciplinas": ["Equitación", "Polo"]
+    },
+    {
+        "id": 12,
+        "nombre": "Complejo de Canchas Oeste",
+        "tipo": "Público",
+        "disciplinas": ["Básquet", "Tenis", "Fútbol 5"]
+    },
+    {
+        "id": 13,
+        "nombre": "Estudio de Danza Armonía",
+        "tipo": "Privado",
+        "disciplinas": ["Ballet", "Jazz", "Danza Contemporánea"]
+    },
+    {
+        "id": 14,
+        "nombre": "Pista de Atletismo Universitaria",
+        "tipo": "Público",
+        "disciplinas": ["Atletismo", "Salto con Garrocha", "Lanzamiento"]
+    },
+    {
+        "id": 15,
+        "nombre": "Centro de Escalada Vertical",
+        "tipo": "Privado",
+        "disciplinas": ["Escalada", "Boulder", "Rappel"]
+    },
+    {
+        "id": 16,
+        "nombre": "Cancha de Golf Municipal",
+        "tipo": "Público",
+        "disciplinas": ["Golf", "Mini Golf"]
+    },
+    {
+        "id": 17,
+        "nombre": "Academia de Artes Marciales",
+        "tipo": "Privado",
+        "disciplinas": ["Taekwondo", "Muay Thai", "BJJ"]
+    },
+    {
+        "id": 18,
+        "nombre": "Complejo de Canchas de Pádel",
+        "tipo": "Público",
+        "disciplinas": ["Pádel", "Tenis", "Ping Pong"]
+    },
+    {
+        "id": 19,
+        "nombre": "Club de Yachting Marina",
+        "tipo": "Privado",
+        "disciplinas": ["Vela", "Windsurf", "Kitesurf"]
     }
 ]

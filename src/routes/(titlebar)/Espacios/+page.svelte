@@ -21,11 +21,11 @@
 	$: errorGenericoVisible = false;
 
     $: filtros = {
-        texto: "",
+		texto: "",
 		ubicacion: undefined,
 		tipos: [],
 		disciplinas: []
-    } as DTOBusquedaEspacios;
+	} as DTOBusquedaEspacios;
 
     $: resultados = [] as DTOResultadoBusquedaEspacios[];
 
@@ -44,6 +44,16 @@
             filtros.disciplinas.push(d);
         })
 
+        if (ubicacion !== undefined && buscarPorUbicacion) {
+            filtros.ubicacion = {
+                latitud: ubicacion.x,
+                longitud: ubicacion.y,
+                rango: rango
+            };
+        } else {
+            filtros.ubicacion = undefined;
+        }
+
         try {
 			resultados = await EspaciosService.buscar(filtros);
 		} catch (e) {
@@ -58,6 +68,8 @@
     $: filtrosVisibles = false;
     $: buscarPorUbicacion = false;
     $: popupUbicacionVisible = false;
+    let ubicacion : {x: number, y: number} | undefined;
+    let rango : number;
 
     $: popupDisciplinasVisible = false;
 
@@ -104,7 +116,7 @@
 
 <PopupSeleccion title="Disciplinas" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas}/>
 
-<PopupUbicacion visible={popupUbicacionVisible}/>
+<PopupUbicacion bind:visible={popupUbicacionVisible} max={100000} bind:ubicacion={ubicacion} bind:radius={rango}/>
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
@@ -119,7 +131,7 @@
         {#if filtrosVisibles}
             <div class="flex justify-start items-center gap-2">
                 <CheckBox bind:checked={buscarPorUbicacion}>Buscar por ubicación</CheckBox>
-                <Button disabled={!buscarPorUbicacion} action={() => {popupUbicacionVisible = true;}}>Seleccionar</Button>
+                <Button disabled={!buscarPorUbicacion} action={() => {popupUbicacionVisible = true;}}>{#if ubicacion === undefined}Seleccionar{:else}Cambiar{/if}</Button>
             </div>
 
             <div>
@@ -147,28 +159,31 @@
                 {/if}
             </div>
 
-            <div class="flex justify-center items-center">
+            <div class="flex justify-center items-center mb-4">
                 <Button classes="text-xs" action={buscar}>Buscar</Button>
             </div>
         {/if}
         
-        {#each resultados as r}
-            <div class="flex flex-col gap-2 pb-4">
-                <div class="flex justify-between items-center">
-                    <span>{r.nombre}</span>
-                    <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${r.id}`)}}></Button>
-                </div>
-                <div class="flex justify-between items-center">
-                    {r.tipo}
-                </div>
-                <div class="commaList">
-                    {#each r.disciplinas as d}
-                        <span>{d}</span>
-                    {/each}
-                </div>
+        <div class="flex flex-col w-full gap-2 md:flex-row md:flex-wrap justify-between">
+            {#each resultados as r}
+                <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
+                    <div class="flex justify-between items-center">
+                        <span class="text-s">{r.nombre}</span>
+                        <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${r.id}`)}} classes="shrink-0"></Button>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        {r.tipo}
+                    </div>
+                    <div class="commaList text-xs">
+                        {#each r.disciplinas as d}
+                            <span>{d}</span>
+                        {/each}
+                    </div>
 
-            </div>
-        {/each}
+                </div>
+            {/each}
+        </div>
+        
 
 	</div>
 
