@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import { permisos, token, username } from "$lib/stores";
 
 
@@ -20,6 +20,10 @@
         username.set("");
         goto("/");
     }
+
+    afterNavigate(() => {
+        menu.style.display = "none";
+    })
     
 </script>
 

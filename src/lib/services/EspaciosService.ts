@@ -4,6 +4,8 @@ import type DTOCrearEspacio from "$lib/dtos/espacios/DTOCrearEspacio";
 import type DTOEspacio from "$lib/dtos/espacios/DTOEspacio";
 import type DTOEspacioEditar from "$lib/dtos/espacios/DTOEspacioEditar";
 import { HttpRequestType, request } from "$lib/request/request";
+import type DTOBusquedaMisEspacios from "$lib/dtos/espacios/DTOBusquedaMisEspacios";
+import type DTOResultadoBusquedaMisEspacios from "$lib/dtos/espacios/DTOResultadoBusquedaMisEspacios";
 
 
 export const EspaciosService = {
@@ -59,5 +61,10 @@ export const EspaciosService = {
         let response : {id: number, nombre: string, checked: boolean | undefined}[] = await request(HttpRequestType.GET, "espacios/obtenerTiposEspacio", false);
 
         return response;
-    }
+    },
+    buscarMisEspacios: async (data: DTOBusquedaMisEspacios) => {
+        let response : DTOResultadoBusquedaMisEspacios[] = await request(HttpRequestType.PUT, "espacios/buscarMisEspacios", false, null, JSON.stringify(data));
+
+        return response;
+    },
 }
