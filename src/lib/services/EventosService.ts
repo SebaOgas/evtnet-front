@@ -1,5 +1,6 @@
 import type DTOBusquedaEventos from "$lib/dtos/eventos/DTOBusquedaEventos";
 import type DTOBusquedaMisEventos from "$lib/dtos/eventos/DTOBusquedaMisEventos";
+import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
 import type DTOResultadoBusquedaEventos from "$lib/dtos/eventos/DTOResultadoBusquedaEventos";
 import type DTOResultadoBusquedaMisEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisEventos";
 import { HttpRequestType, request } from "$lib/request/request";
@@ -15,4 +16,12 @@ export const EventosService = {
 
         return response;
     },
+    obtenerEvento: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : DTOEvento = await request(HttpRequestType.GET, "eventos/obtenerEvento", true, args);
+
+        return response;
+    }
 }
