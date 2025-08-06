@@ -1,5 +1,7 @@
 import type DTOBusquedaEventos from "$lib/dtos/eventos/DTOBusquedaEventos";
 import type DTOBusquedaMisEventos from "$lib/dtos/eventos/DTOBusquedaMisEventos";
+import type DTOCrearEvento from "$lib/dtos/eventos/DTOCrearEvento";
+import type DTODatosCreacionEvento from "$lib/dtos/eventos/DTODatosCreacionEvento";
 import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
 import type DTOResultadoBusquedaEventos from "$lib/dtos/eventos/DTOResultadoBusquedaEventos";
 import type DTOResultadoBusquedaMisEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisEventos";
@@ -23,5 +25,18 @@ export const EventosService = {
         let response : DTOEvento = await request(HttpRequestType.GET, "eventos/obtenerEvento", true, args);
 
         return response;
+    },
+    obtenerDatosCreacionEvento: async (idEspacio: number | null) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio === null ? "null" : idEspacio}`);
+
+        let response : DTODatosCreacionEvento = await request(HttpRequestType.GET, "eventos/obtenerDatosCreacionEvento", true, args);
+
+        return response;
+    },
+    crearEvento: async (data: DTOCrearEvento) => {
+        let response : {id: number} = await request(HttpRequestType.POST, "eventos/crearEvento", true, null, JSON.stringify(data));
+
+        return response.id;
     }
 }
