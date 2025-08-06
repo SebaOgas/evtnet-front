@@ -12,16 +12,18 @@
 
     export let maxHeight : number = 4;
 
-    export let options : Map<number, string> = new Map<number, string>();
+    export let options : Map<any, string> = new Map<any, string>();
     
     export let change : () => void = () => {}
 
-    export let selected : number | undefined = undefined;
+    export let classes : string = "";
+
+    export let selected : any | undefined = undefined;
     $: selectedText = "";
     
     $: selOptPopup = new Map<number, string>();
 
-    function select(val: number, txt: string) {
+    function select(val: any, txt: string) {
         selected = val;
         selectedText = txt;
         selOptPopup.clear();
@@ -46,7 +48,7 @@
             if (lab === undefined) {
                 selected = undefined;
                 return;
-            }
+            }            
             select(selected, lab);
         }
     })
@@ -56,7 +58,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
+<div class="{classes} combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
     <div class="value w-full">
         {#if selected === undefined}
             <span class="ph p-1 text-dark">{placeholder}</span>

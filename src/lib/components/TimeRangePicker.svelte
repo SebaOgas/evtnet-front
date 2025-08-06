@@ -1,3 +1,11 @@
+<script lang="ts" context="module">
+    export const parseTime = (time: string) => {
+        const hora = new Date();
+        const [horaInicioH, horaInicioM] = time.split(':');
+        hora.setHours(parseInt(horaInicioH), parseInt(horaInicioM), 0, 0);
+        return hora;
+    };
+</script>
 <script lang="ts">
     /**
      * Custom TimeRangePicker Component
@@ -11,7 +19,6 @@
     export let startTime: string | null = null;
     export let endTime: string | null = null;
     export let classes: string = "";
-    export let width: string = "350px";
     export let disabled: boolean = false;
     export let disableLinearDisplay: boolean = false;
 
@@ -56,7 +63,7 @@
         <span>{label}</span>
     {/if}
     
-    <div class="time-range-picker border flex flex-row items-center {disabled ? 'disabled' : ''}" style="width: {width};">
+    <div class="time-range-picker border flex flex-row items-center {disabled ? 'disabled' : ''}">
         <input 
             type="time" 
             {disabled}

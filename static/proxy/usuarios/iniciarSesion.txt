@@ -24,7 +24,11 @@ RESPONSE BODY
         "VisionEspacios",
         "CreacionEspaciosPrivados",
         "AdministracionEspaciosPrivados",
-        "AdministracionEspaciosPublicos"
+        "AdministracionEspaciosPublicos",
+        "InscripcionEventos",
+        "VisionEventos",
+        "OrganizacionEventos",
+        "AdministracionEventos"
     ],
     "username": "usuario"
 }

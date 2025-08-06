@@ -80,11 +80,11 @@
 
 
 
-<label class="{classes} flex flex-col gap-2 mt-2 mb-2" for="inputfile">
+<label class="{classes} flex flex-col md:items-center gap-2 md:flex-row mt-2 mb-2" for="inputfile">
     {#if label !== null}
         <span>{label}</span>
     {/if}
-    <div class="flex flex-row justify-between items-center flex-wrap">
+    <div class="flex flex-row justify-between items-center flex-wrap gap-2">
         <span>{filename}</span>
         <Button action={openInput}>Seleccionar</Button>
     </div>

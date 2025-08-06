@@ -171,10 +171,10 @@
                         <span class="text-s">{r.nombre}</span>
                         <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${r.id}`)}} classes="shrink-0"></Button>
                     </div>
-                    <div class="flex justify-between items-center text-xs">
+                    <div class="flex justify-between items-center text-xs ml-4">
                         {r.tipo}
                     </div>
-                    <div class="commaList text-xs">
+                    <div class="commaList text-xs ml-4">
                         {#each r.disciplinas as d}
                             <span>{d}</span>
                         {/each}

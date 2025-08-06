@@ -163,7 +163,7 @@
 
         <TimeRangePicker bind:startTime={s2} bind:endTime={e2} disabled={true} />
 
-        <TimeRangePicker bind:startTime={s3} bind:endTime={e3} width="500px" />
+        <TimeRangePicker bind:startTime={s3} bind:endTime={e3} />
 
         <TimeRangePicker bind:startTime={s4} bind:endTime={e4} validate={validateTime} />
 

@@ -28,7 +28,6 @@
     export let time : boolean = false;
 
     export let classes : string = "";
-    export let width : string = "350px";
     
     export let disabled : boolean = false
     
@@ -198,12 +197,12 @@
 </script>
 
 <label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"}">
-    {#if label !== null}
+    {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
     {#if !range}
         <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} {enabledDates}>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
                 <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -212,7 +211,7 @@
         </DatePicker>
     {:else}
         <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange {enabledDates}>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
                 <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
