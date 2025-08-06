@@ -422,7 +422,7 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
 </div>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para administrar cronogramas.
+	No tiene permiso para ver eventos.
 </PopupError>
 
 <PopupError bind:visible={errorGenericoVisible}>

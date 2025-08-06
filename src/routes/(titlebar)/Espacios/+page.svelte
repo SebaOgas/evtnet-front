@@ -190,7 +190,7 @@
 </div>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para administrar cronogramas.
+	No tiene permiso para ver espacios.
 </PopupError>
 
 <PopupError bind:visible={errorGenericoVisible}>
