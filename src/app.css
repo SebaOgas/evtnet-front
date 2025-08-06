@@ -61,3 +61,17 @@ a {
 	text-decoration: underline;
 	color: var(--color-dark)
 }
+
+.commaList>*:not(:last-child)::after {
+	content: ", ";
+}
+
+.rangeSlider {  
+	--slider-light-bg: var(--color-dark);
+	--slider-light-fg: var(--color-light);
+	--slider-light-base: var(--color-light);
+	--slider-light-base-100: var(--color-dark);
+	--slider-light-accent: var(--color-light);
+	--slider-light-accent-100: var(--color-light);
+	--slider-light-accent-text: var(--color-white);
+}

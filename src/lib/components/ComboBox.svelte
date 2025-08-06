@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import PopupSeleccion from "./PopupSeleccion.svelte";
 
     export let placeholder: string = "";
@@ -11,19 +12,24 @@
 
     export let maxHeight : number = 4;
 
-    export let options : Map<number, string> = new Map<number, string>();
+    export let options : Map<any, string> = new Map<any, string>();
+    
+    export let change : () => void = () => {}
 
-    export let selected : number | undefined = undefined;
+    export let classes : string = "";
+
+    export let selected : any | undefined = undefined;
     $: selectedText = "";
     
     $: selOptPopup = new Map<number, string>();
 
-    function select(val: number, txt: string) {
+    function select(val: any, txt: string) {
         selected = val;
         selectedText = txt;
         selOptPopup.clear();
         selOptPopup.set(val, txt);
         selOptPopup = new Map(selOptPopup);
+        change();
     }
 
     async function searchPopup(val: string) {
@@ -36,12 +42,23 @@
             select(entry[0], entry[1]);
     })();
 
+    onMount(() => {
+        if (selected !== undefined) {
+            let lab = options.get(selected);
+            if (lab === undefined) {
+                selected = undefined;
+                return;
+            }            
+            select(selected, lab);
+        }
+    })
+
 </script>
 
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
+<div class="{classes} combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
     <div class="value w-full">
         {#if selected === undefined}
             <span class="ph p-1 text-dark">{placeholder}</span>
@@ -61,7 +78,7 @@
             </div>
         {/if}
     </div>
-    <img src="icons/comboboxarrow.svg" alt="Desplegar" style="{shown ? "transform: rotate(-90deg)" : ""}" />
+    <img src="/icons/comboboxarrow.svg" alt="Desplegar" style="{shown ? "transform: rotate(-90deg)" : ""}" />
 </div>
 
 

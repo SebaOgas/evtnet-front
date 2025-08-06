@@ -1,0 +1,22 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "A",
+    "descripcion": "B",
+    "direccion": "C",
+    "latitud": 1234,
+    "longitud": 1234,
+    "disciplinas": [0,1,2,3]
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0
+}

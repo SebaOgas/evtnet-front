@@ -19,6 +19,8 @@
 
     export let disableLinearDisplay : boolean = false;
 
+    export let forceValidate : boolean = false;
+
     //Para textarea
     export let multiline : boolean = false
     export let resize : boolean = false
@@ -45,11 +47,18 @@
         if (event.key === "Enter")
             action();
     }
+
+    $: (() => {
+        if (forceValidate) {
+            validar();
+        }
+    })()
+
 </script>
 
 
 <label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"} mt-2 mb-2">
-    {#if label !== null}
+    {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
     {#if !multiline}

@@ -1,0 +1,49 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idCronograma: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Nombre del Espacio",
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753326458732,
+    "excepciones": [
+        {
+            "id": 0,
+            "fechaHoraDesde": 1753225458732,
+            "fechaHoraHasta": 1753226458732,
+            "tipo": "Completa",
+            "hayEventosProgramados": false
+        },
+        {
+            "id": 1,
+            "fechaHoraDesde": 1753225458732,
+            "fechaHoraHasta": 1753226458732,
+            "tipo": "Completa",
+            "hayEventosProgramados": false
+        },
+        {
+            "id": 2,
+            "fechaHoraDesde": 1753225458732,
+            "fechaHoraHasta": 1753226458732,
+            "tipo": "Externa",
+            "hayEventosProgramados": true
+        },
+        {
+            "id": 3,
+            "fechaHoraDesde": 1753225458732,
+            "fechaHoraHasta": 1753226458732,
+            "tipo": "Externa",
+            "hayEventosProgramados": false
+        }
+    ]
+}

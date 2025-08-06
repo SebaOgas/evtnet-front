@@ -1,0 +1,20 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idEspacio": 0,
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753226458732,
+    "diasHaciaAdelante": 10
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 8
+}

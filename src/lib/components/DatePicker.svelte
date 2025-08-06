@@ -12,6 +12,7 @@
 <script lang="ts">
     import { DatePicker } from "@svelte-plugins/datepicker";
 	import Warning from "./Warning.svelte";
+	import { onMount } from "svelte";
 
     export let label : string | null = "Label";
 
@@ -27,22 +28,43 @@
     export let time : boolean = false;
 
     export let classes : string = "";
-    export let width : string = "350px";
     
     export let disabled : boolean = false
     
     export let disableLinearDisplay : boolean = false;
 
+    export let minDate : Date | number | null = null;
+    export let maxDate : Date | number | null = null;
+
+    $: enabledDates = [] as string[]
+
+    onMount(() => {
+        let from = ""
+        if (minDate !== null) {
+            from = new Date(minDate).toLocaleDateString("en-US");
+        } else {
+            let d = new Date()
+            d.setFullYear(d.getFullYear() - 10)
+            from = d.toLocaleDateString("en-US");
+        }
+
+        let to = ""
+        if (maxDate !== null) {
+            to = new Date(maxDate).toLocaleDateString("en-US");
+        } else {
+            let d = new Date()
+            d.setFullYear(d.getFullYear() + 10)
+            to = d.toLocaleDateString("en-US");
+        }
+
+        enabledDates = [`${from}:${to}`]              
+    })
+    
     $: isOpen = false;
 
     const toggleDatePicker = () => {
         isOpen = !isOpen;
     };
-
-    let formattedValue : string = "";
-    let formattedStartDate : string = "";
-    let formattedEndDate : string = "";
-    let formattedDateRange : string = "";
 
     $: formattedValue = formatDate(value, time);
     $: formattedStartDate = formatDate(startDate, time);
@@ -71,8 +93,29 @@
     $: valido = true;
     $: razonInvalidez = "";
 
+    function validarMinMax() {
+        if (!range) {
+            if (value !== null) {
+                if (minDate !== null && value < minDate) value = new Date(minDate);
+                if (maxDate !== null && value > maxDate) value = new Date(maxDate);
+            }
+        } else {
+            if (startDate !== null) {
+                if (minDate !== null && startDate < minDate) startDate = new Date(minDate);
+                if (maxDate !== null && startDate > maxDate) startDate = new Date(maxDate);
+            }
+            if (endDate !== null) {
+                if (minDate !== null && endDate < minDate) endDate = new Date(minDate);
+                if (maxDate !== null && endDate > maxDate) endDate = new Date(maxDate);
+            }
+            if (startDate !== null && endDate !== null) {
+                if (endDate < startDate) endDate = startDate;
+            }
+        }
+    }
 
-    $: (() => {
+    function validar() {
+        validarMinMax();
         let result;
         if (!range) {
             result = validate(value, null);
@@ -86,7 +129,16 @@
         } else {
             razonInvalidez = result.reason;
         }
+    }
+
+
+    $: (() => {
+        value;
+        startDate;
+        endDate;
+        validar()
     })()
+
 
     function parseDate(dateString: string): Date | null {
         if (!dateString.trim()) return null;
@@ -121,6 +173,8 @@
         const parsed = parseDate(target.value);
         if (parsed) {
             value = parsed;
+        } else {
+            value = null;
         }
     }
 
@@ -134,30 +188,34 @@
             
             if (start) startDate = start;
             if (end) endDate = end;
+        } else {
+            startDate = null;
+            endDate = null;
         }
     }
     
 </script>
 
 <label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"}">
-    {#if label !== null}
+    {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
     {#if !range}
-        <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time}>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
+        <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} {enabledDates}>
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
                 <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                <img src="icons/calendar.svg" alt="Calendario">
+                <img src="/icons/calendar.svg" alt="Calendario">
             </div>
         </DatePicker>
     {:else}
-        <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange>
-            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center" style="width: {width};">
-                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange {enabledDates}>
+            <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
+                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                <img src="icons/calendar.svg" alt="Calendario">
+                <img src="/icons/calendar.svg" alt="Calendario">
             </div>
         </DatePicker>
     {/if}

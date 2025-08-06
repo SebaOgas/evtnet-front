@@ -1,0 +1,28 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+text: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Individual"
+    },
+    {
+        "id": 1,
+        "nombre": "Por Equipos"
+    },
+    {
+        "id": 2,
+        "nombre": "Cooperativo"
+    }
+]

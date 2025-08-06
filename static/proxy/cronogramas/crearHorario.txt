@@ -1,0 +1,17 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idCronograma": 0,
+    "diaSemana": 3,
+    "horaDesde": 1753225458732,
+    "horaHasta": 1753226458732,
+    "precio": 10000.00
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

@@ -26,7 +26,7 @@
     }
 </script>
 
-<button {disabled} bind:this={button} on:click={click} class="{classes} bg-light text-white rounded-lg p-1 flex items-center justify-center gap-1 cursor-pointer w-fit disabled:cursor-not-allowed">
+<button {disabled} bind:this={button} on:click={click} class="{classes} bg-light text-white rounded-lg p-1 flex items-center justify-center gap-1 cursor-pointer w-fit disabled:cursor-not-allowed {icon !== null && icon !== undefined ? "shrink-0" : ""}">
     {#if icon !== null && icon !== undefined}
         <img src={icon} alt="Ícono" class="object-contain">
     {/if}

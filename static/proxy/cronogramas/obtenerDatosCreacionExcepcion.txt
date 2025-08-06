@@ -1,0 +1,29 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idCronograma: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Nombre del espacio",
+    "fechaDesde": 1753321019975,
+    "fechaHasta": 1755321019975,
+    "tiposExcepcion": [
+        {
+            "id": 0,
+            "nombre": "Completa"
+        },
+        {
+            "id": 1,
+            "nombre": "Externa"
+        }
+    ]
+}

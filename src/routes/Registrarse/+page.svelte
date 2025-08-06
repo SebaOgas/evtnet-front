@@ -242,7 +242,7 @@
         <TextField label="Nombre de usuario" bind:value={data.username} classes="w-full" validate={validateUsername} disableLinearDisplay max={50}/>
         <Warning text="No disponible, pruebe con otro" visible={usernameValid && !usernameDisponible}/>
         <TextField label="DNI N.°" bind:value={data.dni} classes="w-full" validate={validateDNI} disableLinearDisplay min={8} max={9}/>
-        <DatePicker label="Fecha de nacimiento" bind:value={data.fechaNacimiento} classes="w-full" validate={validateFechaNacimiento} disableLinearDisplay width="100%"/>
+        <DatePicker label="Fecha de nacimiento" bind:value={data.fechaNacimiento} classes="w-full" validate={validateFechaNacimiento} disableLinearDisplay/>
         <TextField label="Correo electrónico" bind:value={data.mail} placeholder="mail@example.com" classes="w-full" validate={validateMail} disableLinearDisplay max={200}/>
         <TextField label="Contraseña" bind:value={data.password} classes="w-full" isPassword validate={validatePassword} disableLinearDisplay max={50}/>
         <div class="text-left w-full">

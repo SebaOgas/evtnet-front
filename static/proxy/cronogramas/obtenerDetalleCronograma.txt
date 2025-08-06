@@ -1,0 +1,56 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idCronograma: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Nombre del Espacio",
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753326458732,
+    "horarios": [
+        {
+            "id": 0,
+            "diaSemana": 0, 
+            "horaDesde": 1753225458732,
+            "horaHasta": 1753226458732,
+            "precioOrganizacion": 12000.50
+        },
+        {
+            "id": 1,
+            "diaSemana": 2, 
+            "horaDesde": 1753225458732,
+            "horaHasta": 1753226458732,
+            "precioOrganizacion": 10000
+        },
+        {
+            "id": 2,
+            "diaSemana": 3, 
+            "horaDesde": 1753225458732,
+            "horaHasta": 1753227458732,
+            "precioOrganizacion": 0.01
+        },
+        {
+            "id": 3,
+            "diaSemana": 5, 
+            "horaDesde": 1753226458732,
+            "horaHasta": 1753228458732,
+            "precioOrganizacion": 100000
+        },
+        {
+            "id": 4,
+            "diaSemana": 6, 
+            "horaDesde": 1753220458732,
+            "horaHasta": 1753223468732,
+            "precioOrganizacion": 5000
+        }
+    ]
+}

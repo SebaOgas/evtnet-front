@@ -1,0 +1,16 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idCronograma": 0,
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753226458732,
+    "tipoExcepcion": 0
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

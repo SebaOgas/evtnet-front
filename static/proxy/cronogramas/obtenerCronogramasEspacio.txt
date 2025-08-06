@@ -1,0 +1,37 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombre": "Nombre del espacio",
+    "cronogramas": [
+        {
+            "id": 0,
+            "fechaDesde": 1753225458732,
+            "fechaHasta": 1753326458732,
+            "diasHaciaAdelante": 10
+        },
+        {
+            "id": 1,
+            "fechaDesde": 1753326458732,
+            "fechaHasta": 1783326458732,
+            "diasHaciaAdelante": 5
+        },
+        {
+            "id": 2,
+            "fechaDesde": 1783326458732,
+            "fechaHasta": 1813326458732,
+            "diasHaciaAdelante": 7
+        }
+    ]
+}
