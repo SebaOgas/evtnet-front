@@ -13,6 +13,7 @@
 	import type DTOCrearEvento from "$lib/dtos/eventos/DTOCrearEvento";
 	import type DTODatosCreacionEvento from "$lib/dtos/eventos/DTODatosCreacionEvento";
 	import { HttpError } from "$lib/request/request";
+	import { CronogramaService } from "$lib/services/CronogramaService";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EventosService } from "$lib/services/EventosService";
 	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
@@ -39,7 +40,9 @@
 
 		try {
 			datosCreacion = await EventosService.obtenerDatosCreacionEvento(esEspacioNoRegistrado ? null : espacioId);
-		} catch (e) {
+            fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + datosCreacion.diasHaciaAdelante - 1)
+
+        } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
 				errorVisible = true;
@@ -75,6 +78,7 @@
 	$: warningUbicacionVisible = false;
 	$: warningPrecioVisible = false;
 	$: warningMaxParticipantesVisible = false;
+	$: warningHorarioVisible = false;
 
 	// Error handling
 	$: error = "";
@@ -203,6 +207,7 @@
 		warningUbicacionVisible = false;
 		warningPrecioVisible = false;
 		warningMaxParticipantesVisible = false;
+		warningHorarioVisible = false;
 
 		let hasErrors = false;
 
@@ -227,10 +232,15 @@
 			hasErrors = true;
 		}
 
-		if (data.maxParticipantes < 2) {
+		if (!validateMaxParticipantes(maxParticipantesString).valid) {
 			warningMaxParticipantesVisible = true;
 			hasErrors = true;
 		}
+
+        if (!datosCreacion?.espacioPublico && data.usarCronograma && !horarioSeleccionado) {
+            warningHorarioVisible = true;
+			hasErrors = true;
+        }
 
 		if (hasErrors) {
 			return;
@@ -254,7 +264,6 @@
 				error = e.message;
 				errorVisible = true;
 			}
-            console.log(e);
 		}
 	}
   
@@ -265,7 +274,103 @@
 
 	// Convert maxParticipantes to string for TextField  
 	let maxParticipantesString = "2";
+    $: data.maxParticipantes = parseInt(maxParticipantesString) || 2
+
+
+
+    //Gestión del espacio
+    $: popupHorarioVisible = false;
+    $: fechaBusquedaHorarios = new Date();
+    let fechaMaxBusquedaHorarios = new Date();
+
+    $: horarios = [] as {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[];
+
+    async function buscarHorarios() {
+        try {
+            horarios = await CronogramaService.buscarHorariosDisponibles(espacioId, fechaBusquedaHorarios);
+            selectedHorarioId = null;
+        } catch (e) {
+            if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+        }
+    }
+
+    function formatTime(time: Date) {
+        time = new Date(time);
+        return ("" + time.getHours()).padStart(2, "0") + ":" + ("" + time.getMinutes()).padStart(2, "0");
+    }
+
+    $: selectedHorarioId = null as number | null;
+    $: precioOrganizacion = 0;
+    $: horarioSeleccionado = false;
+
+    function openPopupHorario() {
+        popupHorarioVisible = true;
+        buscarHorarios();
+    }
+
+    function closePopupHorario() {
+        popupHorarioVisible = false;
+        selectedHorarioId = null;
+        horarios = [];
+    }
+
+    function aceptarPopupHorario() {
+        popupHorarioVisible = false;
+
+        if (selectedHorarioId !== null) {
+            horarios.forEach(h => {
+                if (h.id === selectedHorarioId) {
+                    data.fechaDesde =  h.fechaHoraDesde
+                    data.fechaHasta =  h.fechaHoraHasta
+                    precioOrganizacion = h.precioOrganizacion;
+                }
+            })
+        }
+        warningHorarioVisible = false;
+        horarioSeleccionado = true;
+    }
+
 </script>
+
+<Popup
+    title="Seleccionar horario"
+    bind:visible={popupHorarioVisible}
+    fitW
+>
+    <div class="grow overflow-y-auto">
+        <div class="flex items-center w-fit gap-2">
+            <DatePicker minDate={new Date()} maxDate={fechaMaxBusquedaHorarios} bind:value={fechaBusquedaHorarios} label=""/>
+            <Button action={buscarHorarios}>Buscar</Button>
+        </div>
+        {#if horarios.length > 0}
+            <div>
+                <span>Horarios:</span>
+                <div class="flex flex-col mt-2">
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+                    {#each horarios as h}
+                        <!-- svelte-ignore a11y_click_events_have_key_events -->
+                        <div class="item flex shrink gap-2 cursor-pointer hover:text-dark" on:click={() => {selectedHorarioId = h.id}}>
+                            <span data-value={h.id}>{formatTime(h.fechaHoraDesde)} - {formatTime(h.fechaHoraHasta)}</span>
+                            {#if selectedHorarioId === h.id}
+                                <span class="checkContainer">
+                                    <img src={"/icons/check.png"} alt="Seleccionado" class="object-contain">
+                                </span>
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            </div>
+        {/if}
+        <Warning visible={horarios.length === 0} text="No hay horarios disponibles para el día seleccionado. Intente en otro."/>
+    </div>
+    <div class="flex gap-2 h-fit p-2 justify-center items-center">
+        <Button action={closePopupHorario}>Cancelar</Button>
+        <Button action={aceptarPopupHorario} disabled={selectedHorarioId === null}>Aceptar</Button>
+    </div>
+</Popup>
 
 <PopupSeleccion 
 	title="Seleccionar disciplinas" 
@@ -282,6 +387,7 @@
 	searchFunction={buscarModos} 
 	bind:selected={modosSeleccionados}
 />
+
 
 {#if datosCreacion}
 <div id="content">
@@ -358,16 +464,19 @@
         {:else if !datosCreacion?.espacioPublico && data.usarCronograma}
             <!--Privado con cronograma-->
             <div class="md:flex justify-start items-center">
-                <span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs">Cambiar</Button></span>
-                <div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
-                    <div>{formatDate(data.fechaDesde, true)}</div>
-                    <div>a</div>
-                    <div>{formatDate(data.fechaHasta, true)}</div>
-                </div>
-                {#if !datosCreacion?.administrador}
-                    <span>Cuota por organización: <!--TO-DO--></span>
+                <span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs" action={openPopupHorario}>Cambiar</Button></span>
+                {#if horarioSeleccionado}
+                    <div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
+                        <div>{formatDate(data.fechaDesde, true)}</div>
+                        <div>a</div>
+                        <div>{formatDate(data.fechaHasta, true)}</div>
+                    </div>
+                    {#if !datosCreacion?.administrador}
+                        <span>Cuota por organización: {precioOrganizacion}</span>
+                    {/if}
                 {/if}
             </div>
+            <Warning visible={warningHorarioVisible} text="Es obligatorio seleccionar el horario"/>
         {:else if !datosCreacion?.espacioPublico && !data.usarCronograma && datosCreacion?.administrador}
             <!--Privado sin cronograma-->
             <div>
@@ -434,7 +543,6 @@
 			bind:value={maxParticipantesString} 
 			validate={validateMaxParticipantes} 
 			forceValidate={warningMaxParticipantesVisible}
-			change={() => data.maxParticipantes = parseInt(maxParticipantesString) || 2}
 		/>
 	</div>
 
@@ -457,7 +565,16 @@
 </Popup>
 
 <style>
-	.commaList>*:not(:last-child)::after {
-		content: ", ";
-	}
+    .checkContainer {
+        height: 23px;
+        width: 23px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .checkContainer img {
+        filter: drop-shadow(-100vw 0 0 var(--color-light));
+        transform: translateX(100vw);
+        user-select: none;
+    }
 </style>

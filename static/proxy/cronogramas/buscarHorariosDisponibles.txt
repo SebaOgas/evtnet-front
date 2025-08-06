@@ -1,0 +1,47 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int
+dia: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "fechaHoraDesde": 1753225458732,
+        "fechaHoraHasta": 1753226458732,
+        "precioOrganizacion": 12000.50
+    },
+    {
+        "id": 1,
+        "fechaHoraDesde": 1753225458732,
+        "fechaHoraHasta": 1753226458732,
+        "precioOrganizacion": 10000
+    },
+    {
+        "id": 2,
+        "fechaHoraDesde": 1753225458732,
+        "fechaHoraHasta": 1753227458732,
+        "precioOrganizacion": 0.01
+    },
+    {
+        "id": 3,
+        "fechaHoraDesde": 1753226458732,
+        "fechaHoraHasta": 1753228458732,
+        "precioOrganizacion": 100000
+    },
+    {
+        "id": 4,
+        "fechaHoraDesde": 1753220458732,
+        "fechaHoraHasta": 1753223468732,
+        "precioOrganizacion": 5000
+    }
+]

@@ -47,8 +47,8 @@ export const CronogramaService = {
     verificarVigencia: async (idEspacio: number, fechaDesde: Date, fechaHasta: Date) => {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
-        args.set("fechaDesde", `${fechaDesde}`);
-        args.set("fechaHasta", `${fechaHasta}`);
+        args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
+        args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
 
         let response : DTOVerificacionVigencia = await request(HttpRequestType.GET, "cronogramas/verificarVigencia", true, args);
 
@@ -62,8 +62,8 @@ export const CronogramaService = {
     ) => {
         let data = {
             idEspacio: idEspacio,
-            fechaDesde: fechaDesde,
-            fechaHasta: fechaHasta,
+            fechaDesde: (new Date(fechaDesde)).getTime(),
+            fechaHasta: (new Date(fechaHasta)).getTime(),
             diasHaciaAdelante: diasHaciaAdelante
         }
 
@@ -89,8 +89,8 @@ export const CronogramaService = {
         let data = {
             idCronograma: idCronograma,
             diaSemana: diaSemana,
-            horaDesde: horaDesde,
-            horaHasta: horaHasta,
+            horaDesde: (new Date(horaDesde)).getTime(),
+            horaHasta: (new Date(horaHasta)).getTime(),
             precio: precio
         }
 
@@ -112,11 +112,20 @@ export const CronogramaService = {
     ) => {
         let data = {
             idCronograma: idCronograma,
-            fechaDesde: fechaDesde,
-            fechaHasta: fechaHasta,
+            fechaDesde: (new Date(fechaDesde)).getTime(),
+            fechaHasta: (new Date(fechaHasta)).getTime(),
             tipoExcepcion: tipoExcepcion
         }
 
         await request(HttpRequestType.POST, "cronogramas/crearExcepcion", true, null, JSON.stringify(data));
     },
+    buscarHorariosDisponibles: async (idEspacio: number, dia: Date) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("dia", `${"" + (new Date(dia)).getTime()}`);
+
+        let response : {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[] = await request(HttpRequestType.GET, "cronogramas/buscarHorariosDisponibles", true, args);
+
+        return response;
+    }
 }
