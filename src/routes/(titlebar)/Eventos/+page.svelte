@@ -408,7 +408,7 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
                             <span>Superevento</span>
                         </div>
                         <div class="flex justify-between items-center text-xs ml-4">
-                            <span class="text-s">{formatDate(new Date(r.fechaHoraProximoEvento), true)}</span>
+                            <span class="text-s">Próximo evento: {formatDate(new Date(r.fechaHoraProximoEvento), true)}</span>
                         </div>
                     {/if}
 
