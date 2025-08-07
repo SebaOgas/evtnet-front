@@ -127,5 +127,13 @@ export const CronogramaService = {
         let response : {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[] = await request(HttpRequestType.GET, "cronogramas/buscarHorariosDisponibles", true, args);
 
         return response;
+    },
+    obtenerPeriodosLibres: async (idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+
+        let response : {fechaHoraDesde: Date, fechaHoraHasta: Date | null}[] = await request(HttpRequestType.GET, "cronogramas/obtenerPeriodosLibres", true, args);
+
+        return response;
     }
 }

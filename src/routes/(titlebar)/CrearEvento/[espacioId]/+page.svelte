@@ -41,7 +41,22 @@
 		try {
 			datosCreacion = await EventosService.obtenerDatosCreacionEvento(esEspacioNoRegistrado ? null : espacioId);
             fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + datosCreacion.diasHaciaAdelante - 1)
-
+            
+            // Cargar periodos libres, para cuando se organiza de forma libre
+            if (datosCreacion.administrador) {
+                let periodosLibresTmp = await CronogramaService.obtenerPeriodosLibres(espacioId);
+                let ix = 0;
+                periodosLibresTmp.forEach((item) => {
+                    let formatted = formatDate(item.fechaHoraDesde, true) + " - " + formatDate(item.fechaHoraHasta, true);
+                    periodosLibres.cb.set(ix, formatted);
+                    periodosLibres.map.set(ix, {
+                        desde: item.fechaHoraDesde,
+                        hasta: item.fechaHoraHasta
+                    })
+                    ix++;
+                });
+                periodosLibres = {...periodosLibres}
+            }
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -55,8 +70,8 @@
 		descripcion: "",
 		idEspacio: null,
 		usarCronograma: true,
-		fechaDesde: new Date(),
-		fechaHasta: new Date(),
+		fechaDesde: null,
+		fechaHasta: null,
 		horarioId: -1,
 		disciplinas: [],
 		direccion: "",
@@ -278,7 +293,7 @@
 
 
 
-    //Gestión del espacio
+    //Espacio privado con cronograma
     $: popupHorarioVisible = false;
     $: fechaBusquedaHorarios = new Date();
     let fechaMaxBusquedaHorarios = new Date();
@@ -333,6 +348,18 @@
         horarioSeleccionado = true;
     }
 
+
+    // Espacio privado sin cronograma
+    
+    $: periodosLibres = {
+        cb: new Map<number, string>(),
+        map:new Map<number, {desde: Date, hasta: Date | null}>()
+    };
+    $: selectedPeriodoLibre = null as number | null;
+    $: selectedPeriodoLibreData = selectedPeriodoLibre !== null ? periodosLibres.map.get(selectedPeriodoLibre) : undefined;
+
+    $: periodoLibreMinDate = selectedPeriodoLibreData !== undefined ? Math.max((new Date()).getTime(), (new Date(selectedPeriodoLibreData.desde)).getTime()) : new Date();
+    $: periodoLibreMaxDate = selectedPeriodoLibreData !== undefined ? (selectedPeriodoLibreData.hasta !== null ? (new Date(selectedPeriodoLibreData.hasta)).getTime() : null) : new Date();
 </script>
 
 <Popup
@@ -483,12 +510,22 @@
                 <span>Periodo</span>
                 <!--TO-DO-->
                 <ComboBox 
-                    options={tiposInscripcionOptions} 
-                    bind:selected={data.tipoInscripcion} 
-                    placeholder=""
+                    options={periodosLibres.cb} 
+                    bind:selected={selectedPeriodoLibre}
+                    placeholder="Seleccione el periodo"
                 />
             </div>
-            <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
+            {#if selectedPeriodoLibreData !== undefined}
+                <DatePicker 
+                    range 
+                    time 
+                    minDate={periodoLibreMinDate} 
+                    maxDate={periodoLibreMaxDate} 
+                    bind:startDate={data.fechaDesde} 
+                    bind:endDate={data.fechaHasta} 
+                    label="Fecha y Hora"
+                />
+		    {/if}
 		{/if}
 
 		<div class="mb-2">

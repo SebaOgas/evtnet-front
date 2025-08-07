@@ -7,8 +7,9 @@ export default interface DTOCrearEvento {
 
     //Todos los espacios
     //Con cronograma, verificar en back-end que el Horario (horarioId) coincida en horas con fechaDesde y Hasta
-    fechaDesde: Date,
-    fechaHasta: Date,
+    //null solo para el front, el back siempre recibe una Date
+    fechaDesde: Date | null,
+    fechaHasta: Date | null,
 
     //Espacio privado con cronograma
     horarioId: number,
