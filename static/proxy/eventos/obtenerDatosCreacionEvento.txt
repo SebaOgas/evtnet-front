@@ -32,7 +32,7 @@ RESPONSE BODY
 
     "comisionInscripcion": 0.1,
 
-    "espacioPublico": true,
-    "administrador": null,
+    "espacioPublico": false,
+    "administrador": true,
     "diasHaciaAdelante": 10
 }

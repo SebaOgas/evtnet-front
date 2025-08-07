@@ -1,5 +1,5 @@
 export default interface DTODatosCreacionEvento {
-    nombreEspacio: string,
+    nombreEspacio: string | null,
 
     tiposInscripcion: {
         id: number,

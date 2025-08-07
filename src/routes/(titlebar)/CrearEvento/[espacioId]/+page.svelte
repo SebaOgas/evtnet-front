@@ -40,6 +40,11 @@
 
 		try {
 			datosCreacion = await EventosService.obtenerDatosCreacionEvento(esEspacioNoRegistrado ? null : espacioId);
+            
+            if (datosCreacion.tiposInscripcion.length > 0) {
+                data.tipoInscripcion = datosCreacion.tiposInscripcion[0].id
+            }
+            
             fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + datosCreacion.diasHaciaAdelante - 1)
             
             // Cargar periodos libres, para cuando se organiza de forma libre
@@ -223,6 +228,7 @@
 		warningPrecioVisible = false;
 		warningMaxParticipantesVisible = false;
 		warningHorarioVisible = false;
+        warningFechaHoraVisible = false;
 
 		let hasErrors = false;
 
@@ -252,12 +258,17 @@
 			hasErrors = true;
 		}
 
-        if (!datosCreacion?.espacioPublico && data.usarCronograma && !horarioSeleccionado) {
+        if (!esEspacioNoRegistrado && !datosCreacion?.espacioPublico && data.usarCronograma && !horarioSeleccionado) {
             warningHorarioVisible = true;
 			hasErrors = true;
         }
 
-		if (hasErrors) {
+        if ((esEspacioNoRegistrado || datosCreacion?.espacioPublico || !datosCreacion?.espacioPublico && !data.usarCronograma ) && (data.fechaDesde === null || data.fechaHasta === null)) {
+            warningFechaHoraVisible = true;
+            hasErrors = true;
+        }
+
+		if (hasErrors) {           
 			return;
 		}
 
@@ -374,7 +385,7 @@
 
     $: (async () => {
         try {
-            if (data.fechaDesde !== null && data.fechaHasta !== null) {
+            if (data.fechaDesde !== null && data.fechaHasta !== null && datosCreacion?.espacioPublico && espacioId === -1) {
                 eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(espacioId, data.fechaDesde, data.fechaHasta);
             }
         } catch (e) {
@@ -492,11 +503,14 @@
 		{#if datosCreacion?.espacioPublico}
             <!--Público-->
             <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
+            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
             {#if eventosSuperpuestos !== null}
                 <span>Hay {eventosSuperpuestos} eventos organizados en este espacio para este horario</span>
             {/if}
         {:else if esEspacioNoRegistrado}
             <!--No registrado-->
+            <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
+            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
             <TextField 
 				label="Dirección" 
 				bind:value={data.direccion} 
@@ -552,6 +566,7 @@
                     label="Fecha y Hora"
                 />
 		    {/if}
+            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
 		{/if}
 
 		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
