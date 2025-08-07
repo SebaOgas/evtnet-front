@@ -291,7 +291,14 @@
 	let maxParticipantesString = "2";
     $: data.maxParticipantes = parseInt(maxParticipantesString) || 2
 
-
+    function toggleUsarCronograma(usar: boolean) {
+        if (data.usarCronograma !== usar) {
+            data.fechaDesde = null;
+            data.fechaHasta = null;
+            horarioSeleccionado = false;
+        }
+        data.usarCronograma = usar;
+    }
 
     //Espacio privado con cronograma
     $: popupHorarioVisible = false;
@@ -438,7 +445,7 @@
 		/>
 
 		{#if !esEspacioNoRegistrado}
-            <div class="mb-2">
+            <div class="mb-2 md:flex justify-start items-center gap-1">
                 <span>Espacio:</span>
                 <br/>
                 <span>{datosCreacion.nombreEspacio}</span>
@@ -446,17 +453,17 @@
         {/if}
 
 		{#if !esEspacioNoRegistrado && datosCreacion?.administrador}
-			<div class="mb-2">
+			<div class="mb-2 md:flex justify-start items-center gap-2">
 				<span>Organizar evento:</span>
-				<div class="flex gap-2 mt-1 border rounded-lg p-1">
+				<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
 					<Button 
-						action={() => data.usarCronograma = true}
+						action={() => toggleUsarCronograma(true)}
 						classes="grow { + data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
 					>
 						<span>Según cronograma</span>
 					</Button>
 					<Button 
-						action={() => data.usarCronograma = false}
+						action={() => toggleUsarCronograma(false)}
 						classes="grow {!data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
 					>
 						<span>De forma libre</span>
@@ -528,8 +535,8 @@
 		    {/if}
 		{/if}
 
-		<div class="mb-2">
-			<div class="flex justify-start gap-2">
+		<div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+			<div class="flex justify-start gap-2 items-baseline">
 				<span>Disciplinas</span>
 				<Button action={() => {popupDisciplinasVisible = true}}>Seleccionar</Button>
 			</div>
@@ -540,8 +547,8 @@
 			</div>
 		</div>
 
-		<div class="mb-2">
-			<div class="flex justify-start gap-2">
+		<div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+			<div class="flex justify-start gap-2 items-baseline">
 				<span>Modos de evento</span>
 				<Button action={() => {popupModosVisible = true}}>Seleccionar</Button>
 			</div>
@@ -558,7 +565,7 @@
 			placeholder="Tipo de inscripción"
 		/>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col md:flex-row md:gap-2 md:items-baseline">
             <span>Precio de inscripción</span>
             <div class="mb-2 flex items-center gap-2">
                 <span>$</span>
