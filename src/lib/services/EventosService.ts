@@ -38,5 +38,20 @@ export const EventosService = {
         let response : {id: number} = await request(HttpRequestType.POST, "eventos/crearEvento", true, null, JSON.stringify(data));
 
         return response.id;
+    },
+    obtenerCantidadEventosSuperpuestos: async (
+        idEspacio: number, 
+        fechaHoraDesde: Date, 
+        fechaHoraHasta: Date
+    ) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("fechaHoraDesde", `${(new Date(fechaHoraDesde)).getTime()}`);
+        args.set("fechaHoraHasta", `${(new Date(fechaHoraHasta)).getTime()}`);
+
+        let response : {cantidad: number} = await request(HttpRequestType.GET, "eventos/obtenerCantidadEventosSuperpuestos", false, args);
+
+        return response.cantidad;
+
     }
 }

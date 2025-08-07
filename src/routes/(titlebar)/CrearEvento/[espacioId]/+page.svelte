@@ -367,6 +367,23 @@
 
     $: periodoLibreMinDate = selectedPeriodoLibreData !== undefined ? Math.max((new Date()).getTime(), (new Date(selectedPeriodoLibreData.desde)).getTime()) : new Date();
     $: periodoLibreMaxDate = selectedPeriodoLibreData !== undefined ? (selectedPeriodoLibreData.hasta !== null ? (new Date(selectedPeriodoLibreData.hasta)).getTime() : null) : new Date();
+
+    // Espacio público
+
+    $: eventosSuperpuestos = null as number | null;
+
+    $: (async () => {
+        try {
+            if (data.fechaDesde !== null && data.fechaHasta !== null) {
+                eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(espacioId, data.fechaDesde, data.fechaHasta);
+            }
+        } catch (e) {
+            if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+        }
+    })()
 </script>
 
 <Popup
@@ -475,8 +492,10 @@
 		{#if datosCreacion?.espacioPublico}
             <!--Público-->
             <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
-            <span>Hay n eventos organizados en este espacio para este horario</span>
-		{:else if esEspacioNoRegistrado}
+            {#if eventosSuperpuestos !== null}
+                <span>Hay {eventosSuperpuestos} eventos organizados en este espacio para este horario</span>
+            {/if}
+        {:else if esEspacioNoRegistrado}
             <!--No registrado-->
             <TextField 
 				label="Dirección" 
@@ -535,7 +554,7 @@
 		    {/if}
 		{/if}
 
-		<div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
 			<div class="flex justify-start gap-2 items-baseline">
 				<span>Disciplinas</span>
 				<Button action={() => {popupDisciplinasVisible = true}}>Seleccionar</Button>
@@ -547,7 +566,7 @@
 			</div>
 		</div>
 
-		<div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
 			<div class="flex justify-start gap-2 items-baseline">
 				<span>Modos de evento</span>
 				<Button action={() => {popupModosVisible = true}}>Seleccionar</Button>
