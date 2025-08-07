@@ -99,6 +99,7 @@
 	$: warningPrecioVisible = false;
 	$: warningMaxParticipantesVisible = false;
 	$: warningHorarioVisible = false;
+	$: warningFechaHoraVisible = false;
 
 	// Error handling
 	$: error = "";
