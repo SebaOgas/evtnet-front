@@ -1,0 +1,238 @@
+<script lang="ts">
+	import Button from "$lib/components/Button.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
+	import MapDisplay from "$lib/components/MapDisplay.svelte";
+	import { token, permisos } from "$lib/stores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+	import { page } from "$app/state"
+	import { goto, afterNavigate } from '$app/navigation';
+	import { base } from '$app/paths'
+	import { HttpError } from "$lib/request/request";
+	import { EventosService } from "$lib/services/EventosService";
+	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { formatDate } from "$lib/components/DatePicker.svelte";
+	import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
+
+	let previousPage: string = base;
+
+	afterNavigate(({from}) => {
+		previousPage = from?.url.pathname || previousPage
+	});
+
+	$: errorPermiso = false;
+
+	$: id = Number(page.params.id);
+
+	$: listo = false;
+
+	$: data = {
+		nombre: "",
+		descripcion: "",
+		fechaDesde: new Date(),
+		fechaHasta: new Date(),
+		precio: 0,
+		modos: [],
+		disciplinas: [],
+		espacio: undefined,
+		direccion: "",
+		ubicacion: {
+			latitud: undefined,
+			longitud: undefined,
+		},
+		superevento: undefined,
+		inscripto: false,
+		inscriptos: [],
+		administrador: false,
+        idChat: null
+	} as DTOEvento;
+
+	$: errorGenerico = ""
+	$: errorGenericoVisible = false
+
+	$: inscriptosConFoto = [] as {username: string, nombre: string, apellido: string, fotoUrl: string}[]
+
+	onMount(async () => {
+		if (get(token) === "") {
+			goto("/");
+		}
+
+		if(!get(permisos).includes("VisionEventos")) {
+			errorPermiso = true;
+			return;
+		}
+
+		try {
+			data = await EventosService.obtenerEvento(id);
+            listo = true;
+			
+			// Load profile photos for inscriptos
+			for (let inscripto of data.inscriptos) {
+				try {
+					let fotoUrl = await UsuariosService.obtenerFotoDePerfil(inscripto.username);
+					inscriptosConFoto.push({
+						...inscripto,
+						fotoUrl: fotoUrl
+					});
+				} catch (e) {
+					// Use placeholder if photo fails to load
+					inscriptosConFoto.push({
+						...inscripto,
+						fotoUrl: "/icons/placeholder.png"
+					});
+				}
+			}
+			inscriptosConFoto = [...inscriptosConFoto];
+
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}            
+		}
+	});
+
+	function formatDateTime(date: Date): string {
+		return formatDate(date, true);
+	}
+</script>
+
+<div id="content">
+	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+		<h1 class="text-s text-center">
+			Evento
+		</h1>
+        {#if listo}
+            <h1 class="text-m text-center">
+                {data.nombre}
+            </h1>
+            
+            <p class="text-xs">
+                {data.descripcion}
+            </p>
+
+            <div class="md:flex justify-start items-center">
+                <span class="text-s">Horario:</span>
+                <div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
+                    <div>{formatDateTime(data.fechaDesde)}</div>
+                    <div>a</div>
+                    <div>{formatDateTime(data.fechaHasta)}</div>
+                </div>
+            </div>
+
+            <div>
+                <span class="text-s">Precio de inscripción:</span>
+                <span class="text-xs">${("" + data.precio.toFixed(2)).replace(".", ",")}</span>
+            </div>
+
+            {#if data.modos.length > 0}
+                <div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+                    <span class="text-s">Modos de evento:</span>
+                    <div class="commaList">
+                        {#each data.modos as modo}
+                            <span>{modo}</span>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
+
+            {#if data.disciplinas.length > 0}
+                <div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+                    <span class="text-s">Disciplinas:</span>
+                    <div class="commaList">
+                        {#each data.disciplinas as disciplina}
+                            <span>{disciplina}</span>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
+
+            {#if data.espacio}
+                <div>
+                    <div class="flex justify-start items-center gap-2">
+                        <span class="text-s">Espacio</span>
+                        <Button action={() => {goto(`/Espacio/${data.espacio?.id}`)}}>Ver Espacio</Button>
+                    </div>
+                    <div class="text-xs">{data.espacio.nombre}</div>
+                </div>
+            {/if}
+
+            <div class="flex flex-col gap-2 md:flex-row md:items-baseline">
+                <span class="text-s">Dirección:</span>
+                <span class="text-xs">{data.direccion}</span>
+            </div>
+
+            {#if listo && data.ubicacion.latitud !== undefined && data.ubicacion.longitud !== undefined}
+                <div class="mb-2 mt-2">
+                    <span class="text-s">Ubicación:</span>
+                    <MapDisplay 
+                        latitude={data.ubicacion.latitud} 
+                        longitude={data.ubicacion.longitud} 
+                        marked={{x: data.ubicacion.latitud, y: data.ubicacion.longitud}} 
+                        zoom={14} 
+                        disableMarking
+                    />
+                </div>
+            {/if}
+
+            {#if data.superevento}
+                <div>
+                    <div class="flex justify-start items-center gap-2">
+                        <span class="text-s">Superevento</span>
+                        <Button action={() => {goto(`/Superevento/${data.superevento?.id}`)}}>Ver Superevento</Button>
+                    </div>
+                    <div class="text-xs">{data.superevento.nombre}</div>
+                </div>
+            {/if}
+
+            {#if inscriptosConFoto.length > 0}
+                <div class="mb-2 mt-2">
+                    <span class="text-s">Inscriptos:</span>
+                    <div class="flex flex-col gap-2 mt-2">
+                        {#each inscriptosConFoto as inscripto}
+                            <div class="flex items-center gap-2">
+                                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                                <img src={inscripto.fotoUrl} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer" on:click={() => {goto(`/Perfil/${inscripto.username}`)}}>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold">{inscripto.nombre} {inscripto.apellido}</span>
+                                    <span class="text-xs text-black">{inscripto.username}</span>
+                                </div>
+                                <Button icon="/icons/white_star.svg" action={() => {goto(`/CalificarUsuario/${inscripto.username}`)}}/>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
+        {/if}
+	</div>
+
+	<div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
+		<Button action={() => {goto(previousPage)}}>Atrás</Button>
+		
+		{#if data.inscripto}
+			<Button action={() => {/* TODO: Implement cancel inscription */}}>Cancelar inscripción</Button>
+		    <Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
+		{:else}
+			<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
+		{/if}
+		
+		{#if data.administrador}
+			<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
+        {/if}
+
+        <Button icon="/icons/share.svg"></Button>
+
+        {#if data.administrador}
+			<Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>
+		{/if}
+	</div>
+</div>
+
+<PopupError bind:visible={errorPermiso}>
+	No tiene permiso para acceder a este evento.
+</PopupError>
+
+<PopupError bind:visible={errorGenericoVisible}>
+	{errorGenerico}
+</PopupError>

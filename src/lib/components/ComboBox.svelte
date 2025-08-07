@@ -95,7 +95,7 @@
         justify-content: space-between;
         align-items: center;
         position: relative;
-        z-index: 1;
+        /*z-index: 1;*/
         cursor: default;
         user-select: none;
     }
@@ -120,6 +120,7 @@
         top: 100%;
         left: 0;
         width: 100%;
+        z-index: 1;
     }
 
     .options>span {

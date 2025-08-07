@@ -102,4 +102,4 @@ import { onMount } from 'svelte';
     })()
 </script>
 
-<div id="map" class="w-full border border-black rounded rounded-lg" style="min-height: {height}; max-height: {height}"></div>
+<div id="map" class="z-0 w-full border border-black rounded rounded-lg" style="min-height: {height}; max-height: {height}"></div>

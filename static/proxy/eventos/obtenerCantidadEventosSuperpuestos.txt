@@ -1,0 +1,19 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int
+fechaHoraDesde: Date
+fechaHoraHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "cantidad": 2
+}

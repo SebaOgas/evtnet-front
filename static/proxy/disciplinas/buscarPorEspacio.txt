@@ -1,0 +1,33 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+text: string
+espacioId: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Fútbol"
+    },
+    {
+        "id": 1,
+        "nombre": "Pádel"
+    },
+    {
+        "id": 2,
+        "nombre": "Ajedrez"
+    },
+    {
+        "id": 3,
+        "nombre": "Metegol"
+    }
+]

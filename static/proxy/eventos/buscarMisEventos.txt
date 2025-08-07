@@ -1,0 +1,201 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "texto": "texto buscado",
+    "fechaDesde": 1755389400000,
+    "fechaHasta": 1755589400000,
+    "organizador": true,
+    "administrador": true,
+    "participante": true
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Torneo de Fútbol 5 Primavera",
+        "fechaDesde": 1755389400000,
+        "fechaHasta": 1755403800000,
+        "espacioNombre": "Centro Deportivo Municipal Norte",
+        "rol": "Organizador",
+        "participantes": 18
+    },
+    {
+        "id": 1,
+        "nombre": "Clases de Natación para Adultos",
+        "fechaDesde": 1755465600000,
+        "fechaHasta": 1755469200000,
+        "espacioNombre": "Club Náutico Riverside",
+        "rol": "Administrador",
+        "participantes": 12
+    },
+    {
+        "id": 2,
+        "nombre": "Campeonato de Vóley Juvenil",
+        "fechaDesde": 1755552000000,
+        "fechaHasta": 1755573600000,
+        "espacioNombre": "Polideportivo San Martín",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 3,
+        "nombre": "Copa de Tenis Senior",
+        "fechaDesde": 1755638400000,
+        "fechaHasta": 1755656400000,
+        "espacioNombre": "Academia Elite Tennis",
+        "rol": "Organizador",
+        "participantes": 32
+    },
+    {
+        "id": 4,
+        "nombre": "Entrenamiento de Rugby",
+        "fechaDesde": 1755724800000,
+        "fechaHasta": 1755732000000,
+        "espacioNombre": "Complejo Deportivo Las Flores",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 5,
+        "nombre": "Clase de CrossFit Intensivo",
+        "fechaDesde": 1755811200000,
+        "fechaHasta": 1755814800000,
+        "espacioNombre": "Gimnasio Iron Fitness",
+        "rol": "Administrador",
+        "participantes": 8
+    },
+    {
+        "id": 6,
+        "nombre": "Aquaeróbicos Matutinos",
+        "fechaDesde": 1755897600000,
+        "fechaHasta": 1755901200000,
+        "espacioNombre": "Centro Acuático Municipal",
+        "rol": "Organizador",
+        "participantes": 25
+    },
+    {
+        "id": 7,
+        "nombre": "Torneo de Esgrima Espada",
+        "fechaDesde": 1755984000000,
+        "fechaHasta": 1756002000000,
+        "espacioNombre": "Club de Esgrima Excalibur",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 8,
+        "nombre": "Maratón Regional",
+        "fechaDesde": 1756070400000,
+        "fechaHasta": 1756084800000,
+        "espacioNombre": "Estadio Regional",
+        "rol": "Administrador",
+        "participantes": 156
+    },
+    {
+        "id": 9,
+        "nombre": "Seminario de Karate Avanzado",
+        "fechaDesde": 1756156800000,
+        "fechaHasta": 1756170000000,
+        "espacioNombre": "Dojo Samurai",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 10,
+        "nombre": "Competencia de Ciclismo MTB",
+        "fechaDesde": 1756243200000,
+        "fechaHasta": 1756260000000,
+        "espacioNombre": "Parque Deportivo Central",
+        "rol": "Organizador",
+        "participantes": 45
+    },
+    {
+        "id": 11,
+        "nombre": "Clases de Equitación",
+        "fechaDesde": 1756329600000,
+        "fechaHasta": 1756335000000,
+        "espacioNombre": "Club Hípico Los Robles",
+        "rol": "Administrador",
+        "participantes": 6
+    },
+    {
+        "id": 12,
+        "nombre": "Liga de Básquet Amateur",
+        "fechaDesde": 1756416000000,
+        "fechaHasta": 1756426800000,
+        "espacioNombre": "Complejo de Canchas Oeste",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 13,
+        "nombre": "Recital de Ballet Clásico",
+        "fechaDesde": 1756502400000,
+        "fechaHasta": 1756509600000,
+        "espacioNombre": "Estudio de Danza Armonía",
+        "rol": "Organizador",
+        "participantes": 14
+    },
+    {
+        "id": 14,
+        "nombre": "Competencia de Salto con Garrocha",
+        "fechaDesde": 1756588800000,
+        "fechaHasta": 1756599600000,
+        "espacioNombre": "Pista de Atletismo Universitaria",
+        "rol": "Administrador",
+        "participantes": 16
+    },
+    {
+        "id": 15,
+        "nombre": "Curso de Escalada en Roca",
+        "fechaDesde": 1756675200000,
+        "fechaHasta": 1756696800000,
+        "espacioNombre": "Centro de Escalada Vertical",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 16,
+        "nombre": "Torneo Abierto de Golf",
+        "fechaDesde": 1756761600000,
+        "fechaHasta": 1756787200000,
+        "espacioNombre": "Cancha de Golf Municipal",
+        "rol": "Organizador",
+        "participantes": 72
+    },
+    {
+        "id": 17,
+        "nombre": "Campeonato de Taekwondo ITF",
+        "fechaDesde": 1756848000000,
+        "fechaHasta": 1756868400000,
+        "espacioNombre": "Academia de Artes Marciales",
+        "rol": "Administrador",
+        "participantes": 28
+    },
+    {
+        "id": 18,
+        "nombre": "Copa de Pádel Mixta",
+        "fechaDesde": 1756934400000,
+        "fechaHasta": 1756951200000,
+        "espacioNombre": "Complejo de Canchas de Pádel",
+        "rol": "Participante",
+        "participantes": null
+    },
+    {
+        "id": 19,
+        "nombre": "Regata de Vela Juvenil",
+        "fechaDesde": 1757020800000,
+        "fechaHasta": 1757038800000,
+        "espacioNombre": "Club de Yachting Marina",
+        "rol": "Organizador",
+        "participantes": 24
+    }
+]
