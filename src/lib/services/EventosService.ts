@@ -3,6 +3,8 @@ import type DTOBusquedaMisEventos from "$lib/dtos/eventos/DTOBusquedaMisEventos"
 import type DTOCrearEvento from "$lib/dtos/eventos/DTOCrearEvento";
 import type DTODatosCreacionEvento from "$lib/dtos/eventos/DTODatosCreacionEvento";
 import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
+import type DTOEventoParaInscripcion from "$lib/dtos/eventos/DTOEventoParaInscripcion";
+import type DTOInscripcion from "$lib/dtos/eventos/DTOInscripcion";
 import type DTOResultadoBusquedaEventos from "$lib/dtos/eventos/DTOResultadoBusquedaEventos";
 import type DTOResultadoBusquedaMisEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisEventos";
 import { HttpRequestType, request } from "$lib/request/request";
@@ -68,5 +70,21 @@ export const EventosService = {
         args.set("idEvento", `${idEvento}`);
 
         await request(HttpRequestType.POST, "eventos/desinscribirse", true, args);
+    },
+    obtenerEventoParaInscripcion: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : DTOEventoParaInscripcion = await request(HttpRequestType.GET, "eventos/obtenerEventoParaInscripcion", true, args);
+
+        return response;
+    },
+    verificarDatosPrePago: async (data: DTOInscripcion) => {
+        let response : {valido: boolean} = await request(HttpRequestType.PUT, "eventos/verificarDatosPrePago", true, null, JSON.stringify(data));
+
+        return response.valido;
+    },
+    inscribirse: async (data: DTOInscripcion) => {
+        await request(HttpRequestType.POST, "eventos/inscribirse", true, null, JSON.stringify(data));
     }
 }

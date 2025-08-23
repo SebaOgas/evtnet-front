@@ -1,0 +1,31 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idEvento": 0,
+    "username": "sebaogas",
+    "invitados": [
+        {
+            "nombre": "Tatiana",
+            "apellido": "Duran",
+            "dni": "12345678"
+        },
+        {
+            "nombre": "Andrés",
+            "apellido": "Blan",
+            "dni": "44938392"
+        }
+    ],
+    "precioInscripcion": 2200
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "valido": true
+}
