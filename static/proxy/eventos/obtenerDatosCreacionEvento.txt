@@ -1,0 +1,38 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int|null
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Espacio 0",
+
+    "tiposInscripcion": [
+        {
+            "id": 0,
+            "nombre": "Inscripción por Usuario"
+        },
+        {
+            "id": 1,
+            "nombre": "Inscripcion por Administrador"
+        },
+        {
+            "id": 2,
+            "nombre": "Inscripcion Usuario/Administrador"
+        }
+    ],
+
+    "comisionInscripcion": 0.1,
+
+    "espacioPublico": false,
+    "administrador": true,
+    "diasHaciaAdelante": 10
+}

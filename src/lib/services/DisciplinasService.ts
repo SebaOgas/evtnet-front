@@ -10,4 +10,13 @@ export const DisciplinasService = {
 
         return response;
     },
+  buscarPorEspacio: async (text: string, espacioId: number) => {
+        let args = new Map<string, string>();
+        args.set("text", text);
+        args.set("espacioId", "" + espacioId);
+
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "disciplinas/buscarPorEspacio", false, args);
+
+        return response;
+    },
 }

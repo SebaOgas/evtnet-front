@@ -75,3 +75,7 @@ a {
 	--slider-light-accent-100: var(--color-light);
 	--slider-light-accent-text: var(--color-white);
 }
+
+.datepicker {
+	flex-grow: 1;
+}

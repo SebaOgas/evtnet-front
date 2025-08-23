@@ -1,0 +1,39 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "Evento 0",
+    "descripcion": "Descripción del evento 0",
+    
+    "idEspacio": 0, 
+    "usarCronograma": true, 
+
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753226458732,
+
+    "horarioId": 0,
+
+    "disciplinas": [0],
+
+    "direccion": "Dirección del espacio",
+    "ubicacion": {
+        "latitud": 1234,
+        "longitud": 1234
+    },
+
+    "modos": [1],
+    "tipoInscripcion": 0,
+    "precio": 10000,
+    "maxParticipantes": 22
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0
+}

@@ -38,7 +38,7 @@
 
     $: enabledDates = [] as string[]
 
-    onMount(() => {
+    $: (() => {
         let from = ""
         if (minDate !== null) {
             from = new Date(minDate).toLocaleDateString("en-US");
@@ -58,7 +58,7 @@
         }
 
         enabledDates = [`${from}:${to}`]              
-    })
+    })()
     
     $: isOpen = false;
 

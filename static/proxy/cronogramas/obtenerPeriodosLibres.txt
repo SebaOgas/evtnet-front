@@ -1,0 +1,36 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "fechaHoraDesde": 1753225458732,
+        "fechaHoraHasta": 1757226458732
+    },
+    {
+        "fechaHoraDesde": 1757226458732,
+        "fechaHoraHasta": 1761226458732
+    },
+    {
+        "fechaHoraDesde": 1765226458732,
+        "fechaHoraHasta": 1773226458732
+    },
+    {
+        "fechaHoraDesde": 1778226458732,
+        "fechaHoraHasta": 1779226458732
+    },
+    {
+        "fechaHoraDesde": 1790226458732,
+        "fechaHoraHasta": 1794226458732
+    }
+]
