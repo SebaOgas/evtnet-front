@@ -59,11 +59,11 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="{classes} combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
-    <div class="value w-full">
+    <div class="value w-full  max-w-[90%]">
         {#if selected === undefined}
-            <span class="ph p-1 text-dark">{placeholder}</span>
+            <span class="block ph text-dark truncate w-full">{placeholder}</span>
         {:else}
-            <span class="p-1">{selectedText}</span>
+            <span class="block truncate w-full">{selectedText}</span>
         {/if}
         {#if shown}
             <div class="options flex bg-white border border-black rounded overflow-auto" style="max-height:calc({maxHeight} * 24px)">
