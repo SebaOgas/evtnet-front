@@ -53,5 +53,20 @@ export const EventosService = {
 
         return response.cantidad;
 
+    },
+    obtenerMontoDevolucionCancelacionInscripcion: async (idEvento: number, username: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("username", `${username}`);
+
+        let response : {monto: number} = await request(HttpRequestType.GET, "eventos/obtenerMontoDevolucionCancelacionInscripcion", true, args);
+
+        return response.monto;
+    },
+    desinscribirse: async (idEvento: number) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+
+        await request(HttpRequestType.POST, "eventos/desinscribirse", true, args);
     }
 }
