@@ -1,0 +1,125 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0,
+    "nombre": "Evento 0",
+    "descripcion": "Descripción del evento",
+
+    "idEspacio": 0,
+    "nombreEspacio": "Espacio 0",
+    "usarCronograma": true,
+
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1753226458732,
+    
+    "horarioId": 0,
+
+    "precioOrganizacion": 10000,
+
+    "direccion": "Dirección del espacio",
+    "ubicacion": {
+        "latitud": -32.89084,
+        "longitud": -68.82717
+    },
+
+    "disciplinas": [
+        {
+            "id": 0,
+            "nombre": "Fútbol"
+        },
+        {
+            "id": 1,
+            "nombre": "Pádel"
+        },
+        {
+            "id": 2,
+            "nombre": "Metegol"
+        }
+    ],
+
+    "modos": [
+        {
+            "id": 0,
+            "nombre": "Individual"
+        },
+        {
+            "id": 1,
+            "nombre": "Por Equipos"
+        },
+        {
+            "id": 2,
+            "nombre": "Cooperativo"
+        }
+    ],
+
+    "tiposInscripcion": [
+        {
+            "id": 0,
+            "nombre": "Inscripción por Usuario",
+            "seleccionado": false
+        },
+        {
+            "id": 1,
+            "nombre": "Inscripcion por Administrador",
+            "seleccionado": false
+        },
+        {
+            "id": 2,
+            "nombre": "Inscripcion Usuario/Administrador",
+            "seleccionado": true
+        }
+    ],
+
+    "precioInscripcion": 2000,
+    "comisionInscripcion": 0.1,
+
+    "cantidadMaximaParticipantes": 20,
+    "cantidadMaximaInvitados": 5,
+
+    "cantidadParticipantesActual": 15,
+    "cantidadMaximaInvitadosPorInvitacionEfectiva": 4,
+
+    "superevento": {
+        "id": 0,
+        "nombre": "Superevento 0"
+    },
+
+    "rangosReintegro": [
+        {
+            "dias": 7,
+            "horas": 0,
+            "minutos": 0,
+            "porcentaje": 100
+        },
+        {
+            "dias": 3,
+            "horas": 12,
+            "minutos": 0,
+            "porcentaje": 50
+        },
+        {
+            "dias": 0,
+            "horas": 0,
+            "minutos": 30,
+            "porcentaje": 10
+        }
+    ],
+
+    "espacioPublico": false,
+    "administradorEspacio": true,
+    "administradorEvento": true,
+    "organizadorEvento": true,
+    "diasHaciaAdelante": 10
+}

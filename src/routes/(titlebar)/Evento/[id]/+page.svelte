@@ -2,17 +2,18 @@
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
-	import { token, permisos } from "$lib/stores";
-	import { onMount } from "svelte";
+	import { token, permisos, username } from "$lib/stores";
+	import { onMount, tick } from "svelte";
 	import { get } from "svelte/store";
 	import { page } from "$app/state"
-	import { goto, afterNavigate } from '$app/navigation';
+	import { goto, afterNavigate, invalidateAll } from '$app/navigation';
 	import { base } from '$app/paths'
 	import { HttpError } from "$lib/request/request";
 	import { EventosService } from "$lib/services/EventosService";
 	import { UsuariosService } from "$lib/services/UsuariosService";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
+	import Popup from "$lib/components/Popup.svelte";
 
 	let previousPage: string = base;
 
@@ -52,7 +53,12 @@
 
 	$: inscriptosConFoto = [] as {username: string, nombre: string, apellido: string, fotoUrl: string}[]
 
-	onMount(async () => {
+	let mount = async () => {
+		cancelarInscripcionPopupVisible = false;
+		desinscripcionExitosa = false;
+		listo = false;
+		inscriptosConFoto = [];
+		
 		if (get(token) === "") {
 			goto("/");
 		}
@@ -90,10 +96,43 @@
 				errorGenericoVisible = true;
 			}            
 		}
-	});
+	}
+
+	onMount(mount);
 
 	function formatDateTime(date: Date): string {
 		return formatDate(date, true);
+	}
+
+	$: cancelarInscripcionPopupVisible = false;
+	$: montoDevolucion = 0;
+
+	async function showPopupCancelarInscripcion() {
+		try {
+			montoDevolucion = await EventosService.obtenerMontoDevolucionCancelacionInscripcion(id, get(username))
+			cancelarInscripcionPopupVisible = true;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}    
+		}
+	}
+
+	$: errorDesinscripcion = ""
+	$: errorDesinscripcionVisible = false;
+	$: desinscripcionExitosa = false;
+
+	async function desincribirse() {
+		try {
+			await EventosService.desinscribirse(id)
+			desinscripcionExitosa = true
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorDesinscripcion = e.message;
+				errorDesinscripcionVisible = true;
+			}    
+		}
 	}
 </script>
 
@@ -211,7 +250,7 @@
 		<Button action={() => {goto(previousPage)}}>Atrás</Button>
 		
 		{#if data.inscripto}
-			<Button action={() => {/* TODO: Implement cancel inscription */}}>Cancelar inscripción</Button>
+			<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
 		    <Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
 		{:else}
 			<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
@@ -236,3 +275,23 @@
 <PopupError bind:visible={errorGenericoVisible}>
 	{errorGenerico}
 </PopupError>
+
+<Popup bind:visible={cancelarInscripcionPopupVisible} fitW fitH title={"Cancelar inscripción"}>
+	<p>¿Está seguro de que desea cancelar su inscripción?</p>
+	<p>Se le devolverá ${montoDevolucion.toFixed(2).replaceAll(".", ",")}</p>
+	<div class="flex flex-row justify-center gap-2">
+		<Button action={() => {cancelarInscripcionPopupVisible = false;}}>Cancelar</Button>
+		<Button action={desincribirse}>Confirmar</Button>
+	</div>
+</Popup>
+
+<PopupError bind:visible={errorDesinscripcionVisible}>
+	No se pudo desinscribir correctamente por: {errorDesinscripcion}
+</PopupError>
+
+<Popup bind:visible={desinscripcionExitosa} title={"Éxito"} fitW fitH>
+	<p>La desinscripción se realizó correctamente</p>
+	<div class="flex flex-row justify-center gap-2">
+		<Button action={mount}>Aceptar</Button>
+	</div>
+</Popup>

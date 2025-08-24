@@ -5,7 +5,7 @@
     export let min : number = 0
     export let max : number = 50
     export let placeholder : string = ""
-    export let value : string = ""
+    export let value : string | number = ""
 
     export let validate : (v: string) => {valid: boolean; reason: string | null | undefined} = (v: string) => {return {valid: true, reason: undefined}};
 
@@ -33,7 +33,7 @@
     $: razonInvalidez = "";
 
     function validar()  {
-        let result = validate(value);
+        let result = validate("" + value);
         valido = result.valid;
         if (result.reason === null || result.reason === undefined) {
             razonInvalidez = "";

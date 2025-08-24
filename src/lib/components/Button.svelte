@@ -47,6 +47,10 @@
         color: var(--color-dark);
     }
 
+    button:disabled>img {
+        filter: brightness(0) saturate(100%) invert(16%) sepia(83%) saturate(1943%) hue-rotate(208deg) brightness(96%) contrast(87%);
+    }
+
     button:not(:disabled):hover, button:not(:disabled):focus {
         filter: brightness(1.1);
     }

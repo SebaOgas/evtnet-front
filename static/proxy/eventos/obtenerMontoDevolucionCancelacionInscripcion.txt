@@ -1,0 +1,18 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEvento: int
+username: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "monto": 4000.0
+}
