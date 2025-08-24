@@ -81,11 +81,27 @@
 				fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + data.diasHaciaAdelante - 1);
 			}
 
+			// Cargar periodos libres, para cuando se organiza de forma libre
+            if (data.administradorEspacio && data.nombreEspacio && data.idEspacio !== null) {
+                let periodosLibresTmp = await CronogramaService.obtenerPeriodosLibres(data.idEspacio);
+                let ix = 0;
+                periodosLibresTmp.forEach((item) => {
+                    let formatted = formatDate(item.fechaHoraDesde, true) + " - " + formatDate(item.fechaHoraHasta, true);
+                    periodosLibres.cb.set(ix, formatted);
+                    periodosLibres.map.set(ix, {
+                        desde: item.fechaHoraDesde,
+                        hasta: item.fechaHoraHasta
+                    })
+                    ix++;
+                });
+                periodosLibres = {...periodosLibres}
+            }
+
 		} catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
 				errorVisible = true;
-			}
+			}			
 		}
 	});
 
@@ -93,6 +109,7 @@
 		id: 0,
 		nombre: "",
 		descripcion: "",
+		idEspacio: null,
 		nombreEspacio: null,
 		usarCronograma: true,
 		fechaDesde: new Date(),
@@ -220,6 +237,16 @@
 
 	$: maxInvitadosString = data.cantidadMaximaInvitados.toString();
 	$: data.cantidadMaximaInvitados = parseInt(maxInvitadosString) || 0;
+
+	function toggleUsarCronograma(usar: boolean) {
+		if (datosOriginales === null) return;
+        if (data.usarCronograma !== usar) {
+            data.fechaDesde = datosOriginales.fechaDesde;
+            data.fechaHasta = datosOriginales.fechaHasta;
+            horarioSeleccionado = false;
+        }
+        data.usarCronograma = usar;
+    }
 
 	// ComboBox options
 	$: tiposInscripcionOptions = new Map(
@@ -547,6 +574,37 @@
 	$: puedeEditarRangos = data.organizadorEvento === true;
 	// Check if user can leave admin (is not organizer)
 	$: puedeDejarAdmin = data.organizadorEvento !== true && data.administradorEvento === true;
+
+	
+	// Espacio privado sin cronograma
+    
+    $: periodosLibres = {
+        cb: new Map<number, string>(),
+        map:new Map<number, {desde: Date, hasta: Date | null}>()
+    };
+    $: selectedPeriodoLibre = null as number | null;
+    $: selectedPeriodoLibreData = selectedPeriodoLibre !== null ? periodosLibres.map.get(selectedPeriodoLibre) : undefined;
+
+    $: periodoLibreMinDate = selectedPeriodoLibreData !== undefined ? Math.max((new Date()).getTime(), (new Date(selectedPeriodoLibreData.desde)).getTime()) : new Date();
+    $: periodoLibreMaxDate = selectedPeriodoLibreData !== undefined ? (selectedPeriodoLibreData.hasta !== null ? (new Date(selectedPeriodoLibreData.hasta)).getTime() : null) : new Date();
+
+
+	// Espacio público
+
+    $: eventosSuperpuestos = null as number | null;
+
+    $: (async () => {
+        try {
+            if (data.fechaDesde !== null && data.fechaHasta !== null && data.espacioPublico && data.nombreEspacio && data.idEspacio !== null) {
+                eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(data.idEspacio, data.fechaDesde, data.fechaHasta);
+            }
+        } catch (e) {
+            if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+        }
+    })()
 </script>
 
 {#if datosOriginales}
@@ -577,34 +635,37 @@
 			<span>{data.nombreEspacio || "Espacio no registrado"}</span>
 		</div>
 
-		{#if data.nombreEspacio && !data.espacioPublico}
-			<div class="mb-2">
-				<div class="md:flex justify-start items-center">
-					<span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs" action={openPopupHorario}>Cambiar</Button></span>
-					{#if horarioSeleccionado}
-						<div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
-							<div>{formatDate(data.fechaDesde, true)}</div>
-							<div>a</div>
-							<div>{formatDate(data.fechaHasta, true)}</div>
-						</div>
-						{#if data.precioOrganizacion !== null && !data.administradorEspacio}
-							<span>Cuota por organización: ${data.precioOrganizacion.toFixed(2)}</span>
-						{/if}
-					{/if}
+		{#if data.nombreEspacio && data.administradorEspacio && !data.espacioPublico}
+			<div class="mb-2 md:flex justify-start items-center gap-2">
+				<span>Organizar evento:</span>
+				<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
+					<Button 
+						action={() => toggleUsarCronograma(true)}
+						classes="grow { + data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
+					>
+						<span>Según cronograma</span>
+					</Button>
+					<Button 
+						action={() => toggleUsarCronograma(false)}
+						classes="grow {!data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
+					>
+						<span>De forma libre</span>
+					</Button>
 				</div>
 			</div>
-		{:else if data.nombreEspacio}
-			<div class="mb-2">
-				<span>Horario</span>
-				<div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
-					<div>{formatDate(data.fechaDesde, true)}</div>
-					<div>a</div>
-					<div>{formatDate(data.fechaHasta, true)}</div>
-				</div>
-			</div>
-		{:else}
+		{/if}
+
+		{#if data.nombreEspacio && data.espacioPublico}
+			<!--Público-->
+			<DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
+            <Warning text="La fecha y hora es obligatoria" visible={(!data.nombreEspacio || data.espacioPublico || !data.espacioPublico && !data.usarCronograma ) && (data.fechaDesde === null || data.fechaHasta === null)}/>
+            {#if eventosSuperpuestos !== null}
+                <span>Hay {eventosSuperpuestos} eventos organizados en este espacio para este horario</span>
+            {/if}
+		{:else if !data.nombreEspacio}
+			<!--No registrado-->
 			<DatePicker range time bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
-			
+            <Warning text="La fecha y hora es obligatoria" visible={(!data.nombreEspacio || data.espacioPublico || !data.espacioPublico && !data.usarCronograma ) && (data.fechaDesde === null || data.fechaHasta === null)}/>
 			<TextField 
 				label="Dirección" 
 				bind:value={data.direccion} 
@@ -622,7 +683,49 @@
 				/>
 				<Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
 			</div>
+		{:else if data.nombreEspacio && !data.espacioPublico && data.usarCronograma}
+			<!--Privado con cronograma-->
+			<div class="mb-2">
+				<div class="md:flex justify-start items-center">
+					<span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs" action={openPopupHorario}>Cambiar</Button></span>
+					{#if horarioSeleccionado}
+						<div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
+							<div>{formatDate(data.fechaDesde, true)}</div>
+							<div>a</div>
+							<div>{formatDate(data.fechaHasta, true)}</div>
+						</div>
+						{#if data.precioOrganizacion !== null && !data.administradorEspacio}
+							<span>Cuota por organización: ${data.precioOrganizacion.toFixed(2)}</span>
+						{/if}
+					{/if}
+				</div>
+			</div>
+		{:else if data.nombreEspacio && !data.espacioPublico && !data.usarCronograma}
+			<!--Privado sin cronograma-->
+            <div>
+                <span>Periodo</span>
+                <!--TO-DO-->
+                <ComboBox 
+                    options={periodosLibres.cb} 
+                    bind:selected={selectedPeriodoLibre}
+                    placeholder="Seleccione el periodo"
+                />
+            </div>
+            {#if selectedPeriodoLibreData !== undefined}
+                <DatePicker 
+                    range 
+                    time 
+                    minDate={periodoLibreMinDate} 
+                    maxDate={periodoLibreMaxDate} 
+                    bind:startDate={data.fechaDesde} 
+                    bind:endDate={data.fechaHasta} 
+                    label="Fecha y Hora"
+                />
+		    {/if}
+            <Warning text="La fecha y hora es obligatoria" visible={(!data.nombreEspacio || data.espacioPublico || !data.espacioPublico && !data.usarCronograma ) && (data.fechaDesde === null || data.fechaHasta === null)}/>
 		{/if}
+
+
 
 		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
 			<div class="flex justify-start gap-2 items-baseline">

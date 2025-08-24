@@ -17,7 +17,8 @@ RESPONSE BODY
     "nombre": "Evento 0",
     "descripcion": "Descripción del evento",
 
-    "nombreEspacio": "Espacio 0",
+    "idEspacio": null,
+    "nombreEspacio": null,
     "usarCronograma": true,
 
     "fechaDesde": 1753225458732,
@@ -29,8 +30,8 @@ RESPONSE BODY
 
     "direccion": "Dirección del espacio",
     "ubicacion": {
-        "latitud": 1234,
-        "longitud": 1234
+        "latitud": -32.89084,
+        "longitud": -68.82717
     },
 
     "disciplinas": [

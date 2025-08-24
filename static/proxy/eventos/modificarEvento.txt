@@ -9,6 +9,7 @@ REQUEST BODY
     "nombre": "Evento 0",
     "descripcion": "Descripción del evento",
 
+    "idEspacio": 0,
     "nombreEspacio": "Espacio 0",
     "usarCronograma": true,
 
