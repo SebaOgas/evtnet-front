@@ -629,15 +629,14 @@
 			rows={6}
 		/>
 
-		<div class="mb-2">
+		<div class="mb-2 flex flex-col gap-2 md:flex-row">
 			<span>Espacio:</span>
-			<br/>
 			<span>{data.nombreEspacio || "Espacio no registrado"}</span>
 		</div>
 
 		{#if data.nombreEspacio && data.administradorEspacio && !data.espacioPublico}
 			<div class="mb-2 md:flex justify-start items-center gap-2">
-				<span>Organizar evento:</span>
+				<span class="whitespace-nowrap">Organizar evento:</span>
 				<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
 					<Button 
 						action={() => toggleUsarCronograma(true)}
@@ -773,19 +772,23 @@
 			</div>
 		</div>
 
-		<TextField 
-			label="Cantidad máxima de participantes" 
-			bind:value={maxParticipantesString} 
-			validate={validateMaxParticipantes}
-			forceValidate={warningMaxParticipantesVisible}
-		/>
+		<div class="flex flex-col gap-2 lg:flex-row">
+			<TextField 
+				label="Cantidad máxima de participantes" 
+				bind:value={maxParticipantesString} 
+				validate={validateMaxParticipantes}
+				forceValidate={warningMaxParticipantesVisible}
+				classes="lg:flex-1 lg:[&>input]:w-full lg:[&>span]:whitespace-nowrap"
+			/>
 
-		<TextField 
-			label="Cantidad máxima de invitados por inscripción" 
-			bind:value={maxInvitadosString} 
-			validate={validateMaxInvitados}
-			forceValidate={warningMaxInvitadosVisible}
-		/>
+			<TextField 
+				label="Cantidad máxima de invitados por inscripción" 
+				bind:value={maxInvitadosString} 
+				validate={validateMaxInvitados}
+				forceValidate={warningMaxInvitadosVisible}
+				classes="lg:flex-1 lg:[&>input]:w-full lg:[&>span]:whitespace-nowrap"
+			/>
+		</div>		
 
 		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
 			<div class="flex justify-start gap-2 items-baseline">
@@ -829,44 +832,45 @@
                     </div>
                     
                     {#each data.rangosReintegro as rango, i}
-                        <div class="flex flex-col justify-start items-start mb-2">
+                        <div class="flex flex-col md:flex-row justify-start items-start mb-2 md:gap-4">
                             <div class="flex flex-wrap gap-2 justify-start items-center w-full">
                                 <span>Hasta</span>
-                                <span class="flex justify-start items-center gap-2">
+                                <span class="flex flex-1 justify-start items-center gap-2">
                                     <TextField 
                                         label={null} 
                                         bind:value={rango.dias} 
-                                        classes="w-16"
+                                        classes="flex-1 min-w-16 [&>input]:w-full"
                                     />
                                     <span>d</span>
                                 </span>
                                 
-                                <span class="flex justify-start items-center gap-2">
+                                <span class="flex flex-1 justify-start items-center gap-2">
                                     <TextField 
                                         label={null} 
                                         bind:value={rango.horas} 
-                                        classes="w-16"
+                                        classes="flex-1 min-w-16 [&>input]:w-full"
                                     />
                                     <span>h</span>
                                 </span>
                                 
-                                <span class="flex justify-start items-center gap-2">
+                                <span class="flex flex-1 justify-start items-center gap-2">
                                     <TextField 
                                         label={null} 
                                         bind:value={rango.minutos} 
-                                        classes="w-16"
+                                        classes="flex-1 min-w-16 [&>input]:w-full"
                                     />
                                     <span>min</span>
                                 </span>
                                 
                             </div>
+							<div class="hidden md:flex justify-center self-stretch items-center"><span>|</span></div>
                             <div class="flex flex-wrap gap-2 justify-start items-center w-full">
                                 <span>Reintegrar el</span>
-                                <span class="flex justify-start items-center gap-2 flex-1">
+                                <span class="flex flex-1 justify-start items-center gap-2">
                                     <TextField 
                                         label={null} 
                                         bind:value={rango.porcentaje} 
-                                        classes="w-20"
+                                        classes="flex-1 min-w-16 [&>input]:w-full"
                                     />
                                     <span>%</span>
                                 </span>

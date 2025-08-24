@@ -17,8 +17,8 @@ RESPONSE BODY
     "nombre": "Evento 0",
     "descripcion": "Descripción del evento",
 
-    "idEspacio": null,
-    "nombreEspacio": null,
+    "idEspacio": 0,
+    "nombreEspacio": "Espacio 0",
     "usarCronograma": true,
 
     "fechaDesde": 1753225458732,
