@@ -88,6 +88,11 @@ export async function request(
         }
     });
 
+    if (response instanceof Response && response.status !== 200 && response.status !== 404) {
+        if (block) loading.set(false);
+        throw new HttpError(-1, "No se pudo realizar la solicitud");
+    }
+
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {
         const dummy_url = `/proxy/${path}.txt`
         const dummy = await fetch(dummy_url)
