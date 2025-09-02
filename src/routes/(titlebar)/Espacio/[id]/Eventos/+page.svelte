@@ -1,0 +1,293 @@
+<script lang="ts">
+	import { goto } from "$app/navigation";
+	import Button from "$lib/components/Button.svelte";
+	import TextField from "$lib/components/TextField.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
+	import { token, permisos } from "$lib/stores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+    import { page } from "$app/state"
+	import { EspaciosService } from "$lib/services/EspaciosService";
+	import { HttpError } from "$lib/request/request";
+	import CheckBox from "$lib/components/CheckBox.svelte";
+	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
+	import { DisciplinasService } from "$lib/services/DisciplinasService";
+	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import TimeRangePicker, { parseTime } from "$lib/components/TimeRangePicker.svelte";
+	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
+	import Warning from "$lib/components/Warning.svelte";
+    import type DTOBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOBusquedaEventosPorEspacio";
+	import type DTOResultadoBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOResultadoBusquedaEventosPorEspacio";
+	import Popup from "$lib/components/Popup.svelte";
+
+    $: errorPermiso = false;
+
+	$: errorGenerico = "";
+	$: errorGenericoVisible = false;
+
+    $: id = Number(page.params.id);
+    $: idEvento=0;
+
+    $: filtros = {
+        idEspacio: id,
+		texto: "",
+		fechaDesde: null,
+		fechaHasta: null,
+		horaDesde: null,
+		horaHasta: null,
+		disciplinas: [],
+		modos: [],
+		precioLimite: undefined
+	} as DTOBusquedaEventosPorEspacio;
+
+    $: resultados = [] as DTOResultadoBusquedaEventosPorEspacio[];
+
+    async function buscar() {
+
+        filtros.horaDesde = null
+        if (horaDesde !== null && horaDesde !== undefined)
+            filtros.horaDesde = parseTime(horaDesde)
+
+        filtros.horaHasta = null
+        if (horaHasta !== null && horaHasta !== undefined)
+            filtros.horaHasta = parseTime(horaHasta)
+
+        filtros.disciplinas = [];
+        disciplinas.keys().forEach(d => {
+            filtros.disciplinas.push(d);
+        })
+
+        filtros.modos = [];
+        modos.keys().forEach(d => {
+            filtros.modos.push(d);
+        })
+
+        if (usarPrecioLimite) {
+            filtros.precioLimite = parseFloat(precioLimite.replace(',', '.'));
+        }
+
+        try {
+			resultados = await EspaciosService.buscarEventosPorEspacio(filtros);          
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}            
+		}
+    }
+
+
+    $: filtrosVisibles = false;
+    $: popupDisciplinasVisible = false;
+    $: popupConfirmCancelarVisible = false;
+
+    let disciplinas : Map<number, string> = new Map<number, string>();
+
+    async function buscarDisciplinas(val: string) {
+        let response = await DisciplinasService.buscar(val);
+
+        let ret : Map<number, string> = new Map();
+
+        response.forEach((val) => {
+            ret.set(val.id, val.nombre);
+        });
+
+        return ret;
+    }
+
+    $: popupModosVisible = false;
+
+    let modos : Map<number, string> = new Map<number, string>();
+
+    async function buscarModos(val: string) {
+        let response = await ModosDeEventoService.buscar(val);
+
+        let ret : Map<number, string> = new Map();
+
+        response.forEach((val) => {
+            ret.set(val.id, val.nombre);
+        });
+
+        return ret;
+    }
+
+    let horaDesde : string | null;
+    let horaHasta : string | null;
+
+    $: usarPrecioLimite = false;
+    $: precioLimite = "";
+    $: warningPrecioLimiteVisible = false;
+
+    $: (() => {
+        const numero = parseFloat(precioLimite.replace(',', '.'));
+        if (usarPrecioLimite && (isNaN(numero) || numero < 0)) {
+            warningPrecioLimiteVisible = true;
+            return;
+        }
+        warningPrecioLimiteVisible = false;
+    })()
+
+
+	onMount(async () => {
+		if (get(token) === "") {
+			goto("/");
+		}
+
+		const userPermisos = get(permisos);
+		if (!userPermisos.includes("AdministracionEspaciosPrivados")) {
+			errorPermiso = true;
+			return;
+		}
+
+		buscar();
+	});
+
+    async function cancelarEvento() {
+		try {
+            //TODO asignar idEvento
+			await EspaciosService.cancelarEvento(idEvento, id);
+			
+			// TODO: Recargar la lista de eventos
+            buscar();
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}
+		}
+		popupConfirmCancelarVisible = false;
+	}
+    
+</script>
+
+<PopupSeleccion title="Disciplinas" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas}/>
+<PopupSeleccion title="Modos de evento" multiple={true} bind:visible={popupModosVisible} searchFunction={buscarModos} bind:selected={modos}/>
+
+
+<div id="content">
+	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+		<h1 class="text-m text-center">Eventos</h1>
+
+        <div class="flex w-full gap-2 items-center">
+            <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={filtros.texto} action={buscar}></TextField>
+            <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>
+            <Button icon="/icons/filter.svg" classes="h-fit" toggable bind:active={filtrosVisibles}></Button>
+        </div>
+
+        {#if filtrosVisibles}
+
+            <div class="flex flex-col gap-2 md:flex-row items-start justify-start">
+                <div class="flex justify-start items-center gap-2 w-full md:w-fit">
+                    <span>Fechas:</span>
+                    <DatePicker 
+                        range 
+                        label="" 
+                        bind:startDate={filtros.fechaDesde} 
+                        bind:endDate={filtros.fechaHasta}
+                        minDate={new Date()}
+                        classes="w-full"
+                    />
+                </div>
+
+                <div class="flex justify-start items-center gap-2 w-full md:w-fit">
+                    <span>Horario:</span>
+                    <TimeRangePicker 
+                        bind:startTime={horaDesde} 
+                        bind:endTime={horaHasta} 
+                        label={null}
+                        classes="w-full"
+                    />
+                </div>
+            </div>
+
+            <div class="md:flex flex-row justify-start items-center gap-4">
+                <div class="flex justify-start gap-2 items-center">
+                    <span>Disciplinas</span>
+                    <Button action={() => {popupDisciplinasVisible = !popupDisciplinasVisible}}>Seleccionar</Button>
+                </div>
+                {#if disciplinas.size > 0}
+                <div class="commaList">
+                    {#each disciplinas as d}
+                        <span>{d[1]}</span>
+                    {/each}
+                </div>
+                {:else}
+                Cualquiera
+                {/if}
+            </div>
+
+            <div class="md:flex flex-row justify-start items-center gap-4">
+                <div class="flex justify-start gap-2 items-center">
+                    <span>Modos de evento</span>
+                    <Button action={() => {popupModosVisible = !popupModosVisible}}>Seleccionar</Button>
+                </div>
+                {#if modos.size > 0}
+                <div class="commaList">
+                    {#each modos as m}
+                        <span>{m[1]}</span>
+                    {/each}
+                </div>
+                {:else}
+                Cualquiera
+                {/if}
+            </div>
+
+            <div>
+                <div class="flex justify-start items-center gap-2">
+                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Hasta $</span></CheckBox>
+                    <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full md:w-[500px]"/>
+                </div>
+                <Warning text="El monto superior (“Hasta”) debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
+            </div>            
+
+            <div class="flex justify-center items-center mb-4">
+                <Button classes="text-xs" action={buscar}>Buscar</Button>
+            </div>
+        {/if}
+        
+        <div class="flex flex-col w-full gap-2 md:flex-row md:flex-wrap justify-between">
+            {#each resultados as r}
+                <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
+                    {#if  r.fechaHoraInicio !== undefined && r.precio !== undefined && r.disciplinas !== undefined}
+                        <div class="flex justify-between items-center">
+                            <span class="text-s">{r.nombre}</span>
+                            <div class="flex gap-2 shrink-0">
+                                <Button icon="/icons/cross.svg" action={() => {popupConfirmCancelarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
+                                <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Evento/${r.id}`)}} classes="shrink-0"></Button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center ml-4">
+                            <span class="text-s">{formatDate(new Date(r.fechaHoraInicio), true)}</span>
+                            <span class="text-s">${("" + r.precio.toFixed(2)).replace(".", ",")}</span>
+                        </div>
+                        <div class="commaList text-xs ml-4">
+                            {#each r.disciplinas as d}
+                                <span>{d}</span>
+                            {/each}
+                        </div>
+                    {/if}
+
+                </div>
+            {/each}
+        </div>
+        
+
+	</div>
+
+</div>
+
+<Popup bind:visible={popupConfirmCancelarVisible} fitH fitW>
+	¿Está seguro que desea eliminar el evento?
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupConfirmCancelarVisible = false}}>Cancelar</Button>
+		<Button action={cancelarEvento}>Confirmar</Button>
+	</div>
+</Popup>
+
+<PopupError bind:visible={errorPermiso}>
+	No tiene permiso para ver eventos del espacio.
+</PopupError>
+
+<PopupError bind:visible={errorGenericoVisible}>
+	{errorGenerico}
+</PopupError>
