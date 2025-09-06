@@ -157,6 +157,8 @@ export async function request(
 
     response = <Response>response;
 
+    if (block) loading.set(false);
+
     if (response.status === 200) {
         let contentType = response.headers.get("content-type")
         switch (contentType) {
@@ -170,8 +172,6 @@ export async function request(
     }
 
     let res = await response.json()
-
-    if (block) loading.set(false);
 
     throw <HttpError> res;
 }
