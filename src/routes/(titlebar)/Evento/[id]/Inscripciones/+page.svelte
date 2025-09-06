@@ -5,6 +5,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupComprobante from "$lib/components/PopupComprobante.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOInscripcionesEvento from "$lib/dtos/espacios/DTOInscripcionesEvento";
@@ -94,6 +95,8 @@
 		data = null;	
 		buscarInscriptos();
 	}
+
+	$: numeroComprobanteAbierto = null as number | null; 
 </script>
 
 {#if data !== null}
@@ -149,7 +152,7 @@
 											<div>
 												${t.monto.toFixed(2).replaceAll(".", ",")}
 											</div>
-											<Button icon="/icons/documento.svg"></Button>
+											<Button icon="/icons/documento.svg" action={() => {numeroComprobanteAbierto = t.numero}}></Button>
 										</div>
 									</div>
 								{/each}
@@ -216,3 +219,5 @@
 <PopupError bind:visible={errorVisible}>
 	{error}
 </PopupError>
+
+<PopupComprobante bind:numero={numeroComprobanteAbierto}/>

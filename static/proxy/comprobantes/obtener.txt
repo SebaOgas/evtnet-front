@@ -1,0 +1,35 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+numero: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "numero": 123456,
+    "concepto": "Motivo por el que se realizó la transferencia",
+    "fechaHoraEmision": 1753225458732,
+    "formaDePago": "Mercado Pago",
+    "pago": {
+        "nombre": "Tatiana",
+        "apellido": "Duran",
+        "dni": 12345678,
+        "cbu": "1427392842834028402384320"
+    },
+    "cobro": {
+        "nombre": "Sergio",
+        "apellido": "Albino",
+        "dni": 23456789,
+        "cbu": "1427392842834028402384320"
+    },
+    "montoTotalBruto": 4000,
+    "comision": 400,
+    "evtnetPagaComision": false
+}
