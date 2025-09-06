@@ -16,7 +16,7 @@ RESPONSE BODY
     "nombreEvento": "Evento 0",
 
     "cantidadMaximaInvitados": 5,
-    "limiteParticipantes": 3,
+    "limiteParticipantes": 7,
     
     "esAdministrador": true,
     "esOrganizador": false

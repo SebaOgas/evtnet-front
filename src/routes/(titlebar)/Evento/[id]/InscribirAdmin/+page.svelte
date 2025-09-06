@@ -7,6 +7,7 @@
 	import PopupBusquedaUsuarios from "$lib/components/PopupBusquedaUsuarios.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import Warning from "$lib/components/Warning.svelte";
 	import type DTODatosParaInscripcion from "$lib/dtos/eventos/DTODatosParaInscripcion";
 	import type DTOInscripcion from "$lib/dtos/eventos/DTOInscripcion";
 	import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
@@ -130,6 +131,14 @@
 
 		return true;
 	}
+
+	$: formularioValido = false;
+
+	$: (() => {
+		invitados;
+		evento;
+		formularioValido = validarFormulario();
+	})()
 	
 	async function confirmar() {
 		if (usuario === null) return;
@@ -191,20 +200,65 @@
 				</div>
 				<Button action={() => popupBusquedaUsuariosVisible = true}>Cambiar</Button>
 			</div>
+
+			<div class="flex justify-between items-center">
+				<h3>Invitados</h3>
+				<Button 
+					icon="/icons/plus.svg" 
+					action={agregarInvitado}
+					disabled={invitados.length >= Math.min(evento.cantidadMaximaInvitados, evento.limiteParticipantes - 1)}
+				></Button>
+			</div>
+
+            
+			<div class="flex flex-col gap-4">
+			    {#each invitados as invitado, i}
+					<div class="flex flex-row w-full flex-wrap gap-2 items-center">
+						<TextField 
+							label={null} 
+							placeholder="Nombre..." 
+							bind:value={invitado.nombre}
+							classes="flex-1"
+							max={30}
+						/>
+						<TextField 
+							label={null} 
+							placeholder="Apellido..." 
+							bind:value={invitado.apellido}
+							classes="flex-1"
+							max={30}
+						/>
+                        <TextField 
+                            label={null} 
+                            placeholder="Número de DNI..." 
+                            bind:value={invitado.dni}
+							classes="flex-1"
+							min={7}
+							max={8}
+                        />
+                        <Button 
+                            icon="/icons/cross.svg" 
+                            action={() => eliminarInvitado(i)}
+                            classes="h-fit"
+                        ></Button>
+                        <Warning text="Ingrese nombre, apellido y DNI del invitado" visible={!validateNombre(invitado.nombre).valid || !validateApellido(invitado.apellido).valid || !validateDNI(invitado.dni).valid}/>
+					</div>
+			    {/each}
+            </div>
 		{/if}
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => goto(`/Evento/${id}/Inscripciones`)}>Cancelar</Button>
 		{#if usuario !== null}
-			<Button action={() => {popupConfirmacionVisible = true;}} disabled={!validarFormulario()}>Inscribir</Button>
+			<Button action={() => {popupConfirmacionVisible = true;}} disabled={!formularioValido}>Inscribir</Button>
 		{/if}
 	</div>
 </div>
 {/if}
 
 <!-- Popups -->
-<Popup title="Confirmar cambios" bind:visible={popupConfirmacionVisible} fitW fitH>
+<Popup title="Confirmar inscripción" bind:visible={popupConfirmacionVisible} fitW fitH>
 	<div class="grow overflow-y-auto">
 		<p>¿Está seguro de que desea realizar esta inscripción?</p>
 
