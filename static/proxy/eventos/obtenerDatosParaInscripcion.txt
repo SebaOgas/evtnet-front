@@ -1,0 +1,23 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEvento": "Evento 0",
+
+    "cantidadMaximaInvitados": 5,
+    "limiteParticipantes": 3,
+    
+    "esAdministrador": true,
+    "esOrganizador": false
+}
