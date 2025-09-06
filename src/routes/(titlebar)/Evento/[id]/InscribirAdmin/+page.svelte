@@ -4,6 +4,7 @@
 	import { page } from "$app/state";
 	import Button from "$lib/components/Button.svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupBusquedaUsuarios from "$lib/components/PopupBusquedaUsuarios.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTODatosParaInscripcion from "$lib/dtos/eventos/DTODatosParaInscripcion";
@@ -160,6 +161,11 @@
 			img.style.display = "block";
 		})()	
 	}
+
+	$: popupBusquedaUsuariosVisible = false;
+	async function buscarUsuarios(valor: string) {
+		return await EventosService.buscarUsuariosNoInscriptos(id, valor);
+	}
  
 </script>
 
@@ -175,7 +181,7 @@
 
 		{#if usuario === null}
 			<div class="w-full flex justify-center">
-				<Button>Seleccionar usuario</Button>
+				<Button action={() => popupBusquedaUsuariosVisible = true}>Seleccionar usuario</Button>
 			</div>
 		{:else}
 			<div class="flex flex-row justify-between">
@@ -183,7 +189,7 @@
 					<img use:loadFotoDePerfil={usuario.username} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer hidden">
 					<div>{usuario.nombre} {usuario.apellido}</div>
 				</div>
-				<Button>Cambiar</Button>
+				<Button action={() => popupBusquedaUsuariosVisible = true}>Cambiar</Button>
 			</div>
 		{/if}
 	</div>
@@ -224,3 +230,5 @@
 <PopupError bind:visible={errorVisible}>
 	{error}
 </PopupError>
+
+<PopupBusquedaUsuarios searchFunction={buscarUsuarios} bind:selected={usuario} bind:visible={popupBusquedaUsuariosVisible}/>
