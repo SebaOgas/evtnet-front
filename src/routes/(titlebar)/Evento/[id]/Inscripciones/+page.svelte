@@ -1,24 +1,13 @@
 <script lang="ts">
-	import { afterNavigate, goto } from "$app/navigation";
 	import { base } from "$app/paths";
 	import { page } from "$app/state";
 	import Button from "$lib/components/Button.svelte";
-	import ComboBox from "$lib/components/ComboBox.svelte";
-	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
-	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
-	import Warning from "$lib/components/Warning.svelte";
 	import type DTOInscripcionesEvento from "$lib/dtos/espacios/DTOInscripcionesEvento";
-	import type DTOModificarEvento from "$lib/dtos/eventos/DTOModificarEvento";
 	import { HttpError } from "$lib/request/request";
-	import { CronogramaService } from "$lib/services/CronogramaService";
-	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EventosService } from "$lib/services/EventosService";
-	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
-	import { SupereventosService } from "$lib/services/SupereventosService";
 	import { UsuariosService } from "$lib/services/UsuariosService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
