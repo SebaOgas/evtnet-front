@@ -9,6 +9,7 @@ import type DTOResultadoBusquedaEventos from "$lib/dtos/eventos/DTOResultadoBusq
 import type DTOResultadoBusquedaMisEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisEventos";
 import { HttpRequestType, request } from "$lib/request/request";
 import type DTOModificarEvento from "$lib/dtos/eventos/DTOModificarEvento";
+import type DTOInscripcionesEvento from "$lib/dtos/espacios/DTOInscripcionesEvento";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -99,4 +100,21 @@ export const EventosService = {
     modificarEvento: async (data: DTOModificarEvento) => {
         await request(HttpRequestType.POST, "eventos/modificarEvento", true, null, JSON.stringify(data));
     },
+
+    obtenerInscripciones: async (id: number, busqueda: string = "") => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+        args.set("busqueda", `${busqueda}`);
+
+        let response : DTOInscripcionesEvento = await request(HttpRequestType.GET, "eventos/obtenerInscripciones", true, args);
+
+        return response;
+    },
+
+    cancelarInscripcion: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        await request(HttpRequestType.DELETE, "eventos/cancelarInscripcion", true, args);
+    }
 }

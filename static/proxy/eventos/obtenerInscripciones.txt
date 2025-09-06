@@ -1,0 +1,114 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: number
+busqueda: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEvento": "Evento 0",
+
+    "esAdministrador": true,
+    "esOrganizador": true,
+
+    "inscripciones": [
+        {
+            "id": 0,
+            "usuario": {
+                "nombre": "Andrés",
+                "apellido": "Blan",
+                "username": "andrewbla"
+            },
+            "fechaInscripcion": 1755389400000,
+            "fechaCancelacionInscripcion": null,
+            "transferencias": [
+                {
+                    "numero": 192392,
+                    "monto": 6000
+                },
+                {
+                    "numero": 195482,
+                    "monto": -2000
+                }
+            ],
+            "invitados": [
+                {
+                    "nombre": "Sebastián",
+                    "apellido": "Ogás",
+                    "dni": 12538934
+                },
+                {
+                    "nombre": "Sergio",
+                    "apellido": "Albino",
+                    "dni": 12538935
+                },
+                {
+                    "nombre": "Sara",
+                    "apellido": "Rodríguez",
+                    "dni": 12538936
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "usuario": {
+                "nombre": "Nombre",
+                "apellido": "Apellido",
+                "username": "sdoasdijao"
+            },
+            "fechaInscripcion": 1755389400000,
+            "fechaCancelacionInscripcion": null,
+            "transferencias": [
+                {
+                    "numero": 192892,
+                    "monto": 6000
+                }
+            ],
+            "invitados": []
+        },
+        {
+            "id": 2,
+            "usuario": {
+                "nombre": "Otro",
+                "apellido": "Usuario",
+                "username": "wwwwwwwwwwww"
+            },
+            "fechaInscripcion": 1755389400000,
+            "fechaCancelacionInscripcion": 1755789400000,
+            "transferencias": [
+                {
+                    "numero": 192392,
+                    "monto": 6000
+                },
+                {
+                    "numero": 195482,
+                    "monto": -2000
+                },
+                {
+                    "numero": 195482,
+                    "monto": -4000
+                }
+            ],
+            "invitados": [
+                {
+                    "nombre": "Tatiana",
+                    "apellido": "Duran",
+                    "dni": 12538934
+                },
+                {
+                    "nombre": "Otro",
+                    "apellido": "Invitado",
+                    "dni": 12538935
+                }
+            ]
+        }
+    ]
+}
