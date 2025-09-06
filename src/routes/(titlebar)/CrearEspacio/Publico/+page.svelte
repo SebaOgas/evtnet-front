@@ -14,26 +14,29 @@
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
+	import { page } from "$app/state";
 
     onMount(async () => {     
         if (get(token) === "") {
             goto("/");
         }
 
-        if(!get(permisos).includes("CreacionEspaciosPrivados")) {
+        if(!get(permisos).includes("CreacionEspaciosPublicos")) {
             goto("/Espacios")
         }
     });
 
+    let searchParams = page.url.searchParams;
+
     let data : DTOCrearEspacio = {
-		nombre: "",
-		descripcion: "",
-		direccion: "",
-		latitud: undefined,
-		longitud: undefined,
+		nombre: searchParams.get("nombre") ?? "",
+		descripcion: searchParams.get("descripcion") ?? "",
+		direccion: searchParams.get("direccion") ?? "",
+		latitud: Number(searchParams.get("latitud")) ?? undefined,
+		longitud: Number(searchParams.get("direccion")) ?? undefined,
 		disciplinas: [],
-		publico: false,
-		sepId: null
+        publico: true,
+        sepId: Number(searchParams.get("sep"))
 	}
 
     let ubicacion : {x: number, y: number} | undefined = undefined
@@ -146,7 +149,7 @@
 <div id="content">
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
         <h1 class="text-m text-center">
-            Crear espacio
+            Crear espacio público
         </h1>
 
         <TextField label="Nombre del espacio" bind:value={data.nombre} validate={validateNombre} forceValidate={warningNombreVisible}/>

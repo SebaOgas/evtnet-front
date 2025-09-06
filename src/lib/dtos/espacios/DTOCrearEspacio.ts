@@ -4,5 +4,8 @@ export default interface DTOCrearEspacio {
     direccion: string,
     latitud: number | undefined,
     longitud: number | undefined,
-    disciplinas: number[]
+    disciplinas: number[],
+
+    publico: boolean,
+    sepId: number | null //Solicitud de espacio público a vincular
 }

@@ -13,14 +13,24 @@
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { page } from "$app/state";
-	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { CronogramaService } from "$lib/services/CronogramaService";
 	import { HttpError } from "$lib/request/request";
 	import type DTOVerificacionVigencia from "$lib/dtos/espacios/DTOVerificacionVigencia";
+	import type DTOCronogramaEspacio from "$lib/dtos/espacios/DTOCronogramaEspacio";
 
 	$: errorPermiso = false;
 	$: id = Number(page.params.id);
-	$: nombreEspacio = "";
+	$: idCronograma = Number(page.params.cronogramaId);
+
+	$: listo = false
+
+	$: data = {
+		nombreEspacio: "",
+		id: 0,
+		fechaDesde: new Date(),
+		fechaHasta: new Date(),
+		diasHaciaAdelante: 0
+	} as DTOCronogramaEspacio;
 
 	$: fechaDesde = null as Date | null;
 	$: fechaHasta = null as Date | null;
@@ -39,8 +49,6 @@
 	$: verificacion = null as DTOVerificacionVigencia | null;
 	$: verificando = false;
 
-    $: idCronogramaNuevo = null as number | null;
-
 	onMount(async () => {
 		if (get(token) === "") {
 			goto("/");
@@ -53,7 +61,11 @@
 		}
 
 		try {
-			nombreEspacio = await EspaciosService.obtenerNombreEspacio(id);
+			data = await CronogramaService.obtenerCronogramaEspacio(id);
+			fechaDesde = data.fechaDesde
+			fechaHasta = data.fechaHasta
+			diasHaciaAdelante = "" + data.diasHaciaAdelante
+			listo = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -142,7 +154,8 @@
 		// Check for conflicts
 		verificando = true;
 		try {
-			verificacion = await CronogramaService.verificarVigencia(id, null, fechaDesde!, fechaHasta!);
+			verificacion = await CronogramaService.verificarVigencia(id, idCronograma, fechaDesde!, fechaHasta!);
+			
 			if (verificacion.cronogramasSuperpuestos.length > 0) {
 				popupErrorVisible = true;
 			} else {
@@ -153,16 +166,18 @@
 				errorGenerico = e.message;
 				errorGenericoVisible = true;
 			}
+			console.log(e);
+			
 		} finally {
 			verificando = false;
 		}
 	}
 
-	async function confirmarCreacion() {
+	async function confirmarModificacion() {
 		popupConfirmacionVisible = false;
 		
 		try {
-			idCronogramaNuevo = await CronogramaService.crearCronograma(id, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante));
+			await CronogramaService.modificarCronograma(idCronograma, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante));
 			popupExitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -178,9 +193,10 @@
 </script>
 
 <div id="content">
+	{#if listo}
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center">Crear cronograma</h1>
-		<h2 class="text-center">{nombreEspacio}</h2>
+		<h1 class="text-m text-center">Modificar cronograma</h1>
+		<h2 class="text-center">{data.nombreEspacio}</h2>
 
 		<DatePicker 
 			range 
@@ -213,16 +229,32 @@
 			{verificando ? "Verificando..." : "Aceptar"}
 		</Button>
 	</div>
+	{/if}
 </div>
 
 <!-- Confirmation popup -->
-<Popup title="Generar cronograma" bind:visible={popupConfirmacionVisible} fitH fitW>
+<Popup title="Modificar cronograma" bind:visible={popupConfirmacionVisible} fitH fitW>
 	<div class="flex flex-col gap-4">
-		<p>¿Está seguro de que desea dar de alta el cronograma?</p>
+		<p>¿Está seguro de que desea modificar el cronograma?</p>
+
+		{#if verificacion && verificacion.eventosProblematicos.length > 0}
+			<p>Hay eventos organizados que dejarán de estar abarcados por este cronograma:</p>
+
+			<div class="flex flex-col gap-2 ml-2">
+				{#each verificacion.eventosProblematicos as evt}
+					<div>{evt.nombre}: {formatDate(evt.fechaHoraInicio, true)}</div>
+				{/each}
+			</div>
+
+			<p>Si continúa, los eventos seguirán programados, y los horarios del nuevo cronograma solo serán utilizables cuando no se superpongan con dichos eventos.</p>
+		{/if}
 
 		<div class="flex justify-center items-center gap-2 w-full">
 			<Button action={() => {popupConfirmacionVisible = false}}>Cancelar</Button>
-			<Button action={confirmarCreacion}>Confirmar</Button>
+			{#if verificacion && verificacion.eventosProblematicos.length > 0}
+				<Button action={() => {goto(`/Espacio/${id}/Eventos`)}}>Buscar eventos</Button>
+			{/if}
+			<Button action={confirmarModificacion}>Confirmar</Button>
 		</div>
 	</div>
 </Popup>
@@ -230,7 +262,7 @@
 <!-- Error popup -->
 <Popup title="Error" bind:visible={popupErrorVisible} fitH fitW>
 	<div class="flex flex-col gap-4">
-		<p>No se puede dar de alta este cronograma, dado que se superpone su vigencia con los siguientes cronogramas:</p>
+		<p>No se puede modificar este cronograma, dado que se superpone su vigencia con los siguientes cronogramas:</p>
 		
 		<div class="flex flex-col gap-2 ml-2">
 			{#if verificacion}
@@ -240,7 +272,7 @@
 			{/if}
 		</div>
 
-		<p>Modifique estos cronogramas antes de dar de alta el nuevo cronograma, o verifique el rango de fechas ingresadas.</p>
+		<p>Modifique los cronogramas anteriores antes de modificar este cronograma, o verifique el rango de fechas ingresadas.</p>
 
 		<div class="flex justify-center items-center gap-2 w-full">
 			<Button action={() => {popupErrorVisible = false}}>Cerrar</Button>
@@ -251,9 +283,9 @@
 
 <!-- Success popup -->
 <Popup bind:visible={popupExitoVisible} fitH fitW>
-	Cronograma generado correctamente
+	Cronograma modificado correctamente
 	<div class="flex justify-center items-center w-full">
-		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronogramaNuevo}`)}}>Aceptar</Button>
+		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronograma}`)}}>Aceptar</Button>
 	</div>
 </Popup>
 

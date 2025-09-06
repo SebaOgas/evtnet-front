@@ -10,7 +10,9 @@ REQUEST BODY
     "direccion": "C",
     "latitud": 1234,
     "longitud": 1234,
-    "disciplinas": [0,1,2,3]
+    "disciplinas": [0,1,2,3],
+    "publico": true,
+    "sepId": 13
 }
 
 RESPONSE TYPE JSON

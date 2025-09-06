@@ -1,3 +1,4 @@
+import type DTOCronogramaEspacio from "$lib/dtos/espacios/DTOCronogramaEspacio";
 import type DTOCronogramasEspacio from "$lib/dtos/espacios/DTOCronogramasEspacio";
 import type DTODatosCreacionExcepcion from "$lib/dtos/espacios/DTODatosCreacionExcepcion";
 import type DTODatosCreacionHorario from "$lib/dtos/espacios/DTODatosCreacionHorario";
@@ -13,6 +14,14 @@ export const CronogramaService = {
         args.set("id", `${id}`);
 
         let response : DTOCronogramasEspacio = await request(HttpRequestType.GET, "cronogramas/obtenerCronogramasEspacio", true, args);
+
+        return response;
+    },
+    obtenerCronogramaEspacio: async (idCronograma: number) => {
+        let args = new Map<string, string>();
+        args.set("idCronograma", `${idCronograma}`);
+
+        let response : DTOCronogramaEspacio = await request(HttpRequestType.GET, "cronogramas/obtenerCronogramaEspacio", true, args);
 
         return response;
     },
@@ -44,9 +53,10 @@ export const CronogramaService = {
 
         await request(HttpRequestType.DELETE, "cronogramas/eliminarExcepcion", true, args);
     },
-    verificarVigencia: async (idEspacio: number, fechaDesde: Date, fechaHasta: Date) => {
+    verificarVigencia: async (idEspacio: number, idCronograma: number | null, fechaDesde: Date, fechaHasta: Date) => {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
+        args.set("idCronograma", `${idCronograma}`);
         args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
         args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
 
@@ -70,6 +80,21 @@ export const CronogramaService = {
         let response : {id: number}= await request(HttpRequestType.POST, "cronogramas/crearCronograma", true, null, JSON.stringify(data));
         
         return response.id;
+    },
+    modificarCronograma: async (
+        idCronograma: number, 
+        fechaDesde: Date, 
+        fechaHasta: Date, 
+        diasHaciaAdelante: number
+    ) => {
+        let data = {
+            idCronograma: idCronograma,
+            fechaDesde: (new Date(fechaDesde)).getTime(),
+            fechaHasta: (new Date(fechaHasta)).getTime(),
+            diasHaciaAdelante: diasHaciaAdelante
+        }
+
+        await request(HttpRequestType.PUT, "cronogramas/modificarCronograma", true, null, JSON.stringify(data));
     },
     obtenerDatosCreacionHorario: async (idCronograma: number) => {
         let args = new Map<string, string>();
