@@ -1,0 +1,21 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idCronograma: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombreEspacio": "Nombre del espacio",
+    "id": 0,
+    "fechaDesde": 1758225458732,
+    "fechaHasta": 1758925458732,
+    "diasHaciaAdelante": 10
+}

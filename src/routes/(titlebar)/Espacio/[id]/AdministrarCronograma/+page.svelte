@@ -65,10 +65,11 @@
                                 {formatDate(cronograma.fechaDesde)} - {formatDate(cronograma.fechaHasta)}
                             </div>
                             <div class="text-s">
-                                Permite inscripción en {cronograma.diasHaciaAdelante} días hacia adelante
+                                Anticipación máxima de reserva: {cronograma.diasHaciaAdelante} días
                             </div>
                         </div>
-                        <div class="ml-4">
+                        <div class="ml-4 flex gap-2">
+                            <Button icon="/icons/edit.svg" action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${cronograma.id}/Modificar`)}}></Button>
                             <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${cronograma.id}`)}}></Button>
                         </div>
                     </div>
