@@ -1,0 +1,26 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idEvento": 0,
+    "username": "sebaogas",
+    "invitados": [
+        {
+            "nombre": "Tatiana",
+            "apellido": "Duran",
+            "dni": "12345678"
+        },
+        {
+            "nombre": "Andrés",
+            "apellido": "Blan",
+            "dni": "44938392"
+        }
+    ]
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY
