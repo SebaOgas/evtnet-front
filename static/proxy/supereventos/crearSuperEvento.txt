@@ -1,0 +1,18 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "A",
+    "descripcion": "B"
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0
+}
