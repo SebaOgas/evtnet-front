@@ -1,4 +1,5 @@
 import type DTOBusquedaMisSuperEventos from "$lib/dtos/eventos/DTOBusquedaMisSuperEventos";
+import type DTOCrearSuperEvento from "$lib/dtos/eventos/DTOCrearSuperEvento";
 import type DTOResultadoBusquedaMisSuperEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisSuperEventos";
 import type DTOSuperEvento from "$lib/dtos/eventos/DTOSuperEvento";
 import { HttpRequestType, request } from "$lib/request/request";
@@ -26,5 +27,11 @@ export const SupereventosService = {
         let response : DTOSuperEvento = await request(HttpRequestType.GET, "supereventos/obtenerSuperEvento", true, args);
 
         return response;
+    },
+    crearSuperEvento: async (data: DTOCrearSuperEvento) => {
+
+        let response : {id: number} = await request(HttpRequestType.POST, "supereventos/crearSuperEvento", true, null, JSON.stringify(data));
+
+        return response.id;
     },
 }
