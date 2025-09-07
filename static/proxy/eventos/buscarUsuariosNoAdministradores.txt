@@ -1,0 +1,50 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEvento: int
+texto: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "username": "username",
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "mail": null,
+        "dni": null,
+        "fechaNacimiento": null
+    },
+    {
+        "username": "username2",
+        "nombre": "Nombre 2",
+        "apellido": "Apellido 2",
+        "mail": null,
+        "dni": null,
+        "fechaNacimiento": null
+    },
+    {
+        "username": "username3",
+        "nombre": "Nombre 3",
+        "apellido": "Apellido 3",
+        "mail": null,
+        "dni": null,
+        "fechaNacimiento": null
+    },
+    {
+        "username": "username4",
+        "nombre": "Nombre 4",
+        "apellido": "Apellido 4",
+        "mail": null,
+        "dni": null,
+        "fechaNacimiento": null
+    }
+]
+
