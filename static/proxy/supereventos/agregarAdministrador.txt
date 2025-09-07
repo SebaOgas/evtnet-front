@@ -1,0 +1,14 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+idEvento: int
+username: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

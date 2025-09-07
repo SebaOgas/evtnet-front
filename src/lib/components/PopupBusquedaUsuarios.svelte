@@ -4,6 +4,7 @@
 	import SearchField from "./SearchField.svelte";
 	import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { formatDate } from "./DatePicker.svelte";
 
     export let searchFunction : (val: string) => Promise<DTOBusquedaUsuario[]>;
 
@@ -30,6 +31,7 @@
         visible = false;
         found = [];
         selected = {...selectedCopy} as DTOBusquedaUsuario | null;
+        selectedCopy = null;
     }
 
     async function toggleItem(event: Event, val: DTOBusquedaUsuario) {        
@@ -112,7 +114,7 @@
                     {#if selectedCopy?.fechaNacimiento !== null}
                         <div class="flex justify-between items-center">
                             <span>Nacimiento:</span>
-                            <span>{selectedCopy?.fechaNacimiento}</span>
+                            <span>{formatDate(selectedCopy?.fechaNacimiento)}</span>
                         </div>
                     {/if}
                     <div class="w-full flex justify-center">

@@ -1,0 +1,54 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombre": "Nombre del superevento",
+    "descripcion": "Descripción del superevento",
+    "esAdministrador": true,
+
+    "eventos": [
+        {
+            "id": 0,
+            "nombre": "Torneo de Fútbol 5 Primavera",
+            "fechaDesde": 1755389400000,
+            "fechaHasta": 1755403800000,
+            "nombreEspacio": "Espacio 0",
+            "esAdministrador": false
+        },
+        {
+            "id": 1,
+            "nombre": "Clases de Natación para Adultos",
+            "fechaDesde": 1755465600000,
+            "fechaHasta": 1755469200000,
+            "nombreEspacio": "Espacio 1",
+            "esAdministrador": true
+        },
+        {
+            "id": 2,
+            "nombre": "Campeonato de Vóley Juvenil",
+            "fechaDesde": 1755552000000,
+            "fechaHasta": 1755573600000,
+            "nombreEspacio": "Espacio 2",
+            "esAdministrador": false
+        },
+        {
+            "id": 3,
+            "nombre": "Copa de Tenis Senior",
+            "fechaDesde": 1759238400000,
+            "fechaHasta": 1759656400000,
+            "nombreEspacio": "Espacio 3",
+            "esAdministrador": false
+        }
+    ]
+}
