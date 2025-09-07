@@ -1,0 +1,82 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "texto": "texto buscado",
+    "fechaDesde": 1755389400000,
+    "fechaHasta": 1755589400000
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Torneo de Fútbol 5 Primavera",
+        "fechaDesde": 1755389400000,
+        "fechaHasta": 1755403800000,
+        "eventosFuturos": 3,
+        "eventosTotales": 5
+    },
+    {
+        "id": 1,
+        "nombre": "Clases de Natación para Adultos",
+        "fechaDesde": 1755465600000,
+        "fechaHasta": 1755469200000,
+        "eventosFuturos": 1,
+        "eventosTotales": 7
+    },
+    {
+        "id": 2,
+        "nombre": "Campeonato de Vóley Juvenil",
+        "fechaDesde": 1755552000000,
+        "fechaHasta": 1755573600000,
+        "eventosFuturos": 2,
+        "eventosTotales": 2
+    },
+    {
+        "id": 3,
+        "nombre": "Copa de Tenis Senior",
+        "fechaDesde": 1755638400000,
+        "fechaHasta": 1755656400000,
+        "eventosFuturos": 6,
+        "eventosTotales": 12
+    },
+    {
+        "id": 4,
+        "nombre": "Entrenamiento de Rugby",
+        "fechaDesde": 1755724800000,
+        "fechaHasta": 1755732000000,
+        "eventosFuturos": 1,
+        "eventosTotales": 2
+    },
+    {
+        "id": 5,
+        "nombre": "Clase de CrossFit Intensivo",
+        "fechaDesde": 1755811200000,
+        "fechaHasta": 1755814800000,
+        "eventosFuturos": 4,
+        "eventosTotales": 9
+    },
+    {
+        "id": 6,
+        "nombre": "Aquaeróbicos Matutinos",
+        "fechaDesde": 1755897600000,
+        "fechaHasta": 1755901200000,
+        "eventosFuturos": 2,
+        "eventosTotales": 3
+    },
+    {
+        "id": 7,
+        "nombre": "Torneo de Esgrima Espada",
+        "fechaDesde": 1755984000000,
+        "fechaHasta": 1756002000000,
+        "eventosFuturos": 1,
+        "eventosTotales": 4
+    }
+]
