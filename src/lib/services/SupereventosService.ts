@@ -1,3 +1,5 @@
+import type DTOBusquedaMisSuperEventos from "$lib/dtos/eventos/DTOBusquedaMisSuperEventos";
+import type DTOResultadoBusquedaMisSuperEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisSuperEventos";
 import { HttpRequestType, request } from "$lib/request/request";
 
 
@@ -8,6 +10,11 @@ export const SupereventosService = {
         args.set("text", text);
 
         let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "supereventos/buscarAdministrados", true, args);
+
+        return response;
+    },
+    buscarMisSuperEventos: async (data: DTOBusquedaMisSuperEventos) => {
+        let response : DTOResultadoBusquedaMisSuperEventos[] = await request(HttpRequestType.PUT, "supereventos/buscarMisSuperEventos", false, null, JSON.stringify(data));
 
         return response;
     },
