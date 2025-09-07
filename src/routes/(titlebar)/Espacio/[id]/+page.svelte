@@ -65,11 +65,11 @@
             
             for (let i = 0; i < data.cantidadImagenes; i++) {
 
-                let src = await ImagenesEspaciosService.obtener(id, i+1);
+                let img = await ImagenesEspaciosService.obtener(id, i+1);
                 
                 imagenes.push({
-                    id: i+1,
-                    src: src
+                    id: img.id,
+                    src: img.url
                 });
             }
             

@@ -37,8 +37,11 @@
     export let placeholder : string = "Ningún archivo seleccionado"
 
     export let accept : string[] = [""];
-    
+
     export let validate : (v: File | null) => {valid: boolean; reason: string | null | undefined} = (v: File | null) => {return {valid: true, reason: undefined}};
+
+    export let buttonText: string = "Seleccionar";
+    export let showFileName: boolean = true;
 
     function validar()  {        
         let result = validate(file);
@@ -85,8 +88,10 @@
         <span>{label}</span>
     {/if}
     <div class="flex flex-row justify-between items-center flex-wrap gap-2">
-        <span>{filename}</span>
-        <Button action={openInput}>Seleccionar</Button>
+        {#if showFileName}
+            <span>{filename}</span>
+        {/if}
+        <Button action={openInput}>{buttonText}</Button>
     </div>
     <input type="file" id="inputfile" class="hidden" bind:this={el} on:change={changeFile} accept={acceptString}>
     <Warning visible={!valido} text={razonInvalidez}/>
