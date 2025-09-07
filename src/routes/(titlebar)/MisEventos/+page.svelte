@@ -13,6 +13,7 @@
 	import type DTOResultadoBusquedaMisEventos from "$lib/dtos/eventos/DTOResultadoBusquedaMisEventos";
 	import { EventosService } from "$lib/services/EventosService";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 
     $: errorPermiso = false;
 
@@ -65,6 +66,7 @@
 		buscar();
 	});
 
+    $: popupCrearEventoVisible = false;
     
 </script>
 
@@ -73,7 +75,7 @@
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
 		<h1 class="flex justify-center items-center gap-2">
             <span class="text-m">Mis Eventos</span>
-            <Button icon="/icons/plus.svg" action={() => {goto("/CrearEvento")}}/>
+            <Button icon="/icons/plus.svg" action={() => {popupCrearEventoVisible = true;}}/>
         </h1>
 
         <div class="flex w-full gap-2 items-center">
@@ -137,6 +139,16 @@
 	</div>
 
 </div>
+
+<Popup bind:visible={popupCrearEventoVisible} title="Organizar evento" fitH fitW>
+    <p class="mb-2">Para organizar un evento, primero debe establecer el espacio en que será realizado.</p>
+    <p class="mb-2">Puede optar por buscar un espacio o, en caso de que no lo encuentre, organizar su evento en un espacio no registrado.</p>
+    <div class="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
+        <Button action={() => popupCrearEventoVisible = false}>Atrás</Button>
+        <Button action={() => goto(`/Espacios`)}>Buscar espacios</Button>
+        <Button action={() => goto(`/CrearEvento`)}>Espacio no registrado</Button>
+    </div>
+</Popup>
 
 <PopupError bind:visible={errorPermiso}>
 	No tiene permiso para administrar cronogramas.
