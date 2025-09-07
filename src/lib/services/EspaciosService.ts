@@ -6,6 +6,8 @@ import type DTOEspacioEditar from "$lib/dtos/espacios/DTOEspacioEditar";
 import { HttpRequestType, request } from "$lib/request/request";
 import type DTOBusquedaMisEspacios from "$lib/dtos/espacios/DTOBusquedaMisEspacios";
 import type DTOResultadoBusquedaMisEspacios from "$lib/dtos/espacios/DTOResultadoBusquedaMisEspacios";
+import type DTOBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOBusquedaEventosPorEspacio";
+import type DTOResultadoBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOResultadoBusquedaEventosPorEspacio";
 
 
 export const EspaciosService = {
@@ -67,4 +69,17 @@ export const EspaciosService = {
 
         return response;
     },
+
+    buscarEventosPorEspacio: async (data: DTOBusquedaEventosPorEspacio) => {
+        let response : DTOResultadoBusquedaEventosPorEspacio[] = await request(HttpRequestType.PUT, "espacios/buscarEventosPorEspacio", false, null, JSON.stringify(data));
+
+        return response;
+    },
+
+    cancelarEvento: async (eventoId: number, espacioId: number) => {
+        let args = new Map<string, string>();
+        args.set("eventoId", `${eventoId}`);
+        args.set("espacioId", `${espacioId}`);
+        await request(HttpRequestType.DELETE, "espacios/cancelarEvento", true, args);
+    }
 }

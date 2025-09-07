@@ -9,7 +9,7 @@
 <label class="flex {disabled ? "disabled" : ""} items-center gap-2">
     <div class="box border rounded-sm flex items-center justify-center">
         {#if checked}
-            <img src="icons/check.png" alt="✔" class="object-contain"/>
+            <img src="/icons/check.png" alt="✔" class="object-contain"/>
         {/if}
     </div>
 	<input type="checkbox" {disabled} bind:checked={checked} class="hidden" />
