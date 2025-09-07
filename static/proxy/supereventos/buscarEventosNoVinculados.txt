@@ -1,0 +1,86 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idSuperevento: int
+texto: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 10,
+        "nombre": "Evento 10",
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1753225458732,
+        "nombreEspacio": "Espacio 0",
+        "disciplinas": [
+            {
+                "id": 0,
+                "nombre": "Fútbol"
+            },
+            {
+                "id": 1,
+                "nombre": "Pádel"
+            },
+            {
+                "id": 2,
+                "nombre": "Monopoly"
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "nombre": "Evento 11",
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1753225458732,
+        "nombreEspacio": "Espacio 0",
+        "disciplinas": [
+            {
+                "id": 3,
+                "nombre": "Metegol"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "nombre": "Evento 12",
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1753225458732,
+        "nombreEspacio": "Espacio 0",
+        "disciplinas": [
+            {
+                "id": 4,
+                "nombre": "Voley"
+            },
+            {
+                "id": 5,
+                "nombre": "Tenis"
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "nombre": "Evento 13",
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1753225458732,
+        "nombreEspacio": "Espacio 0",
+        "disciplinas": [
+            {
+                "id": 0,
+                "nombre": "Fútbol"
+            },
+            {
+                "id": 6,
+                "nombre": "Futsal"
+            }
+        ]
+    }
+]
+

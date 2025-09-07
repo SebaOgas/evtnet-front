@@ -1,0 +1,49 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id: int
+
+REQUEST BODY
+
+{
+    "id": 0,
+    "nombre": "Superevento 0",
+    "descripcion": "Descripción del Superevento",
+
+    "esOrganizador": true,
+
+    "eventos": [
+        {
+            "id": 0,
+            "nombre": "Evento 0",
+            "fechaDesde": 1755389400000,
+            "fechaHasta": 1755589400000,
+            "nombreEspacio": "Espacio 0",
+            "crear": true,
+            "eliminar": false
+        },
+        {
+            "id": 1,
+            "nombre": "Evento 1",
+            "fechaDesde": 1755389400000,
+            "fechaHasta": 1755589400000,
+            "nombreEspacio": "Espacio 1",
+            "crear": false,
+            "eliminar": true
+        },
+        {
+            "id": 2,
+            "nombre": "Evento 2",
+            "fechaDesde": 1755389400000,
+            "fechaHasta": 1755589400000,
+            "nombreEspacio": "Espacio 2",
+            "crear": false,
+            "eliminar": false
+        }
+    ]
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

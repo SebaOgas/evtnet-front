@@ -1,0 +1,112 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEvento: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "esOrganizador": true,
+
+    "nombreSupervento": "Superevento 0",
+
+    "administradores": [
+        {
+            "username": "username",
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+
+            "vigente": true,
+
+            "historico": [
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": null
+                },
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                },
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                }
+            ]
+        },
+        {
+            "username": "username2",
+            "nombre": "Nombre 2",
+            "apellido": "Apellido 2",
+
+            "vigente": true,
+
+            "historico": [
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": null
+                }
+            ]
+        },
+        {
+            "username": "usuario",
+            "nombre": "Nombre del Organizador",
+            "apellido": "del Supervento",
+
+            "vigente": true,
+
+            "historico": [
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": null
+                },
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                }
+            ]
+        },
+        {
+            "username": "username4",
+            "nombre": "Nombre 4",
+            "apellido": "Apellido 4",
+
+            "vigente": false,
+
+            "historico": [
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                },
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                },
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                }
+            ]
+        },
+        {
+            "username": "username5",
+            "nombre": "Nombre 5",
+            "apellido": "Apellido 5",
+
+            "vigente": false,
+
+            "historico": [
+                {
+                    "fechaDesde": 1753225458732,
+                    "fechaHasta": 1753226458732
+                }
+            ]
+        }
+    ]
+}
