@@ -12,6 +12,7 @@ import type DTOModificarEvento from "$lib/dtos/eventos/DTOModificarEvento";
 import type DTOInscripcionesEvento from "$lib/dtos/espacios/DTOInscripcionesEvento";
 import type DTODatosParaInscripcion from "$lib/dtos/eventos/DTODatosParaInscripcion";
 import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
+import type DTOAdministradores from "$lib/dtos/eventos/DTOAdministradores";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -139,5 +140,43 @@ export const EventosService = {
         // Sin fecha de nacimiento, dni y mail
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "eventos/buscarUsuariosNoInscriptos", false, args);
         return response;
-    }
+    },
+
+    obtenerAdministradores: async (idEvento: number) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+
+        let response : DTOAdministradores = await request(HttpRequestType.GET, "eventos/obtenerAdministradores", true, args);
+        return response;
+    },
+    agregarAdministrador: async (idEvento: number, username: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("username", username);
+
+        await request(HttpRequestType.POST, "eventos/agregarAdministrador", true, args);
+    },
+    quitarAdministrador: async (idEvento: number, username: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("username", username);
+
+        await request(HttpRequestType.DELETE, "eventos/quitarAdministrador", true, args);
+    },
+    entregarOrganizador: async (idEvento: number, username: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("username", username);
+
+        await request(HttpRequestType.PUT, "eventos/entregarOrganizador", true, args);
+    },
+    buscarUsuariosNoAdministradores: async (idEvento: number, texto: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("texto", texto);
+
+        // Sin fecha de nacimiento, dni y mail
+        let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "eventos/buscarUsuariosNoAdministradores", false, args);
+        return response;
+    },
 }

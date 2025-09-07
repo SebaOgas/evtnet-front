@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import { base } from "$app/paths";
 	import { page } from "$app/state";
 	import Button from "$lib/components/Button.svelte";
@@ -20,10 +20,16 @@
 
     let previousPage: string = base;
 
+	afterNavigate(({from}) => {
+        previousPage = from?.url.pathname || previousPage
+    }) 
+
 	$: id = Number(page.params.id);
 	$: evento = null as DTODatosParaInscripcion | null;
 
 	onMount(async () => {
+		
+		
 		if (get(token) === "") {
 			goto("/");
 			return;
