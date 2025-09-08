@@ -44,7 +44,8 @@
 
     onMount(() => {
         if (selected !== undefined) {
-            let lab = options.get(selected);
+            let lab = options.get(selected);            
+            
             if (lab === undefined) {
                 selected = undefined;
                 return;
@@ -59,7 +60,7 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="{classes} combobox bg-white text-black border border-black rounded-sm w-full" on:click={toggleShown}>
-    <div class="value w-full  max-w-[90%]">
+    <div class="value  max-w-[90%]">
         {#if selected === undefined}
             <span class="block ph text-dark truncate w-full">{placeholder}</span>
         {:else}

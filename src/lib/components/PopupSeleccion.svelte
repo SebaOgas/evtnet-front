@@ -4,7 +4,7 @@
 	import SearchField from "./SearchField.svelte";
 	import { onMount } from "svelte";
 
-    export let searchFunction : (val: string) => Promise<Map<number, string>>;
+    export let searchFunction : (val: string) => Promise<Map<any, string>>;
 
     export let title : string | undefined = "";
 
@@ -15,13 +15,13 @@
     
     export let classes : string = ""
 
-    export let selected : Map<number, string> = new Map<number, string>();
+    export let selected : Map<any, string> = new Map<any, string>();
 
     export let multiple : boolean = true;
 
     export let noSearch : boolean = false;
 
-    $: found = new Map<number, string>()
+    $: found = new Map<any, string>()
 
     $: selectedCopy = new Map(selected);
 
@@ -29,17 +29,17 @@
         visible = false;
         selectedCopy = new Map(selected);
         if (!noSearch)
-            found = new Map<number, string>();
+            found = new Map<any, string>();
     }
 
     function accept() {
         visible = false;
         if (!noSearch)
-            found = new Map<number, string>();
+            found = new Map<any, string>();
         selected = new Map(selectedCopy);
     }
 
-    async function toggleItem(num: number, val: string) {
+    async function toggleItem(num: any, val: string) {
         if (multiple) {
             if (selectedCopy.has(num)) {
                 selectedCopy.delete(num);

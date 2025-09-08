@@ -15,6 +15,9 @@ import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 import type DTOAdministradores from "$lib/dtos/eventos/DTOAdministradores";
 import type DTODatosParaDenunciarEvento from "$lib/dtos/eventos/DTODatosParaDenunciar";
 import type DTODenunciaEvento from "$lib/dtos/eventos/DTODenunciaEvento";
+import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
+import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
+import type Page from "$lib/request/Page";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -191,5 +194,17 @@ export const EventosService = {
     },
     denunciar: async (data: DTODenunciaEvento) => {
         await request(HttpRequestType.POST, "eventos/denunciar", true, null, JSON.stringify(data));
-    }
+    },
+
+    obtenerEstadosDenuncias: async () => {
+        let response : {id: number, nombre: string, checked : boolean}[] = await request(HttpRequestType.GET, "eventos/obtenerEstadosDenuncias", true);
+        return response;
+    },
+    buscarDenuncias: async (filtros: DTOBusquedaDenunciasEventos, page : number = 0) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTODenunciaEventoSimple[]> = await request(HttpRequestType.PUT, "eventos/buscarDenuncias", true, args, JSON.stringify(filtros));
+        return response;
+    },
 }
