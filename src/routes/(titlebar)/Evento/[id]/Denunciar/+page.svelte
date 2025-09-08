@@ -33,7 +33,7 @@
             goto("/");
         }
 
-        if(!get(permisos).includes("OrganizacionEventos")) {
+        if(!get(permisos).includes("DenunciaEventos")) {
             goto("/MisSuperEventos")
         }
 
