@@ -144,10 +144,7 @@
 
     async function cancelarEvento() {
 		try {
-            //TODO asignar idEvento
 			await EspaciosService.cancelarEvento(idEvento, id);
-			
-			// TODO: Recargar la lista de eventos
             buscar();
 		} catch (e) {
 			if (e instanceof HttpError) {

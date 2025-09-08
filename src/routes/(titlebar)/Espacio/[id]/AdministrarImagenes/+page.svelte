@@ -10,7 +10,7 @@
 	import { HttpError } from "$lib/request/request";
     import type DTOEspacio from "$lib/dtos/espacios/DTOEspacio";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import { base } from "$app/paths";
+    import { base } from "$app/paths";
 	import FilePicker, { getImageFileDimensions }  from "$lib/components/FilePicker.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import { ImagenesEspaciosService } from "$lib/services/ImagenesEspaciosService";
