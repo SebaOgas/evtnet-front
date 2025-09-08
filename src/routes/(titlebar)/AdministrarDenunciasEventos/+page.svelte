@@ -3,7 +3,9 @@
 	import Button from "$lib/components/Button.svelte";
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
-	import DatePicker from "$lib/components/DatePicker.svelte";
+	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import Table, { type Row } from "$lib/components/Table.svelte";
+	import TableCell from "$lib/components/TableCell.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
 	import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
@@ -31,7 +33,9 @@
     let page = 0;
     let lastPage = 0;
 
-    let resultados = [] as DTODenunciaEventoSimple[];
+    let listo = false;
+
+    let rows : Row[] = [];
 
     let estados = [] as {id: number, nombre: string, checked: boolean}[]
 
@@ -56,6 +60,7 @@
                 }
             })
 
+            listo = true;
             buscar();
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -82,8 +87,20 @@
 
         try {
 			let tmp = await EventosService.buscarDenuncias(filtros, page);
-            resultados = tmp.content;
             lastPage = tmp.totalPages - 1;
+            rows = [];
+            tmp.content.forEach(d => {
+                rows.push({
+                    titulo: d.titulo,
+                    denunciante: "@" + d.usernameDenunciante,
+                    evento: d.nombreEvento,
+                    organizador: "@" + d.usernameOrganizador,
+                    estado: d.estado,
+                    cambio: timeSince(d.fechaHoraUltimoCambio),
+                    ingreso: formatDate(d.fechaHoraIngreso, true),
+                    acciones: aux
+                });
+            })
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -109,6 +126,28 @@
     ordenOpciones.set("FECHA_CAMBIO_ESTADO_ASC", "Fecha de cambio de estado (ascendente)");
     ordenOpciones.set("FECHA_CAMBIO_ESTADO_DESC", "Fecha de cambio de estado (descendente)");
 
+    function timeSince(date: Date | number) {
+        const now = new Date();
+        date = new Date(date);
+        let diff = Math.floor((now.getTime() - date.getTime()) / 1000); // difference in seconds
+
+        const days = Math.floor(diff / (3600 * 24));
+        diff -= days * 3600 * 24;
+
+        const hours = Math.floor(diff / 3600);
+        diff -= hours * 3600;
+
+        const minutes = Math.floor(diff / 60);
+
+        let result = '';
+        if (days > 0) result += `${days}d `;
+        if (hours > 0 || days > 0) result += `${hours}h `;
+        result += `${minutes}min`;
+
+        return result.trim();
+    }
+
+    let aux : TableCell;
 </script>
 
 
@@ -119,46 +158,92 @@
             Denuncias a eventos
         </h1>
 
-        <div class="flex w-full gap-2 items-center">
-            <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={filtros.texto} action={buscar}></TextField>
-            <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>
-        </div>
-        
-        <div class="flex w-full flex-wrap gap-2">
-            {#each estados as e}
-                <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={e.checked}><span class="whitespace-nowrap">{e.nombre}</span></CheckBox>
+        {#if listo}
+            <div class="flex w-full gap-2 items-center">
+                <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={filtros.texto} action={buscar}></TextField>
+                <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>
+            </div>
+            
+            <div class="flex w-full flex-wrap gap-2">
+                {#each estados as e}
+                    <div class="flex justify-start items-center gap-2">
+                        <CheckBox bind:checked={e.checked}><span class="whitespace-nowrap">{e.nombre}</span></CheckBox>
+                    </div>
+                {/each}
+            </div>
+
+            <DatePicker 
+                range 
+                label="Denuncias ingresadas entre:" 
+                bind:startDate={fechaIngresoDesde} 
+                bind:endDate={fechaIngresoHasta}
+                {minDate}
+                {maxDate}
+                classes="!md:w-[70%]"
+            />
+
+            <DatePicker 
+                range 
+                label="Cambio de estado más reciente entre:" 
+                bind:startDate={fechaCambioEstadoDesde} 
+                bind:endDate={fechaCambioEstadoHasta}
+                {minDate}
+                {maxDate}
+                classes="!md:w-[70%]"
+            />
+
+            <div class="flex flex-col md:flex-row justify-start md:items-center gap-2">
+                <span>
+                    Orden: 
+                </span>
+                <ComboBox classes="!md:w-[50%]" options={ordenOpciones} bind:selected={filtros.orden} placeholder="a" maxHeight={5}/>
+            </div>
+
+            <Table columns={[
+                {
+					label: "Título",
+					key: "titulo"
+				},
+                {
+					label: "Denunciante",
+					key: "denunciante"
+				},
+                {
+					label: "Evento",
+					key: "evento"
+				},
+                {
+					label: "Organizador",
+					key: "organizador"
+				},
+                {
+					label: "Estado",
+					key: "estado"
+				},
+                {
+					label: "Último cambio hace",
+					key: "cambio"
+				},
+                {
+					label: "Ingresado",
+					key: "ingreso"
+				},
+                {
+					label: "Acciones",
+					key: "acciones"
+				},
+            ]} rows={rows}/>
+
+            <TableCell bind:this={aux}>
+                <div class="flex gap-2 justify-center items-center w-full">
+                    <Button icon="/icons/view.svg"></Button>
+                    <Button icon="/icons/edit.svg"></Button>
                 </div>
-            {/each}
-        </div>
+            </TableCell>
 
-        <DatePicker 
-			range 
-			label="Denuncias ingresadas entre:" 
-			bind:startDate={fechaIngresoDesde} 
-			bind:endDate={fechaIngresoHasta}
-            {minDate}
-			{maxDate}
-            classes="!md:w-[70%]"
-		/>
+            
 
-        <DatePicker 
-			range 
-			label="Cambio de estado más reciente entre:" 
-			bind:startDate={fechaCambioEstadoDesde} 
-			bind:endDate={fechaCambioEstadoHasta}
-            {minDate}
-			{maxDate}
-            classes="!md:w-[70%]"
-		/>
-
-        <div class="flex flex-col md:flex-row justify-start md:items-center gap-2">
-            <span>
-                Orden: 
-            </span>
-            <ComboBox classes="!md:w-[50%]" options={ordenOpciones} bind:selected={filtros.orden} placeholder="a" maxHeight={4}/>
-        </div> 
-
+        {/if}
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-end">

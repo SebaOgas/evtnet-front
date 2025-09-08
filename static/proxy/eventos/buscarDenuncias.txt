@@ -1,17 +1,17 @@
-REQUEST TYPE GET
+REQUEST TYPE PUT
 
 REQUEST ARGS
 
 REQUEST BODY
 
 {
-    texto: "Texto buscado",
-    estados: [0, 1, 2, 3],
-    fechaIngresoDesde: 1753225458732,
-    fechaIngresoHasta: 1753225458732,
-    fechaCambioEstadoDesde: 1753225458732,
-    fechaCambioEstadoHasta: null,
-    orden: "FECHA_DENUNCIA_ASC"
+    "texto": "Texto buscado",
+    "estados": [0, 1, 2, 3],
+    "fechaIngresoDesde": 1753225458732,
+    "fechaIngresoHasta": 1753225458732,
+    "fechaCambioEstadoDesde": 1753225458732,
+    "fechaCambioEstadoHasta": null,
+    "orden": "FECHA_DENUNCIA_ASC"
 }
 
 RESPONSE TYPE JSON
