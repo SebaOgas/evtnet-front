@@ -1,0 +1,21 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEvento: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "nombre": "Nombre del Evento",
+
+    "inscripto": true,
+    "fechaDesde": 1757328519348,
+    "hayDenunciaPrevia": false
+}

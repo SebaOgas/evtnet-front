@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import Button from "$lib/components/Button.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import Popup from "$lib/components/Popup.svelte";
@@ -14,6 +15,12 @@
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
+
+    let previousPage: string = base;
+
+	afterNavigate(({from}) => {
+		previousPage = from?.url.pathname || previousPage
+	});
 
     onMount(async () => {     
         if (get(token) === "") {
@@ -176,7 +183,7 @@
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
-        <Button classes="text-m">Cancelar</Button>
+        <Button classes="text-m" action={() => {goto(previousPage)}}>Cancelar</Button>
         <Button classes="text-m" action={crearEspacio}>Aceptar</Button>
     </div>
 

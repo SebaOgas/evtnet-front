@@ -251,7 +251,9 @@
 		
 		{#if data.inscripto}
 			<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
-		    <Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
+			{#if data.fechaDesde <= new Date()}
+		    	<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
+			{/if}
 		{:else}
 			<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
 		{/if}
