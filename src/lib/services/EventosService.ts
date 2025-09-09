@@ -18,6 +18,7 @@ import type DTODenunciaEvento from "$lib/dtos/eventos/DTODenunciaEvento";
 import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
 import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
 import type Page from "$lib/request/Page";
+import type DTODenunciaEventoCompleta from "$lib/dtos/eventos/DTODenunciaEventoCompleta";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -207,4 +208,11 @@ export const EventosService = {
         let response : Page<DTODenunciaEventoSimple[]> = await request(HttpRequestType.PUT, "eventos/buscarDenuncias", true, args, JSON.stringify(filtros));
         return response;
     },
+    obtenerDenuncia: async (idDenuncia: number) => {
+        let args = new Map<string, string>();
+        args.set("idDenuncia", `${idDenuncia}`);
+
+        let response : DTODenunciaEventoCompleta = await request(HttpRequestType.GET, "eventos/obtenerDenuncia", true, args);
+        return response;
+    }
 }

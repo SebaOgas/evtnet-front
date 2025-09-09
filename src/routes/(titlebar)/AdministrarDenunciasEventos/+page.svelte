@@ -5,9 +5,11 @@
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
+	import type DTODenunciaEventoCompleta from "$lib/dtos/eventos/DTODenunciaEventoCompleta";
 	import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
 	import { HttpError } from "$lib/request/request";
 	import { EventosService } from "$lib/services/EventosService";
@@ -135,6 +137,63 @@
 
         return result.trim();
     }
+
+    $: popupDetalleVisible = false;
+    let denuncia : DTODenunciaEventoCompleta | null = null;
+
+
+    async function mostrarDenuncia(denunciaSimple: DTODenunciaEventoSimple) {
+        denuncia = {
+			id: denunciaSimple.idDenuncia,
+			titulo: denunciaSimple.titulo,
+			descripcion: "",
+			denunciante: {
+				nombre: "",
+				apellido: "",
+				username: denunciaSimple.usernameDenunciante,
+				mail: ""
+			},
+			historico: [],
+			evento: {
+				id: 0,
+				nombre: denunciaSimple.nombreEvento,
+				descripcion: "",
+				espacio: {
+					nombre: null,
+					direccion: ""
+				},
+				fechaHoraInicio: null,
+				fechaHoraFin: null,
+				participantes: 0,
+				organizador: {
+					nombre: "",
+					apellido: "",
+					username: "",
+					mail: ""
+				},
+				administradores: []
+			}
+		};
+
+        popupDetalleVisible = true;
+
+        try {
+			denuncia = await EventosService.obtenerDenuncia(denunciaSimple.idDenuncia);
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}            
+		}
+    }
+
+    function formatUser(denunciante: { nombre: string; apellido: string; username: string; mail: string; }, parentheses: boolean) {
+        if (parentheses) {
+            return `${denunciante.nombre} ${denunciante.apellido} @${denunciante.username} (${denunciante.mail})`;
+        } else {
+            return `${denunciante.nombre} ${denunciante.apellido} @${denunciante.username} ${denunciante.mail}`;
+        }
+    }
 </script>
 
 
@@ -198,8 +257,8 @@
                         <td>{formatDate(d.fechaHoraIngreso, true)}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
-                                <Button icon="/icons/view.svg"></Button>
-                                <Button icon="/icons/edit.svg"></Button>
+                                <Button icon="/icons/view.svg" action={() => mostrarDenuncia(d)}></Button>
+                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarDenunciasEventos/${d.idDenuncia}`)}></Button>
                             </div>
                         </td>
                     </tr>
@@ -213,3 +272,61 @@
     </div>
 
 </div>
+
+
+{#if denuncia !== null}
+    <Popup bind:visible={popupDetalleVisible} title="Detalle de Denuncia a Evento" fitH fitW>
+        <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
+            <div class="flex flex-col gap-2 flex-1">
+                <span>Denuncia: {denuncia.titulo}</span>
+                <span class="text-justify">Descripción: {denuncia.descripcion}</span>
+                <div class="flex justify-between items-start">
+                    <span>Denunciante: {formatUser(denuncia.denunciante, true)}</span>
+                    <Button classes="whitespace-nowrap" action={() => goto(`/Perfil/${denuncia?.denunciante.username}`)}>Ver usuario</Button>
+                </div>
+                <span>Histórico de estados:</span>
+                <div class="ml-4 flex flex-col gap-2">
+                    {#each denuncia.historico as estado}
+                        <div>
+                            <span>{estado.nombre} ({formatDate(estado.fechaHoraDesde, true)}) ({formatUser(estado.responsable, false)}):</span>
+                            <div class="ml-4">{estado.descripcion}</div>
+                        </div>
+                    {/each}
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 flex-1">
+                <div class="flex justify-between items-start">
+                    <span>Evento: {denuncia.evento.nombre}</span>
+                    <Button classes="whitespace-nowrap" action={() => goto(`/Evento/${denuncia?.evento.id}`)}>Ver evento</Button>
+                </div>
+                <span class="text-justify">Descripción del evento: {denuncia.evento.descripcion}</span>
+                <span>Espacio: 
+                    {#if denuncia.evento.espacio.nombre === null}
+                        {denuncia.evento.espacio.direccion}
+                    {:else}
+                        {denuncia.evento.espacio.nombre} ({denuncia.evento.espacio.direccion})
+                    {/if}
+                </span>
+                <span>Inicio y fin: {formatDate(denuncia.evento.fechaHoraInicio, true)} - {formatDate(denuncia.evento.fechaHoraFin, true)}</span>
+                <span>Cantidad de participantes: {denuncia.evento.participantes}</span>
+                <div class="flex justify-between items-start">
+                    <span>Organizador: {formatUser(denuncia.evento.organizador, true)}</span>
+                    <Button classes="whitespace-nowrap" action={() => goto(`/Perfil/${denuncia?.evento.organizador.username}`)}>Ver usuario</Button>
+                </div>
+                <span>Administradores</span>
+                <div class="ml-4 flex flex-col gap-2">
+                    {#each denuncia.evento.administradores as admin}
+                        <div class="flex justify-between items-start">
+                            <span>{formatUser(admin, false)}</span>
+                            <Button classes="whitespace-nowrap" action={() => goto(`/Perfil/${admin.username}`)}>Ver usuario</Button>
+                        </div>
+                    {/each}
+                </div>
+            </div>
+        </div>
+        <div class="w-full flex justify-center items-center gap-2">
+            <Button action={() => popupDetalleVisible = false}>Atrás</Button>
+            <Button action={() => goto(`/AdministrarDenunciasEventos/${denuncia?.id}`)}>Realizar cambio de estado</Button>
+        </div>
+    </Popup>
+{/if}
