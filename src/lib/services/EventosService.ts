@@ -15,6 +15,12 @@ import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 import type DTOAdministradores from "$lib/dtos/eventos/DTOAdministradores";
 import type DTODatosParaDenunciarEvento from "$lib/dtos/eventos/DTODatosParaDenunciar";
 import type DTODenunciaEvento from "$lib/dtos/eventos/DTODenunciaEvento";
+import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
+import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
+import type Page from "$lib/request/Page";
+import type DTODenunciaEventoCompleta from "$lib/dtos/eventos/DTODenunciaEventoCompleta";
+import type DTODatosParaCambioEstadoDenuncia from "$lib/dtos/eventos/DTODatosParaCambioEstadoDenuncia";
+import type DTOCambioEstadoDenuncia from "$lib/dtos/eventos/DTOCambioEstadoDenuncia";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -191,5 +197,34 @@ export const EventosService = {
     },
     denunciar: async (data: DTODenunciaEvento) => {
         await request(HttpRequestType.POST, "eventos/denunciar", true, null, JSON.stringify(data));
+    },
+
+    obtenerEstadosDenuncias: async () => {
+        let response : {id: number, nombre: string, checked : boolean}[] = await request(HttpRequestType.GET, "eventos/obtenerEstadosDenuncias", true);
+        return response;
+    },
+    buscarDenuncias: async (filtros: DTOBusquedaDenunciasEventos, page : number = 0) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTODenunciaEventoSimple[]> = await request(HttpRequestType.PUT, "eventos/buscarDenuncias", true, args, JSON.stringify(filtros));
+        return response;
+    },
+    obtenerDenuncia: async (idDenuncia: number) => {
+        let args = new Map<string, string>();
+        args.set("idDenuncia", `${idDenuncia}`);
+
+        let response : DTODenunciaEventoCompleta = await request(HttpRequestType.GET, "eventos/obtenerDenuncia", true, args);
+        return response;
+    },
+    obtenerDatosParaCambioEstadoDenuncia: async (idDenuncia: number) => {
+        let args = new Map<string, string>();
+        args.set("idDenuncia", `${idDenuncia}`);
+
+        let response : DTODatosParaCambioEstadoDenuncia = await request(HttpRequestType.GET, "eventos/obtenerDatosParaCambioEstadoDenuncia", true, args);
+        return response;
+    },
+    cambiarEstadoDenuncia: async (data: DTOCambioEstadoDenuncia) => {
+        await request(HttpRequestType.POST, "eventos/cambiarEstadoDenuncia", true, null, JSON.stringify(data));
     }
 }

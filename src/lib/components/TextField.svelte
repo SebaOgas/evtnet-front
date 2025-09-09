@@ -65,7 +65,7 @@
     {:else}
         <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}
-    <Warning visible={!valido} text={razonInvalidez}/>
+    <Warning visible={!valido} text={razonInvalidez} classes="h-fit"/>
     
 </label>
 

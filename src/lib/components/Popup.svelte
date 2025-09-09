@@ -11,7 +11,7 @@
 
 {#if visible}
     <div id="bg" class="{classes} fixed top-0 left-0 bottom-0 right-0 bg-dark flex items-center justify-center p-4">
-        <div id="popup" class="bg-white rounded-lg p-4 w-{fitW ? "fit" : "full"} h-{fitH ? "fit" : "full"} flex flex-col">
+        <div id="popup" class="bg-white rounded-lg p-4 w-{fitW ? "fit" : "full"} h-{fitH ? "fit" : "full"} flex flex-col max-h-[90vh] overflow-y-auto">
             <h1 class="text-m text-center">{title}</h1>
             <slot/>
         </div>
