@@ -4,6 +4,7 @@
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import PageControl from "$lib/components/PageControl.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
@@ -31,6 +32,7 @@
     
     let page = 0;
     let lastPage = 0;
+    $: page, buscar();
 
     let listo = false;
 
@@ -207,7 +209,7 @@
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-end items-center">
-        Componente de paginación
+        <PageControl bind:page={page} lastPage={lastPage}/>
     </div>
 
 </div>
