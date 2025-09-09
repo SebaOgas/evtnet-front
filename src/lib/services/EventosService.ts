@@ -13,6 +13,8 @@ import type DTOInscripcionesEvento from "$lib/dtos/espacios/DTOInscripcionesEven
 import type DTODatosParaInscripcion from "$lib/dtos/eventos/DTODatosParaInscripcion";
 import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 import type DTOAdministradores from "$lib/dtos/eventos/DTOAdministradores";
+import type DTODatosParaDenunciarEvento from "$lib/dtos/eventos/DTODatosParaDenunciar";
+import type DTODenunciaEvento from "$lib/dtos/eventos/DTODenunciaEvento";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -179,4 +181,15 @@ export const EventosService = {
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "eventos/buscarUsuariosNoAdministradores", false, args);
         return response;
     },
+
+    getDatosParaDenunciar: async (idEvento: number) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+
+        let response : DTODatosParaDenunciarEvento = await request(HttpRequestType.GET, "eventos/getDatosParaDenunciar", true, args);
+        return response;
+    },
+    denunciar: async (data: DTODenunciaEvento) => {
+        await request(HttpRequestType.POST, "eventos/denunciar", true, null, JSON.stringify(data));
+    }
 }

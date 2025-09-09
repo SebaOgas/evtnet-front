@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import Button from "$lib/components/Button.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
@@ -11,7 +12,11 @@
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
+    let previousPage: string = base;
 
+	afterNavigate(({from}) => {
+		previousPage = from?.url.pathname || previousPage
+	});
     
     onMount(async () => {     
         if (get(token) === "") {
@@ -80,7 +85,7 @@
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
-        <Button classes="text-m">Cancelar</Button>
+        <Button classes="text-m" action={() => {goto(previousPage)}}>Cancelar</Button>
         <Button classes="text-m" action={crearSuperEvento}>Aceptar</Button>
     </div>
 
@@ -92,7 +97,7 @@
 </PopupError>
 
 <Popup bind:visible={popupExitoVisible} fitH fitW>
-    Espacio registrado exitosamente
+    Superevento registrado exitosamente
     <div class="flex justify-center items-center w-full">
         <Button action={() => {goto(`/SuperEvento/${id}`)}}>Aceptar</Button>
     </div>

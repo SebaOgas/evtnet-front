@@ -1,0 +1,15 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idEvento": 0,
+    "titulo": "Título de la denuncia",
+    "descripcion": "Descripción de la denuncia"
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY
