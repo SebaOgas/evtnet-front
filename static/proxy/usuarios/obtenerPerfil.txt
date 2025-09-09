@@ -32,5 +32,6 @@ RESPONSE BODY
             "nombre": "Mala",
             "porcentaje": 30.0
         }
-    ]
+    ],
+    "idChat": 1234
 }
