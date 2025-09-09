@@ -1,0 +1,68 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Buena",
+        "motivos": [
+            {
+                "id": 0,
+                "nombre": "Motivo A"
+            },
+            {
+                "id": 1,
+                "nombre": "Motivo B"
+            },
+            {
+                "id": 2,
+                "nombre": "Motivo C"
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "nombre": "Media",
+        "motivos": [
+            {
+                "id": 3,
+                "nombre": "Motivo D"
+            },
+            {
+                "id": 4,
+                "nombre": "Motivo E"
+            },
+            {
+                "id": 5,
+                "nombre": "Motivo F"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "nombre": "Mala",
+        "motivos": [
+            {
+                "id": 6,
+                "nombre": "Motivo G"
+            },
+            {
+                "id": 7,
+                "nombre": "Motivo H"
+            },
+            {
+                "id": 8,
+                "nombre": "Motivo I"
+            }
+        ]
+    }
+]

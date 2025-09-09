@@ -1,7 +1,9 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
+import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
 import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
+import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import {HttpRequestType, request } from "$lib/request/request";
 import { permisos, token, username } from "$lib/stores";
 
@@ -112,9 +114,9 @@ export const UsuariosService = {
         return url;
     },
 
-    obtenerImagenDeCalificacion: async(username: string) => {
+    obtenerImagenDeCalificacion: async(nombre: string) => {
         let args = new Map<string, string>();
-        args.set("username", username);
+        args.set("nombre", nombre);
         
         let response = await request(HttpRequestType.GET, "usuarios/obtenerImagenDeCalificacion", false, args, null, false);
         
@@ -147,10 +149,21 @@ export const UsuariosService = {
 
 
 
-    obtenerCalificacionTipos: async () => {
-        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "usuarios/obtenerCalificacionTipos", true);
+    obtenerCalificacionTiposPara: async (username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "usuarios/obtenerCalificacionTipos", true, args);
 
         return response;
+    },
+    obtenerTiposYMotivosCalificacion: async () => {
+        let response : DTOTipoCalificacion[] = await request(HttpRequestType.GET, "usuarios/obtenerTiposYMotivosCalificacion", false);
+
+        return response;
+    },
+    calificarUsuario: async (data: DTOCalificacion) => {
+        await request(HttpRequestType.POST, "usuarios/calificarUsuario", true, null, JSON.stringify(data));
     }
 
 }
