@@ -4,8 +4,7 @@
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
-	import Table, { type Row } from "$lib/components/Table.svelte";
-	import TableCell from "$lib/components/TableCell.svelte";
+	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
 	import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
@@ -35,7 +34,7 @@
 
     let listo = false;
 
-    let rows : Row[] = [];
+    let resultados : DTODenunciaEventoSimple[] = [];
 
     let estados = [] as {id: number, nombre: string, checked: boolean}[]
 
@@ -88,19 +87,7 @@
         try {
 			let tmp = await EventosService.buscarDenuncias(filtros, page);
             lastPage = tmp.totalPages - 1;
-            rows = [];
-            tmp.content.forEach(d => {
-                rows.push({
-                    titulo: d.titulo,
-                    denunciante: "@" + d.usernameDenunciante,
-                    evento: d.nombreEvento,
-                    organizador: "@" + d.usernameOrganizador,
-                    estado: d.estado,
-                    cambio: timeSince(d.fechaHoraUltimoCambio),
-                    ingreso: formatDate(d.fechaHoraIngreso, true),
-                    acciones: aux
-                });
-            })
+            resultados = tmp.content;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -146,8 +133,6 @@
 
         return result.trim();
     }
-
-    let aux : TableCell;
 </script>
 
 
@@ -199,54 +184,29 @@
                 <ComboBox classes="!md:w-[50%]" options={ordenOpciones} bind:selected={filtros.orden} placeholder="a" maxHeight={5}/>
             </div>
 
-            <Table columns={[
-                {
-					label: "Título",
-					key: "titulo"
-				},
-                {
-					label: "Denunciante",
-					key: "denunciante"
-				},
-                {
-					label: "Evento",
-					key: "evento"
-				},
-                {
-					label: "Organizador",
-					key: "organizador"
-				},
-                {
-					label: "Estado",
-					key: "estado"
-				},
-                {
-					label: "Último cambio hace",
-					key: "cambio"
-				},
-                {
-					label: "Ingresado",
-					key: "ingreso"
-				},
-                {
-					label: "Acciones",
-					key: "acciones"
-				},
-            ]} rows={rows}/>
-
-            <TableCell bind:this={aux}>
-                <div class="flex gap-2 justify-center items-center w-full">
-                    <Button icon="/icons/view.svg"></Button>
-                    <Button icon="/icons/edit.svg"></Button>
-                </div>
-            </TableCell>
-
-            
-
+            <Table cols={["Título", "Denunciante", "Evento", "Organizador", "Estado", "Último cambio hace", "Ingresado", "Acciones"]}>
+                {#each resultados as d}
+                    <tr>
+                        <td>{d.titulo}</td>
+                        <td>@{d.usernameDenunciante}</td>
+                        <td>{d.nombreEvento}</td>
+                        <td>@{d.usernameOrganizador}</td>
+                        <td>{d.estado}</td>
+                        <td>{timeSince(d.fechaHoraUltimoCambio)}</td>
+                        <td>{formatDate(d.fechaHoraIngreso, true)}</td>
+                        <td>
+                            <div class="flex gap-2 justify-center items-center">
+                                <Button icon="/icons/view.svg"></Button>
+                                <Button icon="/icons/edit.svg"></Button>
+                            </div>
+                        </td>
+                    </tr>
+                {/each}
+            </Table>
         {/if}
     </div>
 
-    <div class="flex gap-2 h-fit p-2 justify-center items-end">
+    <div class="flex gap-2 h-fit p-2 justify-end items-center">
         Componente de paginación
     </div>
 

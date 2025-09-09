@@ -1,65 +1,59 @@
-<script lang="ts" context="module">
-	import TableCell from "./TableCell.svelte";
-
-    export interface Column {
-        label: string;
-        key: string;
-        class?: string; // optional Tailwind classes for the column
-    }
-
-    export interface Row {
-        [key: string]: string | TableCell;
-    }
-</script>
-
 <script lang="ts">
-  export let columns: Column[] = [];
-  export let rows: Row[] = [];
+	import { onMount } from "svelte";
+
+	export let cols: string[] = [];
+	let body: HTMLTableSectionElement;
+
+	function applyLabels() {
+		if (!body) return;
+		cols.forEach((c, ix) => {
+			let tds = body.querySelectorAll(`tr>td:nth-child(${ix+1})`);
+			tds.forEach(td => {
+				if (!td.querySelector("strong")) {
+					let label = document.createElement("strong");
+					label.innerHTML = c;
+					td.prepend(label);
+				}
+			});
+		});
+	}
+
+	onMount(() => {
+		applyLabels();
+
+		// watch slot changes
+		const observer = new MutationObserver(applyLabels);
+		observer.observe(body, { childList: true, subtree: true });
+
+		return () => observer.disconnect();
+	});
 </script>
+
 
 <!-- Desktop table -->
 <div class="hidden md:block overflow-x-auto">
-  <table class="min-w-full">
-    <thead>
-      <tr>
-        {#each columns as col}
-          <th class="px-4 py-2 text-left {col.class}">{col.label}</th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      {#each rows as row}
-        <tr>
-          {#each columns as col}
-            <td class="px-4 py-2 {col.class}">
-              {#if typeof row[col.key] === 'string'}
-                    {row[col.key]}
-              {:else}
-                    {@html (()=>{let aux = row[col.key]; return (typeof aux !== "string" ? aux.$$?.fragment : "")})()   }
-              {/if}
-            </td>
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+  	<table class="w-full">
+		<thead>
+			<tr>
+				{#each cols as col}
+					<th>{col}</th>
+				{/each}
+			</tr>
+		</thead>
+		<tbody>
+			<slot />
+		</tbody>
+	</table>
 </div>
 
 <!-- Mobile list -->
 <div class="md:hidden space-y-2">
-  {#each rows as row}
-    <div class="flex flex-col mb-8">
-      {#each columns as col}
-        <div class="flex justify-between py-1">
-          <span class="font-semibold">{col.label}</span>
-          <span>
-            {#if typeof row[col.key] === 'string'}
-              {row[col.key]}
-            {:else}
-            {/if}
-          </span>
-        </div>
-      {/each}
-    </div>
-  {/each}
+  <table class="block">
+	<tbody bind:this={body} 
+		class="flex flex-col gap-8 
+			[&>tr]:flex [&>tr]:flex-col [&>tr]:gap-2
+			[&>tr>td]:flex [&>tr>td]:flex-row [&>tr>td]:justify-between [&>tr>td]:items-center">
+		<slot/>
+	</tbody>
+  </table>
 </div>
