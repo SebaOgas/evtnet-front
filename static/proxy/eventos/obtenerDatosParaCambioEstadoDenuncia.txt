@@ -1,0 +1,35 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idDenuncia: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "titulo": "Título de la denuncia",
+    "estados": [
+        {
+            "id": 0,
+            "nombre": "Ingresado"
+        },
+        {
+            "id": 1,
+            "nombre": "En análisis de evento"
+        },
+        {
+            "id": 2,
+            "nombre": "En análisis de denunciante"
+        },
+        {
+            "id": 3,
+            "nombre": "Finalizado"
+        }
+    ]
+}
