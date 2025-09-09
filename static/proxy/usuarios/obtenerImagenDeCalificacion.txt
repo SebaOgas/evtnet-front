@@ -2,7 +2,7 @@ REQUEST TYPE GET
 
 REQUEST ARGS
 
-username : string
+nombre : string
 
 REQUEST BODY
 
