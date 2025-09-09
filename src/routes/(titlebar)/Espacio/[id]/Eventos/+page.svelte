@@ -27,6 +27,7 @@
 
     $: id = Number(page.params.id);
     $: idEvento=0;
+    $: nombreEspacio = "";
 
     $: filtros = {
         idEspacio: id,
@@ -138,7 +139,7 @@
 			errorPermiso = true;
 			return;
 		}
-
+        nombreEspacio = await EspaciosService.obtenerNombreEspacio(id);
 		buscar();
 	});
 
@@ -163,8 +164,8 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center">Eventos</h1>
-
+		<h1 class="text-m text-center">Eventos del espacio</h1>
+        <h1 class="text-m text-center">{nombreEspacio}</h1>     
         <div class="flex w-full gap-2 items-center">
             <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={filtros.texto} action={buscar}></TextField>
             <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>

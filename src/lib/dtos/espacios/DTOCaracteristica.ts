@@ -3,4 +3,6 @@ export default interface DTOCaracteristica{
     idIconoCaracteristica: number;
     idEspacio: number;
     nombre: string;
+    urlIcono: string;
+    contentType?: string;
 }

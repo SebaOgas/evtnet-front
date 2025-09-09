@@ -24,16 +24,32 @@ export const IconosCaracteristicasService = {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
         let response : DTOCaracteristica[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerCaracteristicasEspacio", true, args);
+        return response.map(iconoObj => {
+            const byteCharacters = atob(iconoObj.urlIcono);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+
+            const bytes = new Uint8Array(byteNumbers);
+            let urlCreator = window.URL || window.webkitURL;
+            let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+            iconoObj.urlIcono = url;
+            return iconoObj;
+        });
 
         return response;
     },
     obtenerListaIconos: async () => {
         let response : {id: number, icono: string, contentType?: string}[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerListaIconos", false, null);
         return response.map(iconoObj => {
-            const bytes = new Uint8Array(iconoObj.icono.length);
-            for (let i = 0; i < iconoObj.icono.length; i++) {
-                bytes[i] = iconoObj.icono.charCodeAt(i);
+            const byteCharacters = atob(iconoObj.icono);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
             }
+
+            const bytes = new Uint8Array(byteNumbers);
             let urlCreator = window.URL || window.webkitURL;
             let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
             return {

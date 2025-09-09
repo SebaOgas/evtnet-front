@@ -202,7 +202,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center">Imágenes del Espacio {data.nombre}</h1>
+		<h1 class="text-m text-center">Administrar imágenes del Espacio {data.nombre}</h1>
         <div class="flex flex-col items-center justify-center w-full gap-4">
             {#each [...imagenes] as img, index}
             <div class="flex flex-row items-center justify-center w-full max-w-md mx-auto gap-4">

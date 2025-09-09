@@ -8,6 +8,7 @@ import type DTOBusquedaMisEspacios from "$lib/dtos/espacios/DTOBusquedaMisEspaci
 import type DTOResultadoBusquedaMisEspacios from "$lib/dtos/espacios/DTOResultadoBusquedaMisEspacios";
 import type DTOBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOBusquedaEventosPorEspacio";
 import type DTOResultadoBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOResultadoBusquedaEventosPorEspacio";
+import type DTOCaracteristica from "$lib/dtos/espacios/DTOCaracteristica";
 
 
 export const EspaciosService = {
@@ -75,11 +76,17 @@ export const EspaciosService = {
 
         return response;
     },
-
     cancelarEvento: async (eventoId: number, espacioId: number) => {
         let args = new Map<string, string>();
         args.set("eventoId", `${eventoId}`);
         args.set("espacioId", `${espacioId}`);
         await request(HttpRequestType.DELETE, "espacios/cancelarEvento", true, args);
+    },
+    actualizarCaracteristicasEspacio: async(idEspacio:number, caracteristicas:DTOCaracteristica[]) => {
+        const payload = {
+            idEspacio,
+            caracteristicas
+        };
+        await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasEspacio", true, null, JSON.stringify(payload));
     }
 }
