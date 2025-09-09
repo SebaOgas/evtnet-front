@@ -56,6 +56,7 @@
         permisosList = get(permisos);
 
         try {
+            if (requestedUsername === undefined) return;
             perfil = await UsuariosService.obtenerPerfil(requestedUsername);
             urlFotoDePerfil = await UsuariosService.obtenerFotoDePerfil(requestedUsername);
             

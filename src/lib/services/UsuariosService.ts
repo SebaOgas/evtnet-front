@@ -143,6 +143,14 @@ export const UsuariosService = {
 
     editarPerfil: async(data: FormData) => {
         await request(HttpRequestType.PUT, "usuarios/editarPerfil", true, null, data);
+    },
+
+
+
+    obtenerCalificacionTipos: async () => {
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "usuarios/obtenerCalificacionTipos", true);
+
+        return response;
     }
 
 }
