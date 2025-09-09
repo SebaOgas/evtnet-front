@@ -100,7 +100,7 @@
                 {#if permisosList.includes("AdministracionUsuarios") || 
                     permisosList.includes("AdministracionUsuariosAdministradores")
                 }
-                    <li><a href="/">Usuarios</a></li>
+                    <li><a href="/AdministrarUsuarios">Usuarios</a></li>
                     <li><a href="/">Grupos</a></li>
                     <li><a href="/">Denuncias a usuarios</a></li>
                 {/if}

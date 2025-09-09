@@ -1,9 +1,12 @@
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
 import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
+import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
+import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
 import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
+import type Page from "$lib/request/Page";
 import {HttpRequestType, request } from "$lib/request/request";
 import { permisos, token, username } from "$lib/stores";
 
@@ -164,6 +167,19 @@ export const UsuariosService = {
     },
     calificarUsuario: async (data: DTOCalificacion) => {
         await request(HttpRequestType.POST, "usuarios/calificarUsuario", true, null, JSON.stringify(data));
+    },
+
+    obtenerRoles: async () => {
+        let response : {id: number, nombre: string, checked: boolean}[] = await request(HttpRequestType.GET, "usuarios/obtenerRoles", true);
+
+        return response;
+    },
+    adminBuscarUsuarios: async (filtros: DTOFiltrosBusquedaUsuarios, page: number) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTOResultadoBusquedaUsuario[]> = await request(HttpRequestType.PUT, "usuarios/adminBuscarUsuarios", true, args, JSON.stringify(filtros));
+        return response;
     }
 
 }

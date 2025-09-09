@@ -1,0 +1,60 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+page: int
+
+REQUEST BODY
+
+{
+    "texto": "texto buscado",
+    "roles": [0, 1, 2, 3]
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "content": [
+        {
+            "username": "juan.perez",
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "mail": "juan.perez@email.com",
+            "fechaAlta": 1692110200000,
+            "fechaBaja": 1708445100000
+        },
+        {
+            "username": "maria.gonzalez",
+            "nombre": "María",
+            "apellido": "González",
+            "mail": "maria.gonzalez@email.com",
+            "fechaAlta": 1698922500000,
+            "fechaBaja": null
+        },
+        {
+            "username": "carlos.rodriguez",
+            "nombre": "Carlos",
+            "apellido": "Rodríguez",
+            "mail": "carlos.rodriguez@email.com",
+            "fechaAlta": 1704883200000,
+            "fechaBaja": null
+        },
+        {
+            "username": "ana.lopez",
+            "nombre": "Ana",
+            "apellido": "López",
+            "mail": "ana.lopez@email.com",
+            "fechaAlta": 1684765200000,
+            "fechaBaja": 1709631000000
+        }
+    ],
+    "totalPages": 5,
+    "totalElements": 50,
+    "size": 10,
+    "number": 0,
+    "first": 0,
+    "last": 4
+}
+
