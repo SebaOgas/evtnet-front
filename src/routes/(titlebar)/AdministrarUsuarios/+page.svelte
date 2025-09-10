@@ -2,18 +2,14 @@
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import CheckBox from "$lib/components/CheckBox.svelte";
-	import ComboBox from "$lib/components/ComboBox.svelte";
-	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
-	import Popup from "$lib/components/Popup.svelte";
+	import PopupAdminUsuario from "$lib/components/PopupAdminUsuario.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
-	import type DTODenunciaEventoCompleta from "$lib/dtos/eventos/DTODenunciaEventoCompleta";
-	import type DTODenunciaEventoSimple from "$lib/dtos/eventos/DTODenunciaEventoSimple";
 	import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
 	import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
 	import { HttpError } from "$lib/request/request";
-	import { EventosService } from "$lib/services/EventosService";
 	import { UsuariosService } from "$lib/services/UsuariosService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
@@ -91,6 +87,9 @@
 			}            
 		}
     }
+
+
+    let usuarioAbierto : string | null = null;
 </script>
 
 
@@ -127,7 +126,7 @@
                         <td>{d.fechaBaja !== null ? formatDate(d.fechaBaja) : "-"}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
-                                <Button icon="/icons/view.svg"></Button>
+                                <Button icon="/icons/view.svg" action={() => usuarioAbierto = d.username}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarUsuarios/Editar/${d.username}`)}></Button>
                                 <Button icon="/icons/trash.svg"></Button>
                             </div>
@@ -143,3 +142,6 @@
     </div>
 
 </div>
+
+
+<PopupAdminUsuario bind:username={usuarioAbierto}/>
