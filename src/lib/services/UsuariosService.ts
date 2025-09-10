@@ -1,3 +1,4 @@
+import type DTOAltaRol from "$lib/dtos/usuarios/DTOAltaRol";
 import type DTOAltaUsuario from "$lib/dtos/usuarios/DTOAltaUsuario";
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
@@ -7,10 +8,12 @@ import type DTOEventosUsuario from "$lib/dtos/usuarios/DTOEventosUsuario";
 import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
 import type DTOGruposUsuario from "$lib/dtos/usuarios/DTOGruposUsuario";
 import type DTOInteraccionesUsuario from "$lib/dtos/usuarios/DTOInteraccionesUsuario";
+import type DTOModificarRol from "$lib/dtos/usuarios/DTOModificarRol";
 import type DTOModificarUsuario from "$lib/dtos/usuarios/DTOModificarUsuario";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
+import type DTORol from "$lib/dtos/usuarios/DTORol";
 import type DTOSupereventosUsuario from "$lib/dtos/usuarios/DTOSupereventosUsuario";
 import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import type DTOUsuarioCompleto from "$lib/dtos/usuarios/DTOUsuarioCompleto";
@@ -243,6 +246,41 @@ export const UsuariosService = {
     modificarUsuario: async (data: DTOModificarUsuario) => { 
         await request(HttpRequestType.PUT, "usuarios/modificarUsuario", true, null, JSON.stringify(data));
 
-    }
+    },
 
+
+    obtenerRolesCompletos: async (page: number) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTORol[]> = await request(HttpRequestType.GET, "usuarios/obtenerRolesCompletos", true, args);
+
+        return response;
+    },
+    bajaRol: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        await request(HttpRequestType.DELETE, "usuarios/bajaRol", true, args);
+    },
+    
+    obtenerPermisos: async () => {
+        let response : {nombre: string, reservado: boolean}[] = await request(HttpRequestType.GET, "usuarios/obtenerPermisos", true);
+
+        return response;
+    },
+    altaRol: async (data: DTOAltaRol) => {
+        await request(HttpRequestType.DELETE, "usuarios/altaRol", true, null, JSON.stringify(data));
+    },
+    obtenerRolCompleto: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : DTORol = await request(HttpRequestType.GET, "usuarios/obtenerRolCompleto", true, args);
+
+        return response;
+    },
+    modificarRol: async (data: DTOModificarRol) => {
+        await request(HttpRequestType.PUT, "usuarios/modificarRol", true, null, JSON.stringify(data));
+    },
 }

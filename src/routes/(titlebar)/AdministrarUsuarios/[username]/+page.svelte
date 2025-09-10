@@ -268,21 +268,7 @@
             exitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
-                if (e.message.includes("username") || e.message.includes("nombre de usuario")) {
-                    error = "El nombre de usuario ingresado ya pertenece a otro usuario";
-                } else if (e.message.includes("mail") || e.message.includes("correo")) {
-                    error = "El correo electrónico ingresado ya está vinculado a otro usuario";
-                } else if (e.message.includes("permiso") && e.message.includes("asignar")) {
-                    const rolMatch = e.message.match(/'([^']+)'/);
-                    const rolName = rolMatch ? rolMatch[1] : "rol";
-                    error = `No tiene permiso para asignar el rol '${rolName}'`;
-                } else if (e.message.includes("permiso") && e.message.includes("quitar")) {
-                    const rolMatch = e.message.match(/'([^']+)'/);
-                    const rolName = rolMatch ? rolMatch[1] : "rol";
-                    error = `No tiene permiso para quitar el rol '${rolName}'`;
-                } else {
-                    error = e.message;
-                }
+                error = e.message;
                 errorVisible = true;
             }
         }

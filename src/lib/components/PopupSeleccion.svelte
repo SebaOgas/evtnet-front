@@ -20,6 +20,7 @@
     export let multiple : boolean = true;
 
     export let noSearch : boolean = false;
+    export let forceReSearch : boolean = false;
 
     $: found = new Map<any, string>()
 
@@ -60,6 +61,12 @@
             found = await searchFunction("");
         }
     })
+
+    $: (async () => {
+        if (visible && noSearch && forceReSearch) {
+            found = await searchFunction("");
+        }
+    })()
 </script>
 
 
