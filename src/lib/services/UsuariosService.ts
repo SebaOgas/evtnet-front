@@ -11,6 +11,7 @@ import type DTOModificarUsuario from "$lib/dtos/usuarios/DTOModificarUsuario";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
+import type DTORol from "$lib/dtos/usuarios/DTORol";
 import type DTOSupereventosUsuario from "$lib/dtos/usuarios/DTOSupereventosUsuario";
 import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import type DTOUsuarioCompleto from "$lib/dtos/usuarios/DTOUsuarioCompleto";
@@ -243,6 +244,22 @@ export const UsuariosService = {
     modificarUsuario: async (data: DTOModificarUsuario) => { 
         await request(HttpRequestType.PUT, "usuarios/modificarUsuario", true, null, JSON.stringify(data));
 
-    }
+    },
+
+
+    obtenerRolesCompletos: async (page: number) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTORol[]> = await request(HttpRequestType.GET, "usuarios/obtenerRolesCompletos", true, args);
+
+        return response;
+    },
+    bajaRol: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        await request(HttpRequestType.DELETE, "usuarios/bajaRol", true, args);
+    },
 
 }

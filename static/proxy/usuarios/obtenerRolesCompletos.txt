@@ -1,0 +1,227 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "content": [
+        {
+            "id": 0,
+            "nombre": "Usuario",
+            "descripcion": "Descripción del rol",
+            "reservado": false,
+            "fechaAlta": 1753517005573,
+            "fechaBaja": null,
+            "permisos": [
+                {
+                    "nombre": "Permiso 1",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        },
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 2",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 3",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "nombre": "Administrador",
+            "descripcion": "Descripción del rol",
+            "reservado": true,
+            "fechaAlta": 1753517005573,
+            "fechaBaja": null,
+            "permisos": [
+                {
+                    "nombre": "Permiso 1",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        },
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 2",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 3",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "nombre": "SuperAdministrador",
+            "descripcion": "Descripción del rol",
+            "reservado": true,
+            "fechaAlta": 1753517005573,
+            "fechaBaja": null,
+            "permisos": [
+                {
+                    "nombre": "Permiso 1",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        },
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 2",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 3",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "nombre": "Perito",
+            "descripcion": "Descripción del rol",
+            "reservado": false,
+            "fechaAlta": 1753517005573,
+            "fechaBaja": null,
+            "permisos": [
+                {
+                    "nombre": "Permiso 1",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        },
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 2",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 3",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "nombre": "Ex rol",
+            "descripcion": "Descripción del rol",
+            "reservado": false,
+            "fechaAlta": 1753517005573,
+            "fechaBaja": 1773517005573,
+            "permisos": [
+                {
+                    "nombre": "Permiso 1",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        },
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 2",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": null
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Permiso 3",
+                    "periodos": [
+                        {
+                            "desde": 1753517005573,
+                            "hasta": 1773517005573
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "totalPages": 5,
+    "totalElements": 50,
+    "size": 10,
+    "number": 0,
+    "first": 0,
+    "last": 4
+}
