@@ -1,0 +1,30 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Usuario"
+    },
+    {
+        "id": 1,
+        "nombre": "Administrador"
+    },
+    {
+        "id": 2,
+        "nombre": "SuperAdministrador"
+    },
+    {
+        "id": 3,
+        "nombre": "Perito"
+    }
+]

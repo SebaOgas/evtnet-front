@@ -61,7 +61,7 @@
         <span>{label}</span>
     {/if}
     {#if !multiline}
-        <input {disabled} type="{!isPassword ? "text" : "password"}" on:focusout={validar} on:keydown={onKeyDown} on:keyup={change} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg" >
+        <input {disabled} type="{!isPassword ? "text" : "password"}" on:focusout={validar} on:keydown={onKeyDown} on:keyup={change} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg h-fit" >
     {:else}
         <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
     {/if}

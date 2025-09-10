@@ -15,6 +15,16 @@
         if (!/^[0-9]+$/.test(tmpPage)) {
             tmpPage = "" + aux;
         }
+    }
+
+    function onAction() {
+        
+        let aux = parseInt(tmpPage);
+        if (Number.isNaN(aux)) aux = 0;
+
+        if (!/^[0-9]+$/.test(tmpPage)) {
+            tmpPage = "" + aux;
+        }
 
         page = aux;
     }
@@ -32,6 +42,7 @@
         tmpPage = "" + page;
     }
 
+    $: tmpPage = ""+page;
 
 </script>
 
@@ -45,6 +56,7 @@
         classes="w-[40pt] self-stretch !m-0 [&>*]:w-full [&>*]:h-full [&>*]:text-center" 
         max={4}
         change={onChange}
+        action={onAction}
     />
     <Button action={() => addPage(1)} disabled={page === lastPage}>&gt</Button>
     <Button action={() => setPage(lastPage)} disabled={page === lastPage}>&gt&gt</Button>
