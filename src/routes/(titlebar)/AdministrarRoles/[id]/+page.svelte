@@ -16,22 +16,41 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import type DTOAltaRol from "$lib/dtos/usuarios/DTOAltaRol";
 	import CheckBox from "$lib/components/CheckBox.svelte";
+	import { page } from "$app/state";
+	import type DTOModificarRol from "$lib/dtos/usuarios/DTOModificarRol";
+	import type DTORol from "$lib/dtos/usuarios/DTORol";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
 	$: error = "";
     $: exitoVisible = false;
+	
+	$: id = parseInt(page.params.id === undefined ? "0" : page.params.id);
 
 	$: data = {
+		id: id,
 		nombre: "",
 		descripcion: "",
 		reservado: false,
 		permisos: []
-	} as DTOAltaRol;
+	} as DTOModificarRol;
+
+	let original : DTORol = {
+		id: id,
+		nombre: "",
+		descripcion: "",
+		reservado: false,
+		fechaAlta: new Date(),
+		fechaBaja: null,
+		permisos: []
+	};
 
 
 	$: permisosSeleccionados = new Map<string, string>();
 	$: popupPermisosVisible = false;
+
+	let listo = false;
+	
     let adminReservados = false;
 
 	onMount(async () => {
@@ -47,7 +66,22 @@
 			return;
 		}
 
+		original = await UsuariosService.obtenerRolCompleto(id);
 		
+		data.id = original.id;
+		data.nombre = original.nombre;
+		data.descripcion = original.descripcion;
+		data.reservado = original.reservado;
+
+		original.permisos.forEach(p => {
+			if (p.periodos.some(per => per.hasta === null)) {
+				permisosSeleccionados.set(p.nombre, p.nombre)
+			}
+		})
+
+		permisosSeleccionados = new Map(permisosSeleccionados)
+
+		listo = true;
 	});
 
 	function validateNombre(nombre: string) {
@@ -75,7 +109,7 @@
 			const response = await UsuariosService.obtenerPermisos();
             let ret: Map<string, string> = new Map();
             response.forEach((item) => {
-                let doit = true;
+				let doit = true;
                 if (permisosSeleccionados.get(item.nombre) !== undefined)
                     doit = false;
 
@@ -104,7 +138,7 @@
 		data.permisos = Array.from(permisosSeleccionados.keys());
 		
 		try {
-			await UsuariosService.altaRol(data);
+			await UsuariosService.modificarRol(data);
             exitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -127,8 +161,9 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Alta de Rol</h1>
-		
+		<h1 class="text-m text-center md:text-start">Modificar Rol</h1>
+
+		{#if listo}
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
             <TextField 
                 label="Nombre" 
@@ -165,13 +200,16 @@
                             <span>
                                 {nombre}
                             </span>
-                            <Button icon="/icons/cross.svg" action={() => {permisosSeleccionados.delete(id); permisosSeleccionados = new Map(permisosSeleccionados)}}></Button>
+							{#if adminReservados || !(original.permisos.find(p => p.nombre === nombre)?.reservado)}
+                            	<Button icon="/icons/cross.svg" action={() => {permisosSeleccionados.delete(id); permisosSeleccionados = new Map(permisosSeleccionados)}}></Button>
+							{/if}
                         </div>
                     {/each}
                 </div>
                 <Warning visible={permisosSeleccionados.size === 0} text="Se recomienda seleccionar al menos un permiso"></Warning>
             </div>
         </div>
+		{/if}
     </div>
         
 
@@ -198,12 +236,12 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para dar de alta roles.
+	No tiene permiso para modificar roles.
 </PopupError>
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        Rol añadido exitosamente. 
+        Rol modificado exitosamente. 
     </span>
     <div class="flex w-full justify-center">
         <Button action={() => goto("/AdministrarRoles")}>Aceptar</Button>

@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
-	import CheckBox from "$lib/components/CheckBox.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
-	import PopupAdminUsuario from "$lib/components/PopupAdminUsuario.svelte";
 	import Table from "$lib/components/Table.svelte";
-	import TextField from "$lib/components/TextField.svelte";
-	import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
-	import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
 	import type DTORol from "$lib/dtos/usuarios/DTORol";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
