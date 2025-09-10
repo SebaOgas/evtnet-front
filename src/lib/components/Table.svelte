@@ -52,7 +52,7 @@
 	<tbody bind:this={body} 
 		class="flex flex-col gap-8 
 			[&>tr]:flex [&>tr]:flex-col [&>tr]:gap-2
-			[&>tr>td]:flex [&>tr>td]:flex-row [&>tr>td]:justify-between [&>tr>td]:items-center">
+			[&>tr>td]:flex [&>tr>td]:flex-row [&>tr>td]:justify-between [&>tr>td]:items-center  [&>tr>td]:flex-wrap">
 		<slot/>
 	</tbody>
   </table>

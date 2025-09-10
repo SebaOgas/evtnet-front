@@ -228,6 +228,12 @@ export const UsuariosService = {
 
         let response : DTOInteraccionesUsuario = await request(HttpRequestType.GET, "usuarios/adminObtenerInteraccionesUsuario", true, args);
         return response;
+    },
+    bajaUsuario: async (username: string) => {
+        let args = new Map<string, string>();
+        args.set("username", username);
+
+        await request(HttpRequestType.DELETE, "usuarios/bajaUsuario", true, args);
     }
 
 }

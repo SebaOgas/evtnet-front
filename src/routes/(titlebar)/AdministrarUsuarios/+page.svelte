@@ -4,6 +4,7 @@
 	import CheckBox from "$lib/components/CheckBox.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 	import PopupAdminUsuario from "$lib/components/PopupAdminUsuario.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
@@ -90,6 +91,32 @@
 
 
     let usuarioAbierto : string | null = null;
+
+    let popupBaja = false;
+    let usuarioBaja : string | null = null;
+    $: popupBaja = usuarioBaja === null ? false : true;
+    let exitoBaja = false;
+    async function baja() {
+        if (usuarioBaja === null) {
+            errorGenerico = "No se pudo identificar al usuario a dar de baja";
+            errorGenericoVisible = true;
+            return;
+        }
+
+        try {
+			await UsuariosService.bajaUsuario(usuarioBaja);
+            buscar();
+            usuarioBaja = null;
+            exitoBaja = true;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}
+		}
+
+    }
+
 </script>
 
 
@@ -128,7 +155,7 @@
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/view.svg" action={() => usuarioAbierto = d.username}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarUsuarios/Editar/${d.username}`)}></Button>
-                                <Button icon="/icons/trash.svg"></Button>
+                                <Button icon="/icons/trash.svg" action={() => usuarioBaja = d.username}></Button>
                             </div>
                         </td>
                     </tr>
@@ -145,3 +172,18 @@
 
 
 <PopupAdminUsuario bind:username={usuarioAbierto}/>
+
+<Popup bind:visible={popupBaja} fitH fitW>
+	¿Está seguro de que desea dar de baja a este usuario?
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupBaja = false}}>Cancelar</Button>
+		<Button action={baja}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={exitoBaja} fitH fitW>
+	Usuario dado de baja exitosamente
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
+	</div>
+</Popup>
