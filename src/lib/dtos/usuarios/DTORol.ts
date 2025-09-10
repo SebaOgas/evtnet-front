@@ -7,6 +7,7 @@ export default interface DTORol {
     fechaBaja: Date | null,
     permisos: {
         nombre: string,
+        reservado: boolean,
         periodos: {
             desde: Date,
             hasta: Date | null

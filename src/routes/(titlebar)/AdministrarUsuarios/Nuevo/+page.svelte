@@ -222,13 +222,7 @@
             exitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
-				if (e.message.includes("username") || e.message.includes("nombre de usuario")) {
-					error = "El nombre de usuario ingresado ya pertenece a otro usuario";
-				} else if (e.message.includes("mail") || e.message.includes("correo")) {
-					error = "El correo electrónico ingresado ya está vinculado a otro usuario";
-				} else {
-					error = e.message;
-				}
+				error = e.message;
 				errorVisible = true;
 			}
 		}

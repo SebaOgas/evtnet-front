@@ -2,6 +2,8 @@ REQUEST TYPE GET
 
 REQUEST ARGS
 
+page: int
+
 REQUEST BODY
 
 {}
@@ -22,6 +24,7 @@ RESPONSE BODY
             "permisos": [
                 {
                     "nombre": "Permiso 1",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -35,6 +38,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 2",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -44,6 +48,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 3",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -63,6 +68,7 @@ RESPONSE BODY
             "permisos": [
                 {
                     "nombre": "Permiso 1",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -76,6 +82,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 2",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -85,6 +92,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 3",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -104,6 +112,7 @@ RESPONSE BODY
             "permisos": [
                 {
                     "nombre": "Permiso 1",
+                    "reservado": true,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -117,6 +126,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 2",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -126,6 +136,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 3",
+                    "reservado": true,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -145,6 +156,7 @@ RESPONSE BODY
             "permisos": [
                 {
                     "nombre": "Permiso 1",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -158,6 +170,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 2",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -167,6 +180,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 3",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -186,6 +200,7 @@ RESPONSE BODY
             "permisos": [
                 {
                     "nombre": "Permiso 1",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -199,6 +214,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 2",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,
@@ -208,6 +224,7 @@ RESPONSE BODY
                 },
                 {
                     "nombre": "Permiso 3",
+                    "reservado": false,
                     "periodos": [
                         {
                             "desde": 1753517005573,

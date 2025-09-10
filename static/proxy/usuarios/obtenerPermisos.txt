@@ -1,0 +1,46 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "nombre": "Permiso 1",
+        "reservado": true
+    },
+    {
+        "nombre": "Permiso 2",
+        "reservado": false
+    },
+    {
+        "nombre": "Permiso 3",
+        "reservado": false
+    },
+    {
+        "nombre": "Permiso 4",
+        "reservado": true
+    },
+    {
+        "nombre": "Permiso 5",
+        "reservado": false
+    },
+    {
+        "nombre": "Permiso 6",
+        "reservado": false
+    },
+    {
+        "nombre": "Permiso 7",
+        "reservado": true
+    },
+    {
+        "nombre": "Permiso 8",
+        "reservado": false
+    }
+]

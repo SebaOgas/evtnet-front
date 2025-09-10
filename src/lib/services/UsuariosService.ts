@@ -1,3 +1,4 @@
+import type DTOAltaRol from "$lib/dtos/usuarios/DTOAltaRol";
 import type DTOAltaUsuario from "$lib/dtos/usuarios/DTOAltaUsuario";
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
@@ -260,6 +261,15 @@ export const UsuariosService = {
         args.set("id", `${id}`);
 
         await request(HttpRequestType.DELETE, "usuarios/bajaRol", true, args);
+    },
+    
+    obtenerPermisos: async () => {
+        let response : {nombre: string, reservado: boolean}[] = await request(HttpRequestType.GET, "usuarios/obtenerPermisos", true);
+
+        return response;
+    },
+    altaRol: async (data: DTOAltaRol) => {
+        await request(HttpRequestType.DELETE, "usuarios/altaRol", true, null, JSON.stringify(data));
     },
 
 }
