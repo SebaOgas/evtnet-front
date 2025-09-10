@@ -42,7 +42,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionDenunciasEventos")) {
+		if (!userPermisos.includes("AdministracionUsuarios")) {
 			errorPermiso = true;
 			return;
 		}
@@ -125,7 +125,7 @@
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
         <h1 class="text-m flex gap-2 justify-start items-center">
             <span>Usuarios</span>
-            <Button icon="/icons/plus.svg"></Button>
+            <Button icon="/icons/plus.svg" action={() => goto("/AdministrarUsuarios/Nuevo")}></Button>
         </h1>
 
         {#if listo}

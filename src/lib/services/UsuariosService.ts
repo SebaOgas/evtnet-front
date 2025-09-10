@@ -1,3 +1,4 @@
+import type DTOAltaUsuario from "$lib/dtos/usuarios/DTOAltaUsuario";
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
 import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
@@ -234,6 +235,9 @@ export const UsuariosService = {
         args.set("username", username);
 
         await request(HttpRequestType.DELETE, "usuarios/bajaUsuario", true, args);
+    },
+    altaUsuario: async (data: DTOAltaUsuario) => {
+        await request(HttpRequestType.POST, "usuarios/altaUsuario", true, null, JSON.stringify(data));
     }
 
 }

@@ -1,0 +1,19 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "username": "SergioAlbino",
+    "dni": "12345678",
+    "fechaNacimiento": 1752775303742,
+    "mail": "mail@example.com",
+    "roles": [0, 1]
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

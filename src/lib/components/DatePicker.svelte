@@ -70,7 +70,7 @@
     $: formattedStartDate = formatDate(startDate, time);
     $: formattedEndDate = formatDate(endDate, time);
 
-    $: formattedDateRange = `${formattedStartDate} - ${formattedEndDate}`;
+    $: formattedDateRange = formattedStartDate === "" && formattedEndDate === "" ? "" : `${formattedStartDate} - ${formattedEndDate}`;
 
 
     let dowLabels = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
@@ -196,14 +196,14 @@
     
 </script>
 
-<label class="{classes} flex flex-col gap-2 {disableLinearDisplay ? "" : "md:flex-row"}">
+<label class="{classes} [&>div.datepicker]:w-full flex flex-col gap-2 {disableLinearDisplay ? "" : `md:flex-row ${valido ? "md:items-baseline" : ""}`}">
     {#if label !== null && label !== ""}
-        <span>{label}</span>
+        <span class="whitespace-nowrap">{label}</span>
     {/if}
     {#if !range}
         <DatePicker {disabled} bind:isOpen bind:startDate={value} enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} {enabledDates}>
             <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
-                <input type="text" {disabled} placeholder="Seleccione la fecha" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
+                <input type="text" {disabled} placeholder="dd/mm/yyyy {time ? "hh:mm" : ""}" bind:value={formattedValue} on:click={toggleDatePicker} on:blur={handleSingleDateInput}/>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="/icons/calendar.svg" alt="Calendario">
@@ -212,7 +212,7 @@
     {:else}
         <DatePicker {disabled} bind:isOpen bind:startDate bind:endDate enableFutureDates dowLabels={dowLabels} monthLabels={monthLabels} showTimePicker={time} isRange {enabledDates}>
             <div class="datepicker {disabled ? "disabled" : ""} border flex flex-row items-center">
-                <input type="text" {disabled} placeholder="Seleccione las fechas" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            
+                <input type="text" {disabled} placeholder="dd/mm/yyyy {time ? "hh:mm" : ""} - dd/mm/yyyy {time ? "hh:mm" : ""}" bind:value={formattedDateRange} on:click={toggleDatePicker} on:blur={handleRangeDateInput}/>            
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                 <img src="/icons/calendar.svg" alt="Calendario">
