@@ -154,7 +154,7 @@
                         <td>
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/view.svg" action={() => usuarioAbierto = d.username}></Button>
-                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarUsuarios/Editar/${d.username}`)}></Button>
+                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarUsuarios/${d.username}`)}></Button>
                                 <Button icon="/icons/trash.svg" action={() => usuarioBaja = d.username}></Button>
                             </div>
                         </td>

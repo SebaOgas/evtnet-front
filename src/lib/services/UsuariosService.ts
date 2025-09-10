@@ -7,6 +7,7 @@ import type DTOEventosUsuario from "$lib/dtos/usuarios/DTOEventosUsuario";
 import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
 import type DTOGruposUsuario from "$lib/dtos/usuarios/DTOGruposUsuario";
 import type DTOInteraccionesUsuario from "$lib/dtos/usuarios/DTOInteraccionesUsuario";
+import type DTOModificarUsuario from "$lib/dtos/usuarios/DTOModificarUsuario";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
@@ -238,6 +239,10 @@ export const UsuariosService = {
     },
     altaUsuario: async (data: DTOAltaUsuario) => {
         await request(HttpRequestType.POST, "usuarios/altaUsuario", true, null, JSON.stringify(data));
+    },
+    modificarUsuario: async (data: DTOModificarUsuario) => { 
+        await request(HttpRequestType.PUT, "usuarios/modificarUsuario", true, null, JSON.stringify(data));
+
     }
 
 }
