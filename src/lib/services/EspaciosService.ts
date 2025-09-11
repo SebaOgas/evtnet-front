@@ -11,6 +11,7 @@ import type DTOResultadoBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTORe
 import type DTOCaracteristica from "$lib/dtos/espacios/DTOCaracteristica";
 import type DTOAdministradoresEspacio from "$lib/dtos/espacios/DTOAdministradoresEspacio";
 import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
+import type DTOCrearSolicitudEspacio from "$lib/dtos/espacios/DTOCrearSolicitudEspacio";
 
 
 export const EspaciosService = {
@@ -39,7 +40,6 @@ export const EspaciosService = {
     editarEspacio: async (data: DTOEspacioEditar) => {
         await request(HttpRequestType.PUT, "espacios/editarEspacio", true, null, JSON.stringify(data));
     },
-
     dejarDeAdministrar: async (espacioId: number) => {
         let args = new Map<string, string>();
         args.set("espacioId", `${espacioId}`);
@@ -132,5 +132,11 @@ export const EspaciosService = {
         args.set("idEspacio", `${idEspacio}`);
         args.set("idUsuario", `${idUsuario}`);
         await request(HttpRequestType.PUT, "espacios/entregarPropietario", true, args);
-    }
+    },
+    crearSolicitudEspacio: async (data: DTOCrearSolicitudEspacio) => {
+
+        let response = await request(HttpRequestType.POST, "espacios/crearSolicitudEspacio", true, null, JSON.stringify(data));
+
+        return response;
+    },
 }
