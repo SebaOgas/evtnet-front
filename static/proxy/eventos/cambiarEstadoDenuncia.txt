@@ -1,0 +1,15 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "idDenuncia": 0,
+    "estado": 1,
+    "descripcion": "Descripción del cambio de estado"
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

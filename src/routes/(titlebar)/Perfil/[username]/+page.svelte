@@ -22,7 +22,8 @@
 		mail: null,
 		dni: null,
 		fechaNacimiento: null,
-		calificaciones: null
+		calificaciones: null,
+        idChat: 0
     } as DTOPerfil;
 
     $: errorGenerico = ""
@@ -56,6 +57,7 @@
         permisosList = get(permisos);
 
         try {
+            if (requestedUsername === undefined) return;
             perfil = await UsuariosService.obtenerPerfil(requestedUsername);
             urlFotoDePerfil = await UsuariosService.obtenerFotoDePerfil(requestedUsername);
             
@@ -141,6 +143,8 @@
             {/if}
 
             <Button action={() => {goto("/RestablecerContrasena")}}>Cambiar Contraseña</Button>
+        {:else}
+            <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${perfil.idChat}`)}}></Button>
         {/if}
     </div>
 </div>  

@@ -1,0 +1,16 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre":"Nombre rol",
+    "descripcion":"Descripción rol",
+    "reservado":false,
+    "permisos":["Permiso 2","Permiso 5","Permiso 7"]
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

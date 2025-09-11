@@ -1,0 +1,25 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "username": "usuario",
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "mail": "sergioalbino@gmail.com",
+    "dni": "38302820",
+    "fechaNacimiento": 1153225458732,
+    "alta": 1753225458732,
+    "baja": 1753225458732,
+    "roles": ["Usuario", "Administrador"]
+}

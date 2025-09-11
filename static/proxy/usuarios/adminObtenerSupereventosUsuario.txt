@@ -1,0 +1,64 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "organizador": [
+        {
+            "id": 101,
+            "nombre": "Superevento A",
+            "fechaDesde": 1709856000000,
+            "fechaHasta": 1709942400000
+        },
+        {
+            "id": 205,
+            "nombre": "Superevento B",
+            "fechaDesde": 1715558400000,
+            "fechaHasta": 1715558400000
+        }
+    ],
+    "administrador": [
+        {
+        "id": 150,
+        "nombre": "Superevento C",
+        "fechaDesde": 1704326400000,
+        "fechaHasta": 1704412800000,
+        "periodos": [
+            {
+                "desde": 1704326400000,
+                "hasta": 1704369600000
+            },
+            {
+                "desde": 1704369600000,
+                "hasta": 1704412800000
+            }
+        ]
+        },
+        {
+        "id": 298,
+        "nombre": "Superevento D",
+        "fechaDesde": 1711152000000,
+        "fechaHasta": 1711238400000,
+        "periodos": [
+            {
+                "desde": 1711152000000,
+                "hasta": 1711195200000
+            },
+            {
+                "desde": 1711195200000,
+                "hasta": 1711238400000
+            }
+        ]
+        }
+    ]
+}

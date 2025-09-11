@@ -1,0 +1,20 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "username": "usuarioPrev",
+    "usernameNuevo": "usuario",
+    "nombre": "Sergio",
+    "apellido": "Albino",
+    "mail": "sergioalbino@gmail.com",
+    "dni": "38302820",
+    "fechaNacimiento": 1153225458732,
+    "roles": [0, 1]
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

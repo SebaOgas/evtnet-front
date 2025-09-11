@@ -1,0 +1,69 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "texto": "Texto buscado",
+    "estados": [0, 1, 2, 3],
+    "fechaIngresoDesde": 1753225458732,
+    "fechaIngresoHasta": 1753225458732,
+    "fechaCambioEstadoDesde": 1753225458732,
+    "fechaCambioEstadoHasta": null,
+    "orden": "FECHA_DENUNCIA_ASC"
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+{
+    "content": [
+        {
+            "idDenuncia": 0,
+            "titulo": "Denuncia 0",
+            "usernameDenunciante": "denunciante",
+            "nombreEvento": "Evento 0",
+            "usernameOrganizador": "organizador",
+            "estado": "Ingresado",
+            "fechaHoraUltimoCambio": 1757337822476,
+            "fechaHoraIngreso": 1757337822476
+        },
+        {
+            "idDenuncia": 0,
+            "titulo": "Denuncia 0",
+            "usernameDenunciante": "denunciante",
+            "nombreEvento": "Evento 0",
+            "usernameOrganizador": "organizador",
+            "estado": "Ingresado",
+            "fechaHoraUltimoCambio": 1757337822476,
+            "fechaHoraIngreso": 1757337822476
+        },
+        {
+            "idDenuncia": 0,
+            "titulo": "Denuncia 0",
+            "usernameDenunciante": "denunciante",
+            "nombreEvento": "Evento 0",
+            "usernameOrganizador": "organizador",
+            "estado": "Ingresado",
+            "fechaHoraUltimoCambio": 1757337822476,
+            "fechaHoraIngreso": 1757337822476
+        },
+        {
+            "idDenuncia": 0,
+            "titulo": "Denuncia 0",
+            "usernameDenunciante": "denunciante",
+            "nombreEvento": "Evento 0",
+            "usernameOrganizador": "organizador",
+            "estado": "Ingresado",
+            "fechaHoraUltimoCambio": 1757337822476,
+            "fechaHoraIngreso": 1757337822476
+        }
+    ],
+    "totalPages": 5,
+    "totalElements": 50,
+    "size": 10,
+    "number": 0,
+    "first": 0,
+    "last": 4
+}

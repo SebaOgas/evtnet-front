@@ -1,0 +1,66 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+username : string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "grupos": [
+        {
+            "id": 101,
+            "nombre": "Grupo A",
+            "roles": [
+                {
+                    "nombre": "Miembro",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                },
+                {
+                    "nombre": "Administrador",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                }
+            ]
+        },
+        {
+            "id": 101,
+            "nombre": "Grupo B",
+            "roles": [
+                {
+                    "nombre": "Administrador",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                }
+            ]
+        },
+        {
+            "id": 101,
+            "nombre": "Grupo C",
+            "roles": [
+                {
+                    "nombre": "Miembro",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                },
+                {
+                    "nombre": "Administrador",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                },
+                {
+                    "nombre": "Miembro",
+                    "fechaDesde": 1709856000000,
+                    "fechaHasta": 1709942400000
+                }
+            ]
+        }
+    ]
+}
