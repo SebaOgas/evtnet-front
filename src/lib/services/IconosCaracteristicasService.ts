@@ -37,8 +37,6 @@ export const IconosCaracteristicasService = {
             iconoObj.urlIcono = url;
             return iconoObj;
         });
-
-        return response;
     },
     obtenerListaIconos: async () => {
         let response : {id: number, icono: string, contentType?: string}[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerListaIconos", false, null);

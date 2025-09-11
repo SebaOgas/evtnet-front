@@ -20,8 +20,6 @@ export const ImagenesEspaciosService = {
         let urlCreator = window.URL || window.webkitURL;
         let url = urlCreator.createObjectURL(blob);
 
-        console.log(url);
-
         return {
             id: response.id,
             url
@@ -29,7 +27,6 @@ export const ImagenesEspaciosService = {
     },
     
     actualizar: async (imagenesPayload: DTOActualizarImagenesEspacio) => {
-        // Convertir archivos nuevos a blobUrl si existen
         const imagenesJson = imagenesPayload.imagenes.map(img => {
             if (img.archivo) {
                 return {
