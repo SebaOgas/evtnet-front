@@ -148,7 +148,7 @@
                 <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     <div class="flex flex-row items-center justify-between w-full gap-2">
                         <div class="flex flex-row items-center gap-2">
-                            <img src={r.urlFotoPerfil} alt="Foto de perfil" class="w-12 h-12 rounded-full"/>
+                            <img src={r.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + r.username)} class="w-12 h-12 rounded-full"/>
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex flex-row gap-2">
@@ -176,7 +176,7 @@
                 <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     <div class="flex flex-row items-center justify-between w-full gap-2">
                         <div class="flex flex-row items-center gap-2">
-                            <img src={r.urlFotoPerfil} alt="Foto de perfil" class="w-12 h-12 rounded-full"/>
+                            <img src={r.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + r.username)} class="w-12 h-12 rounded-full"/>
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex gap-2 shrink-0">
