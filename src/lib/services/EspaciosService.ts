@@ -9,6 +9,8 @@ import type DTOResultadoBusquedaMisEspacios from "$lib/dtos/espacios/DTOResultad
 import type DTOBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOBusquedaEventosPorEspacio";
 import type DTOResultadoBusquedaEventosPorEspacio from "$lib/dtos/espacios/DTOResultadoBusquedaEventosPorEspacio";
 import type DTOCaracteristica from "$lib/dtos/espacios/DTOCaracteristica";
+import type DTOAdministradoresEspacio from "$lib/dtos/espacios/DTOAdministradoresEspacio";
+import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 
 
 export const EspaciosService = {
@@ -18,7 +20,6 @@ export const EspaciosService = {
 
         return response.id;
     },
-
     obtenerEspacio: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
@@ -27,7 +28,6 @@ export const EspaciosService = {
 
         return response;
     },
-
     obtenerEspacioEditar: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
@@ -36,7 +36,6 @@ export const EspaciosService = {
 
         return response;
     },
-
     editarEspacio: async (data: DTOEspacioEditar) => {
         await request(HttpRequestType.PUT, "espacios/editarEspacio", true, null, JSON.stringify(data));
     },
@@ -88,5 +87,50 @@ export const EspaciosService = {
             caracteristicas
         };
         await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasEspacio", true, null, JSON.stringify(payload));
+    },
+    obtenerAdministradoresEspacio: async (idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        let response : DTOAdministradoresEspacio = await request(HttpRequestType.GET, "espacios/obtenerAdministradoresEspacio", true, args);
+        response.administradores.map(iconoObj => {
+            const byteCharacters = atob(iconoObj.urlFotoPerfil);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+
+            const bytes = new Uint8Array(byteNumbers);
+            let urlCreator = window.URL || window.webkitURL;
+            let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+            iconoObj.urlFotoPerfil = url;
+            return iconoObj;
+        });
+        return response;
+    },
+    buscarUsuariosNoAdministradores: async (idEspacio: number, texto: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEspacio}`);
+        args.set("texto", texto);
+
+        let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "espacios/buscarUsuariosNoAdministradores", false, args);
+        return response;
+    },
+    eliminarAdministradorEspacio: async (idEspacio: number, idUsuario: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("idUsuario", `${idUsuario}`);
+        await request(HttpRequestType.DELETE, "espacios/eliminarAdministradorEspacio", true, args);
+    },
+    agregarAdministradorEspacio: async (idEspacio: number, username:string) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("username", `${username}`);
+        await request(HttpRequestType.POST, "espacios/agregarAdministradorEspacio", true, args);
+    },
+    entregarPropietario: async (idEspacio: number, idUsuario: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        args.set("idUsuario", `${idUsuario}`);
+        await request(HttpRequestType.PUT, "espacios/entregarPropietario", true, args);
     }
 }

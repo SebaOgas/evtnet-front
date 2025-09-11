@@ -37,7 +37,6 @@ export const IconosCaracteristicasService = {
             iconoObj.urlIcono = url;
             return iconoObj;
         });
-
         return response;
     },
     obtenerListaIconos: async () => {
