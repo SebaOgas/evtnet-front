@@ -2,6 +2,7 @@ import type DTOAltaRol from "$lib/dtos/usuarios/DTOAltaRol";
 import type DTOAltaUsuario from "$lib/dtos/usuarios/DTOAltaUsuario";
 import type DTOAuth from "$lib/dtos/usuarios/DTOAuth";
 import type DTOCalificacion from "$lib/dtos/usuarios/DTOCalificacion";
+import type DTODenunciaUsuario from "$lib/dtos/usuarios/DTODenunciaUsuario";
 import type DTOEditarPerfil from "$lib/dtos/usuarios/DTOEditarPerfil";
 import type DTOEspaciosUsuario from "$lib/dtos/usuarios/DTOEspaciosUsuario";
 import type DTOEventosUsuario from "$lib/dtos/usuarios/DTOEventosUsuario";
@@ -270,7 +271,7 @@ export const UsuariosService = {
         return response;
     },
     altaRol: async (data: DTOAltaRol) => {
-        await request(HttpRequestType.DELETE, "usuarios/altaRol", true, null, JSON.stringify(data));
+        await request(HttpRequestType.POST, "usuarios/altaRol", true, null, JSON.stringify(data));
     },
     obtenerRolCompleto: async (id: number) => {
         let args = new Map<string, string>();
@@ -282,5 +283,15 @@ export const UsuariosService = {
     },
     modificarRol: async (data: DTOModificarRol) => {
         await request(HttpRequestType.PUT, "usuarios/modificarRol", true, null, JSON.stringify(data));
+    },
+
+
+    obtenerDenunciasUsuario: async (page: number) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+
+        let response : Page<DTODenunciaUsuario[]> = await request(HttpRequestType.GET, "usuarios/obtenerDenunciasUsuario", true, args);
+
+        return response;
     },
 }
