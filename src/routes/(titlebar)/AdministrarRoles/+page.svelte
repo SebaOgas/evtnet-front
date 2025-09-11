@@ -4,6 +4,7 @@
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import type DTORol from "$lib/dtos/usuarios/DTORol";
 	import { HttpError } from "$lib/request/request";
@@ -165,3 +166,11 @@
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
 	</div>
 </Popup>
+
+<PopupError bind:visible={errorGenericoVisible}>
+    {errorGenerico}
+</PopupError>
+
+<PopupError bind:visible={errorPermiso}>
+    No tiene permiso para editar usuarios.
+</PopupError>

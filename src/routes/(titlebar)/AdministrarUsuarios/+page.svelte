@@ -6,6 +6,7 @@
 	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupAdminUsuario from "$lib/components/PopupAdminUsuario.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOFiltrosBusquedaUsuarios from "$lib/dtos/usuarios/DTOFiltrosBusquedaUsuarios";
@@ -187,3 +188,11 @@
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
 	</div>
 </Popup>
+
+<PopupError bind:visible={errorGenericoVisible}>
+    {errorGenerico}
+</PopupError>
+
+<PopupError bind:visible={errorPermiso}>
+    No tiene permiso para editar usuarios.
+</PopupError>

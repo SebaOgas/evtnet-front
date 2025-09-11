@@ -3,6 +3,8 @@
 	import Button from "$lib/components/Button.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
+	import PopupAdminGrupo from "$lib/components/PopupAdminGrupo.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOGrupoSimple from "$lib/dtos/grupos/DTOGrupoSimple";
@@ -61,7 +63,7 @@
 		}
     }
 
-    let grupoDetalle : DTOGrupoSimple | null = null;
+    let grupoDetalle : number | null = null;
 </script>
 
 
@@ -88,7 +90,7 @@
                         <td>{d.fechaBaja !== null ? formatDate(d.fechaBaja) : "-"}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
-                                <Button icon="/icons/view.svg" action={() => grupoDetalle = d}></Button>
+                                <Button icon="/icons/view.svg" action={() => grupoDetalle = d.id}></Button>
                             </div>
                         </td>
                     </tr>
@@ -102,3 +104,13 @@
     </div>
 
 </div>
+
+<PopupAdminGrupo bind:id={grupoDetalle}/>
+
+<PopupError bind:visible={errorGenericoVisible}>
+    {errorGenerico}
+</PopupError>
+
+<PopupError bind:visible={errorPermiso}>
+    No tiene permiso para editar usuarios.
+</PopupError>

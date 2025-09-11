@@ -1,3 +1,4 @@
+import type DTOAdminGrupo from "$lib/dtos/grupos/DTOAdminSimple";
 import type DTOGrupoSimple from "$lib/dtos/grupos/DTOGrupoSimple";
 import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
@@ -12,4 +13,12 @@ export const GruposService = {
 
         return response;
     },
+    adminObtenerGrupo: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : DTOAdminGrupo = await request(HttpRequestType.GET, "grupos/adminObtenerGrupo", true, args);
+
+        return response;
+    }
 }

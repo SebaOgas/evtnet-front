@@ -15,6 +15,8 @@
 	import type DTOInteraccionesUsuario from "$lib/dtos/usuarios/DTOInteraccionesUsuario";
     
 	import PopupAdminUsuario from "$lib/components/PopupAdminUsuario.svelte";
+	import PopupError from "./PopupError.svelte";
+	import PopupAdminGrupo from "./PopupAdminGrupo.svelte";
 
     function redir(url: string) {
         if (Capacitor.getPlatform() === "web") {
@@ -119,6 +121,7 @@
 
 
     let subUsername : string | null = null;
+    let subGrupo : number | null = null;
 
 </script>
 
@@ -258,7 +261,7 @@
                     <div class="flex flex-col gap-0 w-full">
                         <div class="flex justify-between items-center w-full">
                             <span>{ev.nombre}</span>
-                            <Button icon="/icons/arrow-right.svg" action={()=>{/*TO-DO*/}}></Button>
+                            <Button icon="/icons/arrow-right.svg" action={()=>{redir(`/SuperEvento/${ev.id}`)}}></Button>
                         </div>
                         <span class="ml-4">({formatDate(ev.fechaDesde, true)} - {formatDate(ev.fechaHasta, true)})</span>
                     </div>
@@ -270,7 +273,7 @@
                     <div class="flex flex-col gap-0 w-full">
                         <div class="flex justify-between items-center w-full">
                             <span>{ev.nombre}</span>
-                            <Button icon="/icons/arrow-right.svg" action={()=>{/*TO-DO*/}}></Button>
+                            <Button icon="/icons/arrow-right.svg" action={()=>{redir(`/SuperEvento/${ev.id}`)}}></Button>
                         </div>
                         <span class="ml-4">({formatDate(ev.fechaDesde, true)} - {formatDate(ev.fechaHasta, true)})</span>
                         {#each ev.periodos as periodo}
@@ -296,7 +299,7 @@
                     <div class="flex flex-col gap-0 w-full">
                         <div class="flex justify-between items-center w-full">
                             <span>{ev.nombre}</span>
-                            <Button icon="/icons/arrow-right.svg" action={()=>redir(`/SuperEvento/${ev.id}`)}></Button>
+                            <Button icon="/icons/arrow-right.svg" action={()=>{subGrupo = ev.id}}></Button>
                         </div>
                         {#each ev.roles as rol}
                             <span class="ml-4">{rol.nombre}: {formatDate(rol.fechaDesde, true)} - {formatDate(rol.fechaHasta, true)}</span>
@@ -334,7 +337,7 @@
                                             redir(`/SuperEvento/${ev.id}`)
                                             return;
                                         case "Grupo":
-                                            /*TO-DO*/
+                                            subGrupo = ev.id;
                                             return;
                                         case "Directo":
                                             if (ev.username === undefined) {
@@ -362,5 +365,10 @@
     {/if}
 
     <PopupAdminUsuario bind:username={subUsername}/>
+    <PopupAdminGrupo bind:id={subGrupo}/>
 
 {/if}
+
+<PopupError bind:visible={errorVisible}>
+    {error}
+</PopupError>
