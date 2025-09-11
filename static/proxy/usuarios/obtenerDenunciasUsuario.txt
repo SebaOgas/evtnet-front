@@ -1,0 +1,88 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+page: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "content": [
+        {
+            "fecha": 1753225458732,
+            "descripcion": "Descripción de esta denuncia",
+            "denunciado": {
+                "nombre": "Sergio",
+                "apellido": "Albino",
+                "username": "sergioalbino",
+                "mail": "sergioalbino@gmail.com"
+            },
+            "denunciante": {
+                "nombre": "Pamela",
+                "apellido": "Rodriguez",
+                "username": "sararodriguez",
+                "mail": "sara@gmail.com"
+            }
+        },
+        {
+            "fecha": 1753225458732,
+            "descripcion": "Descripción de esta denuncia 2",
+            "denunciado": {
+                "nombre": "Sergio",
+                "apellido": "Albino",
+                "username": "sergioalbino",
+                "mail": "sergioalbino@gmail.com"
+            },
+            "denunciante": {
+                "nombre": "Pamela",
+                "apellido": "Rodriguez",
+                "username": "sararodriguez",
+                "mail": "sara@gmail.com"
+            }
+        },
+        {
+            "fecha": 1753225458732,
+            "descripcion": "Descripción de esta denuncia 3",
+            "denunciado": {
+                "nombre": "Sergio",
+                "apellido": "Albino",
+                "username": "sergioalbino",
+                "mail": "sergioalbino@gmail.com"
+            },
+            "denunciante": {
+                "nombre": "Pamela",
+                "apellido": "Rodriguez",
+                "username": "sararodriguez",
+                "mail": "sara@gmail.com"
+            }
+        },
+        {
+            "fecha": 1753225458732,
+            "descripcion": "Descripción de esta denuncia 4",
+            "denunciado": {
+                "nombre": "Sergio",
+                "apellido": "Albino",
+                "username": "sergioalbino",
+                "mail": "sergioalbino@gmail.com"
+            },
+            "denunciante": {
+                "nombre": "Pamela",
+                "apellido": "Rodriguez",
+                "username": "sararodriguez",
+                "mail": "sara@gmail.com"
+            }
+        }
+    ],
+    "totalPages": 5,
+    "totalElements": 50,
+    "size": 10,
+    "number": 0,
+    "first": 0,
+    "last": 4
+}
