@@ -1,0 +1,72 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idEspacio: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "puntuaciones":[
+        {
+            "puntuacion": 5,
+            "cantidad": 18
+        },
+        {
+            "puntuacion": 4,
+            "cantidad": 12
+        },
+        {
+            "puntuacion": 3,
+            "cantidad": 6
+        },
+        {
+            "puntuacion": 2,
+            "cantidad": 3
+        },
+        {
+            "puntuacion": 1,
+            "cantidad": 1
+        }
+    ],
+    "resenas":[
+         {
+            "puntuacion": 3,
+            "fecha": 1755403800000,
+            "titulo": "Título de la reseña",
+            "usuario": "Tatiana Duran",
+            "username": "tduran",
+            "comentario": "Esto es el cuerpo de la reseña, estoy haciéndolo largo para que se vea como quedaría."
+        },
+        {
+            "puntuacion": 4,
+            "fecha": 1755403800000,
+            "titulo": "Título de la reseña",
+            "usuario": "Sebastián Ogás",
+            "username": "sogas",
+            "comentario": "Esto es el cuerpo de la reseña, estoy haciéndolo largo para que se vea como quedaría."
+        },
+        {
+            "puntuacion": 2,
+            "fecha": 1755403800000,
+            "titulo": "Título de la reseña",
+            "usuario": "Sergio Albino",
+            "username": "salbino",
+            "comentario": "Esto es el cuerpo de la reseña, estoy haciéndolo largo para que se vea como quedaría."
+        },
+        {
+            "puntuacion": 5,
+            "fecha": 1755403800000,
+            "titulo": "Título de la reseña",
+            "usuario": "Andrés Blan",
+            "username": "ablan",
+            "comentario": "Esto es el cuerpo de la reseña, estoy haciéndolo largo para que se vea como quedaría."
+        }
+    ]
+}

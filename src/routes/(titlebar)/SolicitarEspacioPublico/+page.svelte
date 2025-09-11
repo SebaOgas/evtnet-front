@@ -42,20 +42,6 @@
 
     $: popupCancelarVisible = false;
 
-    let disciplinas : Map<number, string> = new Map<number, string>();
-
-    async function buscarDisciplinas(val: string) {
-        let response = await DisciplinasService.buscar(val);
-
-        let ret : Map<number, string> = new Map();
-
-        response.forEach((val) => {
-            ret.set(val.id, val.nombre);
-        });
-
-        return ret;
-    }
-
     function validateNombre(val: string) {
         if (val.trim() === "") {
             return {

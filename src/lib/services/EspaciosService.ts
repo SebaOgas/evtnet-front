@@ -12,6 +12,8 @@ import type DTOCaracteristica from "$lib/dtos/espacios/DTOCaracteristica";
 import type DTOAdministradoresEspacio from "$lib/dtos/espacios/DTOAdministradoresEspacio";
 import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 import type DTOCrearSolicitudEspacio from "$lib/dtos/espacios/DTOCrearSolicitudEspacio";
+import type DTOResenasEspacio from "$lib/dtos/espacios/DTOResenasEspacio";
+import type DTOCrearResenaEspacio from "$lib/dtos/espacios/DTOCrearResenaEspacio";
 
 
 export const EspaciosService = {
@@ -139,4 +141,13 @@ export const EspaciosService = {
 
         return response;
     },
+    obtenerResenasEspacio: async (idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        let response : DTOResenasEspacio = await request(HttpRequestType.GET, "espacios/obtenerResenasEspacio", true, args);
+        return response;
+    },
+    crearResenaEspacio: async (resena:DTOCrearResenaEspacio) => {
+        await request(HttpRequestType.POST, "espacios/crearResenaEspacio", true, null, JSON.stringify(resena));
+    }
 }
