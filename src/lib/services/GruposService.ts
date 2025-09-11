@@ -20,5 +20,18 @@ export const GruposService = {
         let response : DTOAdminGrupo = await request(HttpRequestType.GET, "grupos/adminObtenerGrupo", true, args);
 
         return response;
-    }
+    },
+
+    obtenerMisGrupos: async () => {
+        let response : {id: number, nombre: string, idChat: number}[] = await request(HttpRequestType.GET, "grupos/obtenerMisGrupos", true);
+
+        return response;
+    },
+
+    bajaGrupo: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        await request(HttpRequestType.DELETE, "grupos/bajaGrupo", true, args);
+    },
 }

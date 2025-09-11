@@ -7,7 +7,9 @@
 	import type DTOComprobanteSimple from "$lib/dtos/comprobantes/DTOComprobanteSimple";
 	import { HttpError } from "$lib/request/request";
 	import { ComprobantesService } from "$lib/services/ComprobantesService";
+	import { permisos } from "$lib/stores";
 	import { onMount } from "svelte";
+	import { get } from "svelte/store";
 
     $: errorPermiso = false;
 
@@ -17,6 +19,11 @@
     $: comprobantes = [] as DTOComprobanteSimple[];
 
     onMount(async () => {
+        if(!get(permisos).includes("VisionPerfilPropio")) {
+            errorPermiso = true;
+            return;
+        }
+
         try {
 			comprobantes = await ComprobantesService.obtenerMisComprobantes();
 		} catch (e) {
