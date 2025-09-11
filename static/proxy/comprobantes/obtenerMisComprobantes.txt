@@ -1,0 +1,75 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "numero": 123456,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 453522,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 657465,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 432425,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 475345,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 889760,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 136375,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 135543,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 963920,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    },
+    {
+        "numero": 728342,
+        "concepto": "Concepto",
+        "fechaHoraEmision": 1753225458732,
+        "monto": 4000
+    }
+]
+

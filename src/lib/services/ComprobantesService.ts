@@ -1,4 +1,5 @@
 import type DTOComprobante from "$lib/dtos/comprobantes/DTOComprobante";
+import type DTOComprobanteSimple from "$lib/dtos/comprobantes/DTOComprobanteSimple";
 import { HttpRequestType, request } from "$lib/request/request";
 
 
@@ -29,4 +30,10 @@ export const ComprobantesService = {
 
         return url;
   	},
+
+	obtenerMisComprobantes: async () => {
+        let response : DTOComprobanteSimple[] = await request(HttpRequestType.GET, "comprobantes/obtenerMisComprobantes", true);
+
+        return response;
+    }
 }

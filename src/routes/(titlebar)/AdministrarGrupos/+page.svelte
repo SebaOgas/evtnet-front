@@ -84,7 +84,7 @@
                 {#each resultados as d}
                     <tr>
                         <td>{d.nombre}</td>
-                        <td>{d.descripcion}</td>
+                        <td class="!text-wrap !text-start">{d.descripcion} sad basudbasud basoud baosdb asoud bsaou</td>
                         <td>{d.creador.nombre} {d.creador.apellido}</td>
                         <td>{formatDate(d.fechaAlta)}</td>
                         <td>{d.fechaBaja !== null ? formatDate(d.fechaBaja) : "-"}</td>
