@@ -1,0 +1,89 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idDenuncia: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 123,
+    "titulo": "Comportamiento inapropiado durante el evento",
+    "descripcion": "Se reportó comportamiento inadecuado por parte de algunos participantes que generó malestar en otros asistentes.",
+    
+    "denunciante": {
+        "nombre": "María",
+        "apellido": "González",
+        "username": "maria.gonzalez",
+        "mail": "maria.gonzalez@email.com"
+    },
+
+    "historico": [
+        {
+        "nombre": "Ingresado",
+        "fechaHoraDesde": 1755389400000,
+        "descripcion": "Denuncia ingresada por el denunciante",
+        "responsable": {
+            "nombre": "María",
+            "apellido": "González",
+            "username": "maria.gonzalez",
+            "mail": "maria.gonzalez@email.com"
+        }
+        },
+        {
+        "nombre": "En investigación",
+        "fechaHoraDesde": 1755389400000,
+        "descripcion": "Se inició la investigación del caso y se contactó a testigos",
+        "responsable": {
+            "nombre": "Ana",
+            "apellido": "López",
+            "username": "ana.lopez",
+            "mail": "ana.lopez@admin.com"
+        }
+        }
+    ],
+
+    "evento": {
+        "id": 456,
+        "nombre": "Conferencia de Tecnología 2024",
+        "descripcion": "Evento anual sobre las últimas tendencias en tecnología e innovación",
+        
+        "espacio": {
+        "nombre": "Centro de Convenciones Metropolitan",
+        "direccion": "Av. Libertador 1234, Ciudad Autónoma de Buenos Aires"
+        },
+
+        "fechaHoraInicio": 1755389400000,
+        "fechaHoraFin": 1755389800000,
+
+        "participantes": 250,
+
+        "organizador": {
+        "nombre": "Roberto",
+        "apellido": "Martínez",
+        "username": "roberto.martinez",
+        "mail": "roberto.martinez@techconf.com"
+        },
+
+        "administradores": [
+        {
+            "nombre": "Laura",
+            "apellido": "Fernández",
+            "username": "laura.fernandez",
+            "mail": "laura.fernandez@techconf.com"
+        },
+        {
+            "nombre": "Diego",
+            "apellido": "Silva",
+            "username": "diego.silva",
+            "mail": "diego.silva@techconf.com"
+        }
+        ]
+    }
+}

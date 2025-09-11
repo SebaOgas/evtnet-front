@@ -79,3 +79,15 @@ a {
 .datepicker {
 	flex-grow: 1;
 }
+
+table {
+	border-collapse: separate;
+	border-spacing: 6pt 12pt;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+table td, table th {
+	text-align: center;
+	white-space: nowrap;
+}

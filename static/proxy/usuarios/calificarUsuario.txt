@@ -1,0 +1,18 @@
+REQUEST TYPE POST
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "calificacionTipo": 0,
+    "usuarioCalificado": "username",
+
+    "motivos": [0, 1, 2],
+
+    "descripcion": ""
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

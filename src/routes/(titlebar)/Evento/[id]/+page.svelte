@@ -14,6 +14,7 @@
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupCalificarUsuario from "$lib/components/PopupCalificarUsuario.svelte";
 
 	let previousPage: string = base;
 
@@ -134,6 +135,9 @@
 			}    
 		}
 	}
+
+	let popupCalificarVisible = false;
+	let usernameCalificar : string | null = null;
 </script>
 
 <div id="content">
@@ -237,7 +241,7 @@
                                     <span class="text-xs font-bold">{inscripto.nombre} {inscripto.apellido}</span>
                                     <span class="text-xs text-black">{inscripto.username}</span>
                                 </div>
-                                <Button icon="/icons/white_star.svg" action={() => {goto(`/CalificarUsuario/${inscripto.username}`)}}/>
+                                <Button icon="/icons/white_star.svg" action={() => {usernameCalificar = inscripto.username; popupCalificarVisible = true;}}/>
                             </div>
                         {/each}
                     </div>
@@ -297,3 +301,6 @@
 		<Button action={mount}>Aceptar</Button>
 	</div>
 </Popup>
+
+
+<PopupCalificarUsuario bind:visible={popupCalificarVisible} bind:username={usernameCalificar}/>

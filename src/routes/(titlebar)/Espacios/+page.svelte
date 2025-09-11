@@ -103,6 +103,9 @@
 
         try {
 			tiposEspacio = await EspaciosService.obtenerTiposEspacio();
+            tiposEspacio.forEach((v, ix, arr) => {
+                arr[ix].checked = true;
+            })
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
