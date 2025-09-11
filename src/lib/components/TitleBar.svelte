@@ -101,7 +101,7 @@
                     permisosList.includes("AdministracionUsuariosAdministradores")
                 }
                     <li><a href="/AdministrarUsuarios">Usuarios</a></li>
-                    <li><a href="/">Grupos</a></li>
+                    <li><a href="/AdministrarGrupos">Grupos</a></li>
                     <li><a href="/AdministrarDenunciasUsuarios">Denuncias a usuarios</a></li>
                 {/if}
                 {#if permisosList.includes("RealizacionBackup")}
