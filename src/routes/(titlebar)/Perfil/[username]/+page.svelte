@@ -96,7 +96,7 @@
         </div>
         <div class="text-center flex flex-col">
             <span>{perfil.nombre} {perfil.apellido}</span>
-            <span>{perfil.username}</span>
+            <span>@{perfil.username}</span>
             {#if isLoggedInUser}
                 <span>{perfil.mail}</span>
             {/if}

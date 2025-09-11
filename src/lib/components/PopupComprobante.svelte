@@ -46,7 +46,7 @@
 </script>
 
 {#if comprobante !== null}
-<Popup title="Comprobante" visible={comprobante !== null} fitH={true} fitW={true}>
+<Popup title="Comprobante" visible={numero !== null} fitH={true} fitW={true}>
     <div class="flex flex-col w-full gap-2">
         <div class="flex justify-between items-center">
             <span>Número:</span>
@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class="flex justify-center items-center w-full gap-2">
-        <Button action={() => {comprobante = null}}>Atrás</Button>
+        <Button action={() => {numero = null}}>Atrás</Button>
         <Button action={descargar}>Descargar</Button>
     </div>
 </Popup>

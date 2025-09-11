@@ -6,6 +6,7 @@
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import type DTOBusquedaDenunciasEventos from "$lib/dtos/eventos/DTOBusquedaDenunciasEventos";
@@ -330,3 +331,12 @@
         </div>
     </Popup>
 {/if}
+
+
+<PopupError bind:visible={errorGenericoVisible}>
+    {errorGenerico}
+</PopupError>
+
+<PopupError bind:visible={errorPermiso}>
+    No tiene permiso para editar usuarios.
+</PopupError>

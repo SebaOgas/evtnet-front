@@ -1,0 +1,55 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+page: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{   
+    "id": 0,
+    "nombre": "Grupo A",
+    "descripcion": "Descripción del grupo",
+    "creador": {
+        "nombre": "Andrés",
+        "apellido": "Blan",
+        "username": "andresblan",
+        "mail": "andres@blan.net"
+    },
+    "miembros": [
+        {
+            "nombre": "Andrés",
+            "apellido": "Blan",
+            "username": "andresblan",
+            "mail": "andres@blan.net",
+            "tipo": "Administrador"
+        },
+        {
+            "nombre": "Sara",
+            "apellido": "Rodriguez",
+            "username": "sara",
+            "mail": "sara@blan.net",
+            "tipo": "Miembro"
+        },
+        {
+            "nombre": "Sebastián",
+            "apellido": "Ogás",
+            "username": "sebaogas",
+            "mail": "seba@blan.net",
+            "tipo": "Miembro"
+        },
+        {
+            "nombre": "Tatiana",
+            "apellido": "Duran",
+            "username": "tatiii",
+            "mail": "tati@blan.net",
+            "tipo": "Miembro"
+        }
+    ]
+}
