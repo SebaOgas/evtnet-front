@@ -50,7 +50,8 @@ RESPONSE BODY
         "VisionLogEventos",
         "VisionLogEspacios",
         "VisionLogPagos",
-        "VisionLogParametros"
+        "VisionLogParametros",
+        "CreacionEspaciosPublicos"
     ],
     "username": "usuario"
 }
