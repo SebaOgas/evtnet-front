@@ -4,6 +4,8 @@
 	export let cols: string[] = [];
 	let body: HTMLTableSectionElement;
 
+	export let classes: string = "";
+
 	function applyLabels() {
 		if (!body) return;
 		cols.forEach((c, ix) => {
@@ -31,7 +33,7 @@
 
 
 <!-- Desktop table -->
-<div class="hidden md:block overflow-x-auto">
+<div class="{classes} hidden md:block overflow-x-auto">
   	<table class="w-full">
 		<thead>
 			<tr>
@@ -47,7 +49,7 @@
 </div>
 
 <!-- Mobile list -->
-<div class="md:hidden space-y-2">
+<div class="{classes} md:hidden space-y-2">
   <table class="block">
 	<tbody bind:this={body} 
 		class="flex flex-col gap-8 

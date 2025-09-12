@@ -42,10 +42,6 @@
         }
     }
 
-    $: console.log(selected);
-    
-
-
     function filter(val: string, method: string) {
         let len = val.replaceAll(/\s*/g, "").length;
 

@@ -31,7 +31,7 @@
 
 </script>
 
-<div id="content" class="p-2">
+<div id="content" class="p-2 h-full overflow-y-auto">
     <div class="flex flex-col md:flex-row items-baseline gap-2">
         <h1 class="text-m">Reportes</h1>
         <ComboBox options={reportes} bind:selected={reporteSeleccionado} placeholder="Seleccionar reporte" maxHeight={6}/>
