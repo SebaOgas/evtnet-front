@@ -72,7 +72,7 @@ export const GruposService = {
         let args = new Map<string, string>();
         args.set("idGrupo", `${idGrupo}`);
 
-        let response : DTOModificarGrupo = await request(HttpRequestType.PUT, "grupos/obtenerDatosModificarGrupo", true, args);
+        let response : DTOModificarGrupo = await request(HttpRequestType.GET, "grupos/obtenerDatosModificarGrupo", true, args);
         return response;
     },
 }
