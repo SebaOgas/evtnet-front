@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 	import Button from "$lib/components/Button.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import Popup from "$lib/components/Popup.svelte";
@@ -7,7 +8,7 @@
 	import PopupError from "$lib/components/PopupError.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
-	import type DTOCrearGrupo from "$lib/dtos/grupos/DTOCrearGrupo";
+	import type DTOModificarGrupo from "$lib/dtos/grupos/DTOModificarGrupo";
 	import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 	import { HttpError } from "$lib/request/request";
 	import { GruposService } from "$lib/services/GruposService";
@@ -19,6 +20,8 @@
     let tiposOpciones : Map<number, string> = new Map();
     let listo = false;
 
+    let id = Number(page.params.id);
+
     onMount(async () => {     
         if (get(token) === "") {
             goto("/");
@@ -29,6 +32,25 @@
         }
 
         try {
+            data = await GruposService.obtenerDatosModificarGrupo(id);
+            data.participantes.forEach(p => {
+                if (p.username === get(username)) return;
+                participantes.push({
+					data: {
+						username: p.username,
+						nombre: p.nombre,
+						apellido: p.apellido,
+						mail: null,
+						dni: null,
+						fechaNacimiento: null
+					},
+					tipo: p.tipo
+				})
+            })
+            participantes = [...participantes];
+            data.participantes = [];
+            
+
             let tiposParticipante = await GruposService.obtenerTiposUsuarioGrupo();
             tiposParticipante.forEach(t => {
                 tiposOpciones.set(t.id, t.nombre);
@@ -52,10 +74,11 @@
         }
     });
 
-    let data : DTOCrearGrupo = {
+    let data : DTOModificarGrupo = {
 		nombre: "",
 		descripcion: "",
-		participantes: []
+		participantes: [],
+		id: 0
 	}
 
     function validateNombre(val: string) {
@@ -80,9 +103,7 @@
 
     $: popupExitoVisible = false
 
-    let id : number | null = null;
-
-    async function crearGrupo() {
+    async function modificarGrupo() {
         if (data.nombre === "") {
             warningNombreVisible = true;
             return;
@@ -100,12 +121,14 @@
         participantes.forEach(p => {
             data.participantes.push({
 				username: p.data.username,
-				tipo: p.tipo
+				tipo: p.tipo,
+                nombre: p.data.nombre,
+                apellido: p.data.apellido
 			})
         })
 
         try {
-            id = await GruposService.crearGrupo(data);
+            await GruposService.modificarGrupo(data);
             popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
@@ -156,7 +179,7 @@
     {#if listo}
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
         <h1 class="text-m text-center">
-            Crear grupo
+            Modificar grupo
         </h1>
 
         <TextField label="Nombre del grupo" bind:value={data.nombre} validate={validateNombre} forceValidate={warningNombreVisible} min={1} max={50}/>
@@ -183,8 +206,8 @@
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
-        <Button classes="text-m" action={() => {goto("/MisGrupos")}}>Cancelar</Button>
-        <Button classes="text-m" action={crearGrupo} disabled={!completado}>Guardar</Button>
+        <Button classes="text-m" action={() => {goto(`/Grupo/${id}`)}}>Cancelar</Button>
+        <Button classes="text-m" action={modificarGrupo} disabled={!completado}>Guardar</Button>
     </div>
     {/if}
 </div>
@@ -196,7 +219,7 @@
 </PopupError>
 
 <Popup bind:visible={popupExitoVisible} fitH fitW>
-    Grupo creado exitosamente
+    Grupo modificado exitosamente
     <div class="flex justify-center items-center w-full">
         <Button action={() => {goto(`/Grupo/${id}`)}}>Aceptar</Button>
     </div>
