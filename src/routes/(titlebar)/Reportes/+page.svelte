@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ComboBox from "$lib/components/ComboBox.svelte";
+	import EventosPorEspacio from "$lib/reports/EventosPorEspacio.svelte";
 	import PersonasEnEventosEnEspacio from "$lib/reports/PersonasEnEventosEnEspacio.svelte";
 	import { permisos } from "$lib/stores";
 	import { onMount } from "svelte";
@@ -41,7 +42,7 @@
     {#if reporteSeleccionado === "PERSONAS_EN_EVENTOS_EN_ESPACIO"}
         <PersonasEnEventosEnEspacio/> 
     {:else if reporteSeleccionado === "EVENTOS_POR_ESPACIO"}
-
+        <EventosPorEspacio/>
     {:else if reporteSeleccionado === "PARTICIPANTES_POR_ESPACIO_Y_TIEMPO"}
 
     {:else if reporteSeleccionado === "REGISTRACIONES_E_INICIOS_DE_SESION"}

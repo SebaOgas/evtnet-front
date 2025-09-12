@@ -2,11 +2,12 @@
 	import Button from "$lib/components/Button.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import { loadGraph } from "$lib/components/Plot";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
-	import type DTOReportePersonsasEnEventosEnEspacio from "$lib/dtos/reportes/DTOReportePersonsasEnEventosEnEspacio";
+	import type DTOReporteEventosPorEspacio from "$lib/dtos/reportes/DTOReporteEventosPorEspacio";
 	import { HttpError } from "$lib/request/request";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { ReportesService } from "$lib/services/ReportesService";
@@ -20,7 +21,7 @@
 	$: errorVisible = false;
 
     async function buscarEspacios() {
-         let aux : DTOBusquedaEspacio[] = [];
+        let aux : DTOBusquedaEspacio[] = [];
         try {
             aux = await EspaciosService.buscarEspaciosPropios();
         } catch (e) {
@@ -37,7 +38,6 @@
     }
 
     let espacios : Map<number, string> = new Map();
-    $: espacio = espacios.size > 0 ? espacios.keys().next().value : null as number | null | undefined;
 
     let popupUsuarioVisible = false;
 
@@ -48,9 +48,9 @@
     let fechaDesde : Date | null;
     let fechaHasta : Date | null;
 
-    $: completo = espacio !== null && espacio !== undefined && fechaDesde !== null && fechaHasta !== null;
+    $: completo = espacios.size > 0 && fechaDesde !== null && fechaHasta !== null;
 
-    let data : DTOReportePersonsasEnEventosEnEspacio | null = null;
+    let data : DTOReporteEventosPorEspacio | null = null;
 
     function createColorGenerator() {
         let index = 0;
@@ -71,9 +71,10 @@
 
 
     async function generar() {
-        if (espacio === null || espacio === undefined || fechaDesde === null || fechaHasta === null) return;
+        if (espacios.size === 0 || fechaDesde === null || fechaHasta === null) return;
+
         try {
-            data = await ReportesService.generarPersonasEnEventosEnEspacio(espacio, fechaDesde, fechaHasta);
+            data = await ReportesService.generarEventosPorEspacio(Array.from(espacios.keys()), fechaDesde, fechaHasta);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -85,8 +86,8 @@
 
         data.datos.forEach(d => {
             series.push({
-                name: d.evento,
-                values: [d.participantes],
+                name: d.espacio,
+                values: [d.eventos],
                 color: getColor()
             })
         })
@@ -121,15 +122,23 @@
     let refs : HTMLDivElement;
 </script>
 
-<PopupSeleccion title="Buscar espacio" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW multiple={false}/>
+<PopupSeleccion title="Buscar espacio" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW/>
 
-<div class="flex flex-col md:flex-row gap-2 justify-between">
-    <div class="flex flex-col md:flex-row gap-2 md:items-baseline">
-        <span>Espacio: {espacio !== null && espacio !== undefined ? espacios.get(espacio) : ""}</span>
+<div class="flex flex-col gap-2 justify-between">
+    <div class="flex flex-col md:flex-row gap-2 md:items-baseline md:justify-between">
+        <span>Espacios: 
+            <span class="commaList">
+                {#each espacios.values() as e}
+                    <span>{e}</span>
+                {/each}
+            </span>
+        </span>
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
     <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
-    <Button action={generar} disabled={!completo}>Generar reporte</Button>
+    <div class="w-full flex justify-end">
+        <Button action={generar} disabled={!completo}>Generar reporte</Button>
+    </div>
 </div>
 
 <Warning text="No se encontraron eventos en el rango de fechas indicado." visible={data !== null && data.datos.length === 0}/>
@@ -141,13 +150,13 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table cols={["Evento", "Desde", "Hasta", "Participantes"]} classes="md:min-h-fit">
+    <Table cols={["Espacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
         {#each data.datos as d}
         <tr>
-            <td>{d.evento}</td>
+            <td>{d.espacio}</td>
             <td>{formatDate(fechaDesde)}</td>
             <td>{formatDate(fechaHasta)}</td>
-            <td>{d.participantes}</td>
+            <td>{d.eventos}</td>
         </tr>
         {/each}
     </Table>
@@ -157,4 +166,9 @@
         <Button>Exportar</Button>
     </div>
 {/if}
+
+
+<PopupError bind:visible={errorVisible}>
+    {error}
+</PopupError>
 
