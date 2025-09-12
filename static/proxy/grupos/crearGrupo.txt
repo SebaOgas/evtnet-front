@@ -1,0 +1,32 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "nombre": "Grupo A",
+    "descripcion": "Descripción del grupo",
+    "participantes": [
+        {
+            "username": "sergio",
+            "tipo": 0
+        },
+        {
+            "username": "sara",
+            "tipo": 0
+        },
+        {
+            "username": "seba",
+            "tipo": 1
+        }
+    ]
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{   
+    "id": 0
+}

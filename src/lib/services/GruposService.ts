@@ -1,6 +1,8 @@
 import type DTOAdminGrupo from "$lib/dtos/grupos/DTOAdminSimple";
+import type DTOCrearGrupo from "$lib/dtos/grupos/DTOCrearGrupo";
 import type DTOGrupo from "$lib/dtos/grupos/DTOGrupo";
 import type DTOGrupoSimple from "$lib/dtos/grupos/DTOGrupoSimple";
+import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
 
@@ -40,8 +42,26 @@ export const GruposService = {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
 
-        let response : DTOGrupo = await request(HttpRequestType.DELETE, "grupos/obtenerGrupo", true, args);
+        let response : DTOGrupo = await request(HttpRequestType.GET, "grupos/obtenerGrupo", true, args);
 
+        return response;
+    },
+
+    crearGrupo: async (data: DTOCrearGrupo) => {
+        let response : {id: number} = await request(HttpRequestType.POST, "grupos/crearGrupo", true, null, JSON.stringify(data));
+
+        return response.id;
+    },
+    buscarUsuariosParaAgregar: async (idGrupo: number | null, texto: string) => {
+        let args = new Map<string, string>();
+        args.set("idGrupo", `${idGrupo}`);
+        args.set("texto", texto);
+
+        let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "grupos/buscarUsuariosParaAgregar", false, args);
+        return response;
+    },
+    obtenerTiposUsuarioGrupo: async () => {
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "grupos/obtenerTiposUsuarioGrupo", true);
         return response;
     }
 }
