@@ -43,6 +43,13 @@
 
     $: popupConfirmEliminarVisible=false;
 
+    $: popupExitoVisible = false;
+
+    let fotoEspacio : File | null = null;
+
+    $: errorTamanoFotoEspacioVisible = false
+    $: errorTamanoFotoEspacio = ""
+
     onMount(async () => {
             if (get(token) === "") {
                 goto("/");
@@ -78,11 +85,6 @@
                 }            
             }
         });
-
-    let fotoEspacio : File | null = null;
-
-    $: errorTamanoFotoEspacioVisible = false
-    $: errorTamanoFotoEspacio = ""
 
     function validateFotoEspacio(file: File | null, preventRequest = false) {
         if (!preventRequest) {
@@ -190,6 +192,7 @@
             await ImagenesEspaciosService.actualizar(payload);
             cambiosPendientes = false;
             imagenNueva = null;
+            popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -270,3 +273,10 @@
 <PopupError bind:visible={errorGenericoVisible}>
 	{errorGenerico}
 </PopupError>
+
+<Popup bind:visible={popupExitoVisible} fitH fitW>
+    Imágenes guardadas exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {goto(`/Espacio/${id}`)}}>Aceptar</Button>
+    </div>
+</Popup>

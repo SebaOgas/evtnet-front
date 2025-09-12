@@ -58,7 +58,7 @@ RESPONSE BODY
     },
     {
         "idSEP": 6,
-        "nombreEspacio": "Espacio 1",
+        "nombreEspacio": "",
         "estado": "Pendiente",
         "fechaIngreso": 1755403800000,
         "fechaUltimoCambioEstado": 1755403800000

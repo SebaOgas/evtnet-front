@@ -33,7 +33,7 @@
 		descripcion: searchParams.get("descripcion") ?? "",
 		direccion: searchParams.get("direccion") ?? "",
 		latitud: Number(searchParams.get("latitud")) ?? undefined,
-		longitud: Number(searchParams.get("direccion")) ?? undefined,
+		longitud: Number(searchParams.get("longitud")) ?? undefined,
 		disciplinas: [],
         publico: true,
         sepId: Number(searchParams.get("sep"))

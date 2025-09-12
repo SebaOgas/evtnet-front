@@ -158,7 +158,7 @@ export const EspaciosService = {
         return response;
     },
     obtenerEstadosSEP: async () => {
-        let response : {id: number, nombre: string, checked: boolean | undefined}[] = await request(HttpRequestType.GET, "espacios/obtenerEstadosSEP", true);
+        let response : {id: number, nombre: string, checked: boolean}[] = await request(HttpRequestType.GET, "espacios/obtenerEstadosSEP", true);
         return response;
     },
     obtenerDetalleSolicitudEP: async (idSEP: number) => {
@@ -197,5 +197,15 @@ export const EspaciosService = {
         args.set("idSEP", `${idSEP}`);
         args.set("idEstado", `${idEstado}`);
         await request(HttpRequestType.PUT, "espacios/cambiarEstadoSEP", true, args);
+    },
+    obtenerEspaciosParaSolicitud: async () => {
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "espacios/obtenerEspaciosParaSolicitud", true);
+        return response;
+    },
+    vincularEspacioASolicitud: async (idSEP: number, idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idSEP", `${idSEP}`);
+        args.set("idEspacio", `${idEspacio}`);
+        await request(HttpRequestType.PUT, "espacios/vincularEspacioASolicitud", true, args);
     }
 }
