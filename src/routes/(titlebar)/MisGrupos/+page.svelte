@@ -47,13 +47,13 @@
 
     async function baja() {
         if (grupoBaja === null) {
-            error = "No se pudo identificar al rol a dar de baja";
+            error = "No se pudo identificar al grupo a dar de baja";
             errorVisible = true;
             return;
         }
 
         try {
-			await GruposService.bajaGrupo(grupoBaja);
+			await GruposService.salir(grupoBaja);
             load();
             grupoBaja = null;
             exitoBaja = true;
@@ -93,12 +93,12 @@
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
-		<Button action={() => goto(`/Perfil`)}>Atrás</Button>
+		<Button classes="text-m" action={() => goto(`/Perfil`)}>Atrás</Button>
 	</div>
 </div>
 
 <Popup bind:visible={popupBaja} fitH fitW>
-	¿Está seguro de que desea dar de baja a este grupo?
+	¿Está seguro de que desea salir del grupo?
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {grupoBaja = null}}>Cancelar</Button>
 		<Button action={baja}>Confirmar</Button>
@@ -106,7 +106,7 @@
 </Popup>
 
 <Popup bind:visible={exitoBaja} fitH fitW>
-	Rol dado de baja exitosamente
+	Salió del grupo exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
 	</div>
@@ -117,5 +117,5 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-    No tiene permiso para modificar su perfil.
+    No tiene permiso para ver sus grupos.
 </PopupError>

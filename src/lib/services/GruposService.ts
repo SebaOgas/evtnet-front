@@ -1,4 +1,5 @@
 import type DTOAdminGrupo from "$lib/dtos/grupos/DTOAdminSimple";
+import type DTOGrupo from "$lib/dtos/grupos/DTOGrupo";
 import type DTOGrupoSimple from "$lib/dtos/grupos/DTOGrupoSimple";
 import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
@@ -28,10 +29,19 @@ export const GruposService = {
         return response;
     },
 
-    bajaGrupo: async (id: number) => {
+    salir: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
 
-        await request(HttpRequestType.DELETE, "grupos/bajaGrupo", true, args);
+        await request(HttpRequestType.DELETE, "grupos/salir", true, args);
     },
+
+    obtenerGrupo: async (id: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${id}`);
+
+        let response : DTOGrupo = await request(HttpRequestType.DELETE, "grupos/obtenerGrupo", true, args);
+
+        return response;
+    }
 }
