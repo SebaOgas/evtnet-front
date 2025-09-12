@@ -7,7 +7,6 @@
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import { HttpError } from "$lib/request/request";
-	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
@@ -135,7 +134,7 @@
             warningDescripcionVisible = false;
         }
 
-        if (data.descripcion === "") {
+        if (data.justificacion === "") {
             warningJustificacionVisible = true;
         } else {
             warningJustificacionVisible = false;

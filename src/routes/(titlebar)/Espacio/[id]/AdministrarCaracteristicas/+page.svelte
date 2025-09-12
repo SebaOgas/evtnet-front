@@ -22,6 +22,8 @@
 	$: errorGenericoVisible = false;
     
     $: popupConfirmEliminarVisible = false;
+    $: popupExitoVisible = false;
+    $: cambiosPendientes = false;
 
     $: warningNombreVisible = false;
     $: warningIconoNombreVisible = false;
@@ -75,12 +77,14 @@
         resultados.push(caracteristicaEspacio);
         resultados = [...resultados];
         idIconoSeleccionado = 0;
+        cambiosPendientes = true;
     }
 
     async function eliminarCaracteristica(){
         resultados.splice(idCaracteristica, 1);
         resultados = [...resultados];
         popupConfirmEliminarVisible=false;
+        cambiosPendientes = true;
     }
 
     function validateNombre(val: string) {
@@ -98,16 +102,16 @@
     }
 
     async function guardar(){
-        resultados.forEach(r => {
-            if(r.nombre.trim() === "" || r.idIconoCaracteristica === 0) {
+        for (const r of resultados) {
+            if (r.nombre.trim() === "" || r.idIconoCaracteristica === 0) {
                 warningIconoNombreVisible = true;
                 return;
             }
-        });
+        }        
         try {
             warningIconoNombreVisible = false;
             await EspaciosService.actualizarCaracteristicasEspacio(id, resultados);
-            goto(previousPage);
+            popupExitoVisible = true;
         } catch (e) {
             if (e instanceof Error) {
                 errorGenerico = e.message;
@@ -146,7 +150,7 @@
     
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
         <Button action={()=>{goto(previousPage)}}>Atrás</Button>
-        <Button action={guardar} disabled={false}>Guardar</Button>
+        <Button action={guardar} disabled={!cambiosPendientes}>Guardar</Button>
         <Button action={agregarNuevaCaracteristica}>Nueva</Button>
     </div>
 </div>
@@ -166,3 +170,10 @@
 <PopupError bind:visible={errorGenericoVisible}>
 	{errorGenerico}
 </PopupError>
+
+<Popup bind:visible={popupExitoVisible} fitH fitW>
+    Características guardadas exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {goto(`/Espacio/${id}`)}}>Aceptar</Button>
+    </div>
+</Popup>

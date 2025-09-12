@@ -32,6 +32,9 @@
 		return await EspaciosService.buscarUsuariosNoAdministradores(id, valor);
 	}
 
+    $: popupExitoNuevoVisible = false;
+    $: popupExitoEliminacionVisible = false;
+    $: popupExitoPropiestarioVisible = false;
     $: popupConfirmEliminarAdministradorVisible = false;
     $: popupAdministradorConfirmacionVisible = false;
     $: popupOrganizadorConfirmacionVisible = false;
@@ -85,6 +88,7 @@
     async function agregarAdministrador(){
         try{
             await EspaciosService.agregarAdministradorEspacio(id, usuario ? usuario.username: administrador.username);
+            popupExitoNuevoVisible = true;
             await filtrarAdministradores();
             usuario = null;
         } catch (e) {
@@ -99,6 +103,7 @@
     async function eliminarAdministrador() {
         try {
             await EspaciosService.eliminarAdministradorEspacio(id, administrador.id);
+            popupExitoEliminacionVisible = true;
             await filtrarAdministradores();
         } catch (e) {
             if (e instanceof HttpError) {
@@ -113,7 +118,8 @@
         if (administrador === null) return;
 		try {
 			await EspaciosService.entregarPropietario(id, administrador.id);
-            filtrarAdministradores();
+            popupExitoPropiestarioVisible = true;
+            //filtrarAdministradores();
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -148,7 +154,7 @@
                 <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     <div class="flex flex-row items-center justify-between w-full gap-2">
                         <div class="flex flex-row items-center gap-2">
-                            <img src={r.urlFotoPerfil} alt="Foto de perfil" class="w-12 h-12 rounded-full"/>
+                            <img src={r.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + r.username)} class="w-12 h-12 rounded-full"/>
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex flex-row gap-2">
@@ -176,7 +182,7 @@
                 <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     <div class="flex flex-row items-center justify-between w-full gap-2">
                         <div class="flex flex-row items-center gap-2">
-                            <img src={r.urlFotoPerfil} alt="Foto de perfil" class="w-12 h-12 rounded-full"/>
+                            <img src={r.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + r.username)} class="w-12 h-12 rounded-full"/>
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex gap-2 shrink-0">
@@ -243,3 +249,24 @@
 <PopupError bind:visible={errorGenericoVisible}>
 	{errorGenerico}
 </PopupError>
+
+<Popup bind:visible={popupExitoNuevoVisible} fitH fitW>
+    Administrador creado exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {popupExitoNuevoVisible = false}}>Aceptar</Button>
+    </div>
+</Popup>
+
+<Popup bind:visible={popupExitoEliminacionVisible} fitH fitW>
+    Administrador eliminado exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {popupExitoEliminacionVisible = false}}>Aceptar</Button>
+    </div>
+</Popup>
+
+<Popup bind:visible={popupExitoPropiestarioVisible} fitH fitW>
+    Cambio de propietario realizado exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {goto(`/Espacio/${id}`)}}>Aceptar</Button>
+    </div>
+</Popup>

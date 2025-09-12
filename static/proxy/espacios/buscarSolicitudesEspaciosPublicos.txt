@@ -1,0 +1,66 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "texto": "string",
+    "ubicacion": {"latitud": 20, "longitud": 30, "rango": 10},
+    "tipos": [],
+    "fechaIngresoDesde": 1755403800000,
+    "fechaIngresoHasta": 1755403800000,
+    "fechaUltimoCambioEstadoDesde": 1755403800000,
+    "fechaUltimoCambioEstadoHasta": 1755403800000,
+    "espacios": [],
+    "estados": []
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "idSEP": 1,
+        "nombreEspacio": "Espacio 1",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    },
+    {
+        "idSEP": 2,
+        "nombreEspacio": "Espacio 1",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    },
+    {
+        "idSEP": 3,
+        "nombreEspacio": "Espacio 1",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    },
+    {
+        "idSEP": 4,
+        "nombreEspacio": "Espacio 1",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    },
+    {
+        "idSEP": 5,
+        "nombreEspacio": "Espacio 1",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    },
+    {
+        "idSEP": 6,
+        "nombreEspacio": "",
+        "estado": "Pendiente",
+        "fechaIngreso": 1755403800000,
+        "fechaUltimoCambioEstado": 1755403800000
+    }
+]
