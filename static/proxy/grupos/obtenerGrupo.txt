@@ -16,40 +16,33 @@ RESPONSE BODY
     "id": 0,
     "nombre": "Grupo A",
     "descripcion": "Descripción del grupo",
-    "creador": {
-        "nombre": "Andrés",
-        "apellido": "Blan",
-        "username": "andresblan",
-        "mail": "andres@blan.net"
-    },
-    "miembros": [
+    "fechaAlta": 1753225458732,
+    "idChat": 1721,
+    "participantes": [
         {
             "nombre": "Andrés",
             "apellido": "Blan",
             "username": "andresblan",
-            "mail": "andres@blan.net",
-            "tipo": "Administrador"
+            "fechaHoraUnion": 1753225458732
         },
         {
             "nombre": "Sara",
             "apellido": "Rodriguez",
             "username": "sara",
-            "mail": "sara@blan.net",
-            "tipo": "Miembro"
+            "fechaHoraUnion": 1753225458732
         },
         {
             "nombre": "Sebastián",
             "apellido": "Ogás",
             "username": "sebaogas",
-            "mail": "seba@blan.net",
-            "tipo": "Miembro"
+            "fechaHoraUnion": 1753225458732
         },
         {
             "nombre": "Tatiana",
             "apellido": "Duran",
             "username": "tatiii",
-            "mail": "tati@blan.net",
-            "tipo": "Miembro"
+            "fechaHoraUnion": 1753225458732
         }
-    ]
+    ],
+    "esAdministrador": true
 }

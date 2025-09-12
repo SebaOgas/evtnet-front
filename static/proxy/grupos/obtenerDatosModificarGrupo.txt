@@ -1,0 +1,39 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+idGrupo: int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0,
+    "nombre": "Grupo A",
+    "descripcion": "Descripción del grupo",
+    "participantes": [
+        {
+            "username": "sergio",
+            "tipo": 0,
+            "nombre": "Sergio",
+            "apellido": "Albino"
+        },
+        {
+            "username": "sara",
+            "tipo": 0,
+            "nombre": "Sara",
+            "apellido": "Rodriguez"
+        },
+        {
+            "username": "seba",
+            "tipo": 1,
+            "nombre": "Sebastián",
+            "apellido": "Ogás"
+        }
+    ]
+}
