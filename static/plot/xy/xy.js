@@ -38,6 +38,7 @@ const plotXYConfig = {
         y: 1
     },
     samplingRate: 100,
+    xLabelFunction: undefined,
     defaultColors: ["orange", "purple", "green", "teal", "orangered", "indigo", "crimson", "goldenrod", "darkslateblue", "peru"],
     refs: undefined
 }
@@ -54,7 +55,7 @@ const plotXY = function(canvas, functions = [], config = {}){
     });
     
     canvas.height = config.height;
-    canvas.style.height = `${config.height / config.width * config.scaledWidth}%`;
+    //canvas.style.height = `${config.height / config.width * config.scaledWidth}%`;
     canvas.width = config.width;
     canvas.style.width = `${config.scaledWidth}%`;
     let ctx = canvas.getContext("2d");
@@ -231,13 +232,17 @@ const plotXY = function(canvas, functions = [], config = {}){
 
     if (config.labelMethod.x === "marks") {
         for (let i = 0; i <= config.marks.x; i++) {
+            let label = (minX + rangeX * i/config.marks.x).toFixed(config.precision.x)
+            if (config.xLabelFunction !== undefined) {
+                label = config.xLabelFunction(label);
+            }
             ctx.beginPath();
             ctx.moveTo(ox + i/config.marks.x * gw, oy + gh);
             ctx.lineTo(ox + i/config.marks.x * gw, oy + gh + ls/2);
             ctx.stroke();
             ctx.closePath();
             ctx.beginPath();
-            ctx.fillText("" + (minX + rangeX * i/config.marks.x).toFixed(config.precision.x), ox + i/config.marks.x * gw, oy + gh + ls*1.5);
+            ctx.fillText(label, ox + i/config.marks.x * gw, oy + gh + ls*1.5);
             ctx.closePath();
             if (config.grid.x) {
                 ctx.beginPath();
@@ -271,13 +276,16 @@ const plotXY = function(canvas, functions = [], config = {}){
         let fullLength = 0;
         for (let i = 0; i < xValues.length; i++) {
             let txt ="" + xValues[i].toFixed(config.precision.x);
+            if (config.xLabelFunction !== undefined) {
+                txt = config.xLabelFunction(label);
+            }
             labels[i] = txt;
             fullLength += ctx.measureText(txt).width * config.labelSpaceFactor.x;
         }
         let labelFactor = Math.ceil(fullLength / cvw * 1.25);
 
         for (let i = 0; i < xValues.length; i++) {
-            if (i % labelFactor !== 0) continue;
+            if (i % labelFactor !== 0) continue;            
             ctx.beginPath();
             ctx.moveTo(ox + i/(xValues.length-1) * gw, oy + gh);
             ctx.lineTo(ox + i/(xValues.length-1) * gw, oy + gh + ls/2);

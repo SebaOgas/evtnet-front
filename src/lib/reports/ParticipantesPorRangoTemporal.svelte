@@ -126,8 +126,27 @@
             return;
 		}
 
+        let functions : {
+            dots: {
+                x: number,
+                y: number
+            }[],
+            name: string,
+            color: string
+        }[] = []
+
         data.datos.forEach(e => {
+            let fun = {
+                dots: [] as {x: number, y: number}[],
+                name: e.espacio,
+                color: getColor()
+            }
             e.rangos.forEach(r => {
+                fun.dots.push({
+                    //x: ((new Date(r.fin)).getTime() + (new Date(r.inicio)).getTime()) / 2 / 1000000,
+                    x: ((new Date(r.fin)).getTime()) / 1000000,
+                    y: r.participantes
+                })
                 if (rangos.some(r2 => r2.inicio === r.inicio && r2.fin === r.fin)) return;
 
                 rangos.push({
@@ -135,42 +154,38 @@
                     fin: r.fin
                 })
             })
-        })
-        /*
-        let series: { name: string; values: number[]; color: string; }[] = [];
 
-        data.datos.forEach(d => {
-            series.push({
-                name: d.espacio,
-                values: [d.eventos],
-                color: getColor()
-            })
+            functions.push(fun);
         })
         
         await tick();
-        
-        refs.innerHTML = "";
 
         // @ts-ignore
-        plotBar(canvas, series, [""], {
-            mainAxis: "y",
-            height: data.datos.length * 500,
-            width: 10000,
-            offset: {
-                top: 0,
-                left: 0.1,
-                bottom: 0,
-                right: 0.1,
+        plotXY(canvas, functions, {
+            height: 500 * 2,
+            width: (rangos.length <= 8 ? 1000 : 1000 + (rangos.length - 8) * 100)*2,
+            scaledWidth : rangos.length <= 8 ? 100 : 100 + (rangos.length - 8) * 10,
+            biggerDots: true,
+            labelMethod: {
+                x: "marks",
+                y: "marks"
             },
-            showInverseAxis: false,
-            refs: refs,
-            precision: 0,
-            barSize: 5,
-            scaledWidth: 100,
-            fontSize: 200,
+            marks: {
+                x: rangos.length - 1,
+                y: 8
+            },
+            offset: {
+                top: 0.1,
+                left: 0.05,
+                bottom: 0.12,
+                right: 0.1
+            },
+            lineWidth: 6,
+            fontSize: 40,
             fontFamily: "Montserrat",
-            lineWidth: 40
-        })*/
+            xLabelFunction: (l: string) => formatDate(new Date(Number(l)*1000000)),
+            refs: refs
+        })
     }
 
     let canvas : HTMLCanvasElement;
@@ -224,7 +239,9 @@
 <Warning text="No se encontraron datos en el rango de fechas indicado." visible={data !== null && data.datos.length === 0}/>
 
 {#if data !== null && data.datos.length > 0}
-    <canvas bind:this={canvas}></canvas>
+    <div class="w-full overflow-y-auto min-h-fit">
+        <canvas bind:this={canvas}></canvas>
+    </div>
     <div class="flex flex-col justify-start items-start">
         <div>Referencias</div>
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>

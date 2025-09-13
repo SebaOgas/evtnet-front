@@ -33,7 +33,7 @@ There is also a global plotXYConfig object that contains the defaults, and could
 
 + width: horizontal resolution of the canvas. Default: 1600
 + height: vertical resolution of the canvas. Default: 900
-+ scaledWidth: percentage of the container's width that the canvas will occupy. The actual width and height are calculated to keep the proportions specified in the width and height properties. Default: 80
++ scaledWidth: percentage of the container's width that the canvas will occupy. The actual width and height are calculated to keep the proportions specified in the width and height properties. Default: 100
 + lineWidth: width of the main lines used in the canvas. There may be wider or thinner lines, but keeping the proportions. Default: 4
 + fontSize: size that all texts will have in the canvas, in pixels. Default: 45
 + fontFamily: font family that all texts will have in the canvas. Default: "sans-serif"
