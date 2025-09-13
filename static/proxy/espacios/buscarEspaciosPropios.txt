@@ -1,0 +1,134 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Centro Deportivo Municipal Norte",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Fútbol", "Básquet", "Atletismo"]
+    },
+    {
+        "id": 1,
+        "nombre": "Club Náutico Riverside",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Natación", "Remo", "Vela"]
+    },
+    {
+        "id": 2,
+        "nombre": "Polideportivo San Martín",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Vóley", "Handball", "Gimnasia"]
+    },
+    {
+        "id": 3,
+        "nombre": "Academia Elite Tennis",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Tenis", "Pádel"]
+    },
+    {
+        "id": 4,
+        "nombre": "Complejo Deportivo Las Flores",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Fútbol", "Rugby", "Hockey"]
+    },
+    {
+        "id": 5,
+        "nombre": "Gimnasio Iron Fitness",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Musculación", "CrossFit", "Boxeo"]
+    },
+    {
+        "id": 6,
+        "nombre": "Centro Acuático Municipal",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Natación", "Aquaeróbicos", "Waterpolo"]
+    },
+    {
+        "id": 7,
+        "nombre": "Club de Esgrima Excalibur",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Esgrima", "Kendo"]
+    },
+    {
+        "id": 8,
+        "nombre": "Estadio Regional",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Fútbol", "Atletismo", "Ceremonias"]
+    },
+    {
+        "id": 9,
+        "nombre": "Dojo Samurai",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Karate", "Judo", "Aikido"]
+    },
+    {
+        "id": 10,
+        "nombre": "Parque Deportivo Central",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Ciclismo", "Running", "Skate"]
+    },
+    {
+        "id": 11,
+        "nombre": "Club Hípico Los Robles",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Equitación", "Polo"]
+    },
+    {
+        "id": 12,
+        "nombre": "Complejo de Canchas Oeste",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Básquet", "Tenis", "Fútbol 5"]
+    },
+    {
+        "id": 13,
+        "nombre": "Estudio de Danza Armonía",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Ballet", "Jazz", "Danza Contemporánea"]
+    },
+    {
+        "id": 14,
+        "nombre": "Pista de Atletismo Universitaria",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Atletismo", "Salto con Garrocha", "Lanzamiento"]
+    },
+    {
+        "id": 15,
+        "nombre": "Centro de Escalada Vertical",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Escalada", "Boulder", "Rappel"]
+    },
+    {
+        "id": 16,
+        "nombre": "Cancha de Golf Municipal",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Golf", "Mini Golf"]
+    },
+    {
+        "id": 17,
+        "nombre": "Academia de Artes Marciales",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Taekwondo", "Muay Thai", "BJJ"]
+    },
+    {
+        "id": 18,
+        "nombre": "Complejo de Canchas de Pádel",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Pádel", "Tenis", "Ping Pong"]
+    },
+    {
+        "id": 19,
+        "nombre": "Club de Yachting Marina",
+        "direccion": "Direccion del espacio",
+        "disciplinas": ["Vela", "Windsurf", "Kitesurf"]
+    }
+]

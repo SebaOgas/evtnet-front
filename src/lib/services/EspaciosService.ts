@@ -17,6 +17,7 @@ import type DTOCrearResenaEspacio from "$lib/dtos/espacios/DTOCrearResenaEspacio
 import type DTOBusquedaSEP from "$lib/dtos/espacios/DTOBusquedaSEP";
 import type DTOResultadoBusquedaSEP from "$lib/dtos/espacios/DTOResultadoBusquedaSEP";
 import type DTOSolicitudEPCompleta from "$lib/dtos/espacios/DTOSolicitudEPCompleta";
+import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
 
 
 export const EspaciosService = {
@@ -207,5 +208,10 @@ export const EspaciosService = {
         args.set("idSEP", `${idSEP}`);
         args.set("idEspacio", `${idEspacio}`);
         await request(HttpRequestType.PUT, "espacios/vincularEspacioASolicitud", true, args);
-    }
+    },
+
+    buscarEspaciosPropios: async () => {
+        let response : DTOBusquedaEspacio[] = await request(HttpRequestType.GET, "espacios/buscarEspaciosPropios", false);
+        return response;
+    },
 }

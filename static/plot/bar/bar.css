@@ -1,0 +1,29 @@
+:root {
+    --bar-ref-direction: row;
+    --bar-ref-color-size: 8pt;
+    --bar-ref-margin-base: 12pt;
+}
+
+
+.bar_refs {
+    display: flex;
+    flex-direction: var(--bar-ref-direction);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.bar_ref {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin: calc(var(--bar-ref-margin-base)/2) var(--bar-ref-margin-base);
+}
+
+.bar_ref_color {
+    border-radius: 50%;
+    height: var(--bar-ref-color-size);
+    width: var(--bar-ref-color-size);
+    margin-right: calc(var(--bar-ref-margin-base)/2);
+}

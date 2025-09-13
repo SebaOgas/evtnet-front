@@ -1,0 +1,29 @@
+:root {
+    --pie-ref-direction: row;
+    --pie-ref-color-size: 8pt;
+    --pie-ref-margin-base: 12pt;
+}
+
+
+.pie_refs {
+    display: flex;
+    flex-direction: var(--pie-ref-direction);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.pie_ref {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin: calc(var(--pie-ref-margin-base)/2) var(--pie-ref-margin-base);
+}
+
+.pie_ref_color {
+    border-radius: 50%;
+    height: var(--pie-ref-color-size);
+    width: var(--pie-ref-color-size);
+    margin-right: calc(var(--pie-ref-margin-base)/2);
+}

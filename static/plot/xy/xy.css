@@ -1,0 +1,29 @@
+:root {
+    --xy-ref-direction: row;
+    --xy-ref-color-size: 8pt;
+    --xy-ref-margin-base: 12pt;
+}
+
+
+.xy_refs {
+    display: flex;
+    flex-direction: var(--xy-ref-direction);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.xy_ref {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin: calc(var(--xy-ref-margin-base)/2) var(--xy-ref-margin-base);
+}
+
+.xy_ref_color {
+    border-radius: 50%;
+    height: var(--xy-ref-color-size);
+    width: var(--xy-ref-color-size);
+    margin-right: calc(var(--xy-ref-margin-base)/2);
+}

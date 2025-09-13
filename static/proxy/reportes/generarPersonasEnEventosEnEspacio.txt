@@ -1,0 +1,45 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+espacioId: int
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "fechaHoraGeneracion": 1757696795599,
+    "datos": [
+        {
+            "evento": "Evento A",
+            "fechaDesde": 1752696795599,
+            "fechaHasta": 1753696795599,
+            "participantes": 50
+        },
+        {
+            "evento": "Evento B",
+            "fechaDesde": 1752696795599,
+            "fechaHasta": 1753696795599,
+            "participantes": 42
+        },
+        {
+            "evento": "Evento C",
+            "fechaDesde": 1752696795599,
+            "fechaHasta": 1753696795599,
+            "participantes": 20
+        },
+        {
+            "evento": "Evento D",
+            "fechaDesde": 1752696795599,
+            "fechaHasta": 1753696795599,
+            "participantes": 50
+        }
+    ]
+}

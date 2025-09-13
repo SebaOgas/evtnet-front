@@ -1,0 +1,177 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+espacios: int[]
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "fechaHoraGeneracion": 1757696795599,
+    "datos": [
+        {
+            "espacio": "Espacio A",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 50
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 40
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 25
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 35
+                }
+            ]
+        },
+        {
+            "espacio": "Espacio B",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 30
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 35
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 28
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 32
+                }
+            ]
+        },
+        {
+            "espacio": "Espacio C",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 15
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 19
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 24
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 35
+                },
+                {
+                    "inicio": 1757720448977,
+                    "fin": 1765604451299,
+                    "participantes": 30
+                },
+                {
+                    "inicio": 1765604451299,
+                    "fin": 1773488453621,
+                    "participantes": 27
+                },
+                {
+                    "inicio": 1773488453621,
+                    "fin": 1781372455943,
+                    "participantes": 39
+                }
+            ]
+        },
+        {
+            "espacio": "Todos los espacios",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 75
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 60
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 52
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 63
+                },
+                {
+                    "inicio": 1757720448977,
+                    "fin": 1765604451299,
+                    "participantes": 50
+                },
+                {
+                    "inicio": 1765604451299,
+                    "fin": 1773488453621,
+                    "participantes": 45
+                },
+                {
+                    "inicio": 1773488453621,
+                    "fin": 1781372455943,
+                    "participantes": 58
+                },
+                {
+                    "inicio": 1781372455943,
+                    "fin": 1789256458265,
+                    "participantes": 55
+                },
+                {
+                    "inicio": 1789256458265,
+                    "fin": 1797140460587,
+                    "participantes": 52
+                },
+                {
+                    "inicio": 1797140460587,
+                    "fin": 1805024462909,
+                    "participantes": 47
+                },
+                {
+                    "inicio": 1805024462909,
+                    "fin": 1812908465231,
+                    "participantes": 43
+                },
+                {
+                    "inicio": 1812908465231,
+                    "fin": 1820792467553,
+                    "participantes": 62
+                }
+            ]
+        }
+        
+    ]
+}
