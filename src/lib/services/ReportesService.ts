@@ -2,6 +2,7 @@ import type DTOReporteEventosPorEspacio from "$lib/dtos/reportes/DTOReporteEvent
 import type DTOReporteParticipantesPorRangoTemporal from "$lib/dtos/reportes/DTOReporteParticipantesPorRangoTemporal";
 import type DTOReportePersonsasEnEventosEnEspacio from "$lib/dtos/reportes/DTOReportePersonsasEnEventosEnEspacio";
 import type DTOReporteRegistracionesIniciosSesion from "$lib/dtos/reportes/DTOReporteRegistracionesIniciosSesion";
+import type DTOReporteTiempoMedioMonetizacion from "$lib/dtos/reportes/DTOReporteTiempoMedioMonetizacion";
 import { HttpRequestType, request } from "$lib/request/request";
 
 export const ReportesService = {
@@ -54,6 +55,20 @@ export const ReportesService = {
         args.set("horas", `${horas}`);
 
         let response : DTOReporteRegistracionesIniciosSesion = await request(HttpRequestType.GET, "reportes/generarRegistracionesIniciosSesion", true, args);
+
+        return response;
+    },
+    // #US_REP_5
+    generarTiempoMedioMonetizacion: async (fechaDesde: Date, fechaHasta: Date, anios: number, meses: number, dias: number, horas: number) => {
+        let args = new Map<string, string | string[]>();
+        args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
+        args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
+        args.set("anios", `${anios}`);
+        args.set("meses", `${meses}`);
+        args.set("dias", `${dias}`);
+        args.set("horas", `${horas}`);
+
+        let response : DTOReporteTiempoMedioMonetizacion = await request(HttpRequestType.GET, "reportes/generarTiempoMedioMonetizacion", true, args);
 
         return response;
     },

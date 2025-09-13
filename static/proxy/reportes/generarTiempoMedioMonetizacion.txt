@@ -1,0 +1,237 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+espacios: int[]
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "fechaHoraGeneracion": 1757696795599,
+    "datos": [
+        {
+            "inicio": 1726184441051,
+            "fin": 1734068443912,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 42390.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 84239.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 32948.10
+                }
+            ]
+        },
+        {
+            "inicio": 1734068443912,
+            "fin": 1741952445363,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 53463.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 35634.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 34275.10
+                }
+            ]
+        },
+        {
+            "inicio": 1741952445363,
+            "fin": 1749836446655,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 65874.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 24648.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 34288.10
+                }
+            ]
+        },
+        {
+            "inicio": 1749836446655,
+            "fin": 1757720448977,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 85493.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 32983.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 10392.10
+                }
+            ]
+        },
+        {
+            "inicio": 1757720448977,
+            "fin": 1765604451299,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 79323.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 97863.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 13423.10
+                }
+            ]
+        },
+        {
+            "inicio": 1765604451299,
+            "fin": 1773488453621,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 86457.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 34243.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 10238.10
+                }
+            ]
+        },
+        {
+            "inicio": 1773488453621,
+            "fin": 1781372455943,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 43780.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 23582.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 57292.10
+                }
+            ]
+        },
+        {
+            "inicio": 1781372455943,
+            "fin": 1789256458265,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 83208.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 58203.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 23203.10
+                }
+            ]
+        },
+        {
+            "inicio": 1789256458265,
+            "fin": 1797140460587,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 58204.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 23840.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 20457.10
+                }
+            ]
+        },
+        {
+            "inicio": 1797140460587,
+            "fin": 1805024462909,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 10472.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 12894.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 43932.10
+                }
+            ]
+        },
+        {
+            "inicio": 1805024462909,
+            "fin": 1812908465231,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 34255.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 23486.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 43029.10
+                }
+            ]
+        },
+        {
+            "inicio": 1812908465231,
+            "fin": 1820792467553,
+            "medios": [
+                {
+                    "nombre": "Comisión por inscripción",
+                    "monto": 60384.78
+                },
+                {
+                    "nombre": "Comisión por organización",
+                    "monto": 70274.28
+                },
+                {
+                    "nombre": "Cuota por espacios",
+                    "monto": 32057.10
+                }
+            ]
+        }
+    ]
+}

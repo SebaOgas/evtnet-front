@@ -113,7 +113,8 @@
             scaledWidth: 100,
             fontSize: 200,
             fontFamily: "Montserrat",
-            lineWidth: 40
+            lineWidth: 40,
+            drawArrows: false
         })
     }
 

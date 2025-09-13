@@ -20,6 +20,7 @@ const plotBarConfig = {
     mainAxis: "x",
     showInverseAxis: true,
     marks: 0,
+    drawArrows: true,
     defaultColors: ["orange", "purple", "green", "teal", "orangered", "indigo", "crimson", "goldenrod", "darkslateblue", "peru"],
     refs: undefined
 }
@@ -59,6 +60,8 @@ const plotBar = function(canvas, series = [], labels = [], config = {}){
         ctx.lineTo(cvw - ls/2, gh + oy);
         ctx.stroke();
         ctx.closePath();
+
+        if (!config.drawArrows) return;
         
         ctx.beginPath();
         let path = new Path2D();
@@ -79,6 +82,8 @@ const plotBar = function(canvas, series = [], labels = [], config = {}){
         ctx.lineTo(ox, gh + oy);
         ctx.stroke();
         ctx.closePath();
+        
+        if (!config.drawArrows) return;
     
         ctx.beginPath();
         path = new Path2D();

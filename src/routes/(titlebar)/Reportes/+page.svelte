@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import EventosPorEspacio from "$lib/reports/EventosPorEspacio.svelte";
+	import IngresosTiempoMedioMonetizacion from "$lib/reports/IngresosTiempoMedioMonetizacion.svelte";
 	import ParticipantesPorRangoTemporal from "$lib/reports/ParticipantesPorRangoTemporal.svelte";
 	import PersonasEnEventosEnEspacio from "$lib/reports/PersonasEnEventosEnEspacio.svelte";
 	import RegistracionesIniciosSesion from "$lib/reports/RegistracionesIniciosSesion.svelte";
@@ -50,6 +51,6 @@
     {:else if reporteSeleccionado === "REGISTRACIONES_E_INICIOS_DE_SESION"}
         <RegistracionesIniciosSesion/>
     {:else if reporteSeleccionado === "INGRESOS_POR_TIEMPO_Y_MEDIO"}
-
+        <IngresosTiempoMedioMonetizacion/>
     {/if}
 </div>
