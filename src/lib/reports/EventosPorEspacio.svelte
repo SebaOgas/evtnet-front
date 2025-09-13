@@ -4,7 +4,7 @@
 	import { loadGraph } from "$lib/components/Plot";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
-	import Table from "$lib/components/Table.svelte";
+	import Table, { exportarCSV } from "$lib/components/Table.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
 	import type DTOReporteEventosPorEspacio from "$lib/dtos/reportes/DTOReporteEventosPorEspacio";
@@ -120,6 +120,8 @@
 
     let canvas : HTMLCanvasElement;
     let refs : HTMLDivElement;
+
+    let raw : string[][] = [];
 </script>
 
 <PopupSeleccion title="Buscar espacios" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW/>
@@ -150,7 +152,7 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table cols={["Espacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
+    <Table bind:raw={raw} cols={["Espacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
         {#each data.datos as d}
         <tr>
             <td>{d.espacio}</td>
@@ -163,7 +165,7 @@
 
     <div class="flex flex-col md:flex-row justify-center md:justify-between gap-2 mb-2">
         <p>Reporte generado al {formatDate(data.fechaHoraGeneracion, true)}</p>
-        <Button>Exportar</Button>
+        <Button action={() => exportarCSV(raw, "Cantidad de eventos por espacio")}>Exportar</Button>
     </div>
 {/if}
 

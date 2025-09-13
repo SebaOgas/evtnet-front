@@ -17,10 +17,8 @@ export const ReportesService = {
     },
     // #US_REP_2
     generarEventosPorEspacio: async (espacios: number[], fechaDesde: Date, fechaHasta: Date) => {
-        let args = new Map<string, string>();
-        espacios.forEach(e => {
-            args.set("espacios", `${e}`);
-        })
+        let args = new Map<string, string | string[]>();
+        args.set("espacios", espacios.map(e => `${e}`));
         args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
         args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
 
@@ -30,11 +28,9 @@ export const ReportesService = {
     },
     // #US_REP_3
     generarParticipantesPorRangoTemporal: async (todosLosEspacios: boolean, espacios: number[], fechaDesde: Date, fechaHasta: Date, anios: number, meses: number, dias: number, horas: number) => {
-        let args = new Map<string, string>();
+        let args = new Map<string, string | string[]>();
         args.set("todosLosEspacios", `${todosLosEspacios}`);
-        espacios.forEach(e => {
-            args.set("espacios", `${e}`);
-        })
+        args.set("espacios", espacios.map(e => `${e}`));
         args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
         args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
         args.set("anios", `${anios}`);

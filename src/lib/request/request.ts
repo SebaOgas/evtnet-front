@@ -38,7 +38,7 @@ export async function request(
     type: HttpRequestType, //GET, POST, PUT, DELETE
     path: string, //Ruta dentro de la API
     block: boolean = true, //Mostrar spinner; impedir que se interactúe con la página
-    args: Map<string, string> | null = null, //Lista de argumentos a pasar en la URL
+    args: Map<string, string | string[]> | null = null, //Lista de argumentos a pasar en la URL
     body: string | FormData | null = null, //Cuerpo de la solicitud
     useAuth : boolean = true, //Autenticar al usuario al realizar la solicitud
     baseUrl : string = BASE_URL //Ruta base de la API, es concatenada antes de path
@@ -62,7 +62,13 @@ export async function request(
 
     if (args !== null) {
         args.forEach((val, key) => {
-            argUrl += `${key}=${val}&`
+            if (Array.isArray(val)) {
+                val.forEach(v => {
+                    argUrl += `${key}=${v}&`
+                })
+            } else {
+                argUrl += `${key}=${val}&`
+            }
         });
     }
 

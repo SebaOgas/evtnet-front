@@ -3,7 +3,7 @@
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import { loadGraph } from "$lib/components/Plot";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
-	import Table from "$lib/components/Table.svelte";
+	import Table, { exportarCSV } from "$lib/components/Table.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
 	import type DTOReportePersonsasEnEventosEnEspacio from "$lib/dtos/reportes/DTOReportePersonsasEnEventosEnEspacio";
@@ -119,6 +119,8 @@
 
     let canvas : HTMLCanvasElement;
     let refs : HTMLDivElement;
+
+    let raw : string[][] = [];
 </script>
 
 <PopupSeleccion title="Buscar espacio" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW multiple={false}/>
@@ -141,7 +143,7 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table cols={["Evento", "Desde", "Hasta", "Participantes"]} classes="md:min-h-fit">
+    <Table bind:raw={raw} cols={["Evento", "Desde", "Hasta", "Participantes"]} classes="md:min-h-fit">
         {#each data.datos as d}
         <tr>
             <td>{d.evento}</td>
@@ -154,7 +156,7 @@
 
     <div class="flex flex-col md:flex-row justify-center md:justify-between gap-2 mb-2">
         <p>Reporte generado al {formatDate(data.fechaHoraGeneracion, true)}</p>
-        <Button>Exportar</Button>
+        <Button action={() => exportarCSV(raw, "Personas por evento en un espacio")}>Exportar</Button>
     </div>
 {/if}
 
