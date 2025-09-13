@@ -1,6 +1,7 @@
 import type DTOReporteEventosPorEspacio from "$lib/dtos/reportes/DTOReporteEventosPorEspacio";
 import type DTOReporteParticipantesPorRangoTemporal from "$lib/dtos/reportes/DTOReporteParticipantesPorRangoTemporal";
 import type DTOReportePersonsasEnEventosEnEspacio from "$lib/dtos/reportes/DTOReportePersonsasEnEventosEnEspacio";
+import type DTOReporteRegistracionesIniciosSesion from "$lib/dtos/reportes/DTOReporteRegistracionesIniciosSesion";
 import { HttpRequestType, request } from "$lib/request/request";
 
 export const ReportesService = {
@@ -39,6 +40,20 @@ export const ReportesService = {
         args.set("horas", `${horas}`);
 
         let response : DTOReporteParticipantesPorRangoTemporal = await request(HttpRequestType.GET, "reportes/generarParticipantesPorRangoTemporal", true, args);
+
+        return response;
+    },
+    // #US_REP_4
+    generarRegistracionesIniciosSesion: async (fechaDesde: Date, fechaHasta: Date, anios: number, meses: number, dias: number, horas: number) => {
+        let args = new Map<string, string | string[]>();
+        args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
+        args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
+        args.set("anios", `${anios}`);
+        args.set("meses", `${meses}`);
+        args.set("dias", `${dias}`);
+        args.set("horas", `${horas}`);
+
+        let response : DTOReporteRegistracionesIniciosSesion = await request(HttpRequestType.GET, "reportes/generarRegistracionesIniciosSesion", true, args);
 
         return response;
     },

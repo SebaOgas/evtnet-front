@@ -94,7 +94,11 @@ export async function request(
         }
     });
 
-    if (response instanceof Response && response.status !== 200 && response.status !== 404) {
+    function isOk(code: number) {
+        return code >= 200 && code < 300;
+    }
+
+    if (response instanceof Response && !isOk(response.status) && response.status !== 404) {
         if (block) loading.set(false);
         throw new HttpError(-1, "No se pudo realizar la solicitud");
     }
@@ -165,7 +169,7 @@ export async function request(
 
     if (block) loading.set(false);
 
-    if (response.status === 200) {
+    if (isOk(response.status)) {
         let contentType = response.headers.get("content-type")
         switch (contentType) {
             case "text/plain":

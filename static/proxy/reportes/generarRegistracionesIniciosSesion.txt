@@ -1,0 +1,93 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+espacios: int[]
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "fechaHoraGeneracion": 1757696795599,
+    "datos": [
+        {
+            "inicio": 1726184441051,
+            "fin": 1734068443912,
+            "registraciones": 15,
+            "iniciosSesion": 60
+        },
+        {
+            "inicio": 1734068443912,
+            "fin": 1741952445363,
+            "registraciones": 12,
+            "iniciosSesion": 56
+        },
+        {
+            "inicio": 1741952445363,
+            "fin": 1749836446655,
+            "registraciones": 17,
+            "iniciosSesion": 58
+        },
+        {
+            "inicio": 1749836446655,
+            "fin": 1757720448977,
+            "registraciones": 20,
+            "iniciosSesion": 80
+        },
+        {
+            "inicio": 1757720448977,
+            "fin": 1765604451299,
+            "registraciones": 21,
+            "iniciosSesion": 74
+        },
+        {
+            "inicio": 1765604451299,
+            "fin": 1773488453621,
+            "registraciones": 18,
+            "iniciosSesion": 73
+        },
+        {
+            "inicio": 1773488453621,
+            "fin": 1781372455943,
+            "registraciones": 22,
+            "iniciosSesion": 78
+        },
+        {
+            "inicio": 1781372455943,
+            "fin": 1789256458265,
+            "registraciones": 27,
+            "iniciosSesion": 113
+        },
+        {
+            "inicio": 1789256458265,
+            "fin": 1797140460587,
+            "registraciones": 32,
+            "iniciosSesion": 135
+        },
+        {
+            "inicio": 1797140460587,
+            "fin": 1805024462909,
+            "registraciones": 40,
+            "iniciosSesion": 225
+        },
+        {
+            "inicio": 1805024462909,
+            "fin": 1812908465231,
+            "registraciones": 46,
+            "iniciosSesion": 277
+        },
+        {
+            "inicio": 1812908465231,
+            "fin": 1820792467553,
+            "registraciones": 48,
+            "iniciosSesion": 312
+        }
+    ]
+}

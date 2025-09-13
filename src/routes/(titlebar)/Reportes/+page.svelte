@@ -3,6 +3,7 @@
 	import EventosPorEspacio from "$lib/reports/EventosPorEspacio.svelte";
 	import ParticipantesPorRangoTemporal from "$lib/reports/ParticipantesPorRangoTemporal.svelte";
 	import PersonasEnEventosEnEspacio from "$lib/reports/PersonasEnEventosEnEspacio.svelte";
+	import RegistracionesIniciosSesion from "$lib/reports/RegistracionesIniciosSesion.svelte";
 	import { permisos } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
@@ -34,7 +35,7 @@
 </script>
 
 <div id="content" class="p-2 h-full overflow-y-auto">
-    <div class="flex flex-col md:flex-row items-baseline gap-2">
+    <div class="flex flex-col md:flex-row items-baseline gap-2 mb-4">
         <h1 class="text-m">Reportes</h1>
         <ComboBox options={reportes} bind:selected={reporteSeleccionado} placeholder="Seleccionar reporte" maxHeight={6}/>
     </div>
@@ -47,7 +48,7 @@
     {:else if reporteSeleccionado === "PARTICIPANTES_POR_ESPACIO_Y_TIEMPO"}
         <ParticipantesPorRangoTemporal/>
     {:else if reporteSeleccionado === "REGISTRACIONES_E_INICIOS_DE_SESION"}
-
+        <RegistracionesIniciosSesion/>
     {:else if reporteSeleccionado === "INGRESOS_POR_TIEMPO_Y_MEDIO"}
 
     {/if}
