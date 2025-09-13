@@ -1,0 +1,97 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+espacios: int[]
+fechaDesde: Date
+fechaHasta: Date
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "fechaHoraGeneracion": 1757696795599,
+    "datos": [
+        {
+            "espacio": "Espacio A",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 50
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 40
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 25
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 35
+                }
+            ]
+        },
+        {
+            "espacio": "Espacio B",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 30
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 35
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 28
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 32
+                }
+            ]
+        },
+        {
+            "espacio": "Espacio C",
+            "rangos": [
+                {
+                    "inicio": 1726184441051,
+                    "fin": 1734068443912,
+                    "participantes": 15
+                },
+                {
+                    "inicio": 1734068443912,
+                    "fin": 1741952445363,
+                    "participantes": 19
+                },
+                {
+                    "inicio": 1741952445363,
+                    "fin": 1749836446655,
+                    "participantes": 24
+                },
+                {
+                    "inicio": 1749836446655,
+                    "fin": 1757720448977,
+                    "participantes": 35
+                }
+            ]
+        }
+        
+    ]
+}

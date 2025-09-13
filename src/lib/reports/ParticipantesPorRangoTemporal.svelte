@@ -1,20 +1,22 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
+	import CheckBox from "$lib/components/CheckBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import { loadGraph } from "$lib/components/Plot";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import Table from "$lib/components/Table.svelte";
+	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
-	import type DTOReporteEventosPorEspacio from "$lib/dtos/reportes/DTOReporteEventosPorEspacio";
+	import type DTOReporteParticipantesPorRangoTemporal from "$lib/dtos/reportes/DTOReporteParticipantesPorRangoTemporal";
 	import { HttpError } from "$lib/request/request";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { ReportesService } from "$lib/services/ReportesService";
 	import { onMount, tick } from "svelte";
 
     onMount(() => {
-        loadGraph("bar");
+        loadGraph("xy");
     })
 
     $: error = "";
@@ -37,6 +39,7 @@
         return ret;
     }
 
+    let todosLosEspacios = true;
     let espacios : Map<number, string> = new Map();
 
     let popupUsuarioVisible = false;
@@ -48,9 +51,48 @@
     let fechaDesde : Date | null;
     let fechaHasta : Date | null;
 
-    $: completo = espacios.size > 0 && fechaDesde !== null && fechaHasta !== null;
+    let anios = 0;
+    let meses = 0;
+    let dias = 0;
+    let horas = 0;    
 
-    let data : DTOReporteEventosPorEspacio | null = null;
+    // @ts-ignore
+    $: completo = (todosLosEspacios || espacios.size > 0) && fechaDesde !== null && fechaHasta !== null && anios >= 0 && meses >= 0 && meses <= 11 && dias >= 0 && dias <= 30 && horas >= 0 && horas <= 23 && anios !== "" && meses !== "" && dias !== "" && horas !== "";
+    let textoWarning = ""
+    $: (() => {
+        if (completo) {
+            textoWarning = "";
+            return;
+        }
+        if (!todosLosEspacios && espacios.size === 0) {
+            textoWarning = "Seleccione al menos un espacio";
+            return;
+        }
+        if (fechaDesde === null || fechaHasta === null) {
+            textoWarning = "Ingrese el rango de fechas";
+            return;
+        }
+        if (anios < 0) {
+            textoWarning = "Especifique un número de años de 0 o mayor";
+            return;
+        }
+        if (meses < 0 || meses > 11) {
+            textoWarning = "Especifique un número de meses entre 0 y 11";
+            return;
+        }
+        if (dias < 0 || dias > 30) {
+            textoWarning = "Especifique un número de días entre 0 y 30";
+            return;
+        }
+        if (horas < 0 || horas > 23) {
+            textoWarning = "Especifique un número de horas entre 0 y 23";
+            return;
+        }
+        
+        textoWarning = "Datos inválidos; verifique los filtros";
+    })()
+
+    let data : DTOReporteParticipantesPorRangoTemporal | null = null;
 
     function createColorGenerator() {
         let index = 0;
@@ -69,12 +111,13 @@
     // Example usage:
     const getColor = createColorGenerator();
 
+    let rangos : {inicio: Date, fin: Date}[] = []
 
     async function generar() {
-        if (espacios.size === 0 || fechaDesde === null || fechaHasta === null) return;
+        if (fechaDesde === null || fechaHasta === null || !completo) return;
 
         try {
-            data = await ReportesService.generarEventosPorEspacio(Array.from(espacios.keys()), fechaDesde, fechaHasta);
+            data = await ReportesService.generarParticipantesPorRangoTemporal(todosLosEspacios, Array.from(espacios.keys()), fechaDesde, fechaHasta, anios, meses, dias, horas);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -82,6 +125,18 @@
 			}
             return;
 		}
+
+        data.datos.forEach(e => {
+            e.rangos.forEach(r => {
+                if (rangos.some(r2 => r2.inicio === r.inicio && r2.fin === r.fin)) return;
+
+                rangos.push({
+                    inicio: r.inicio,
+                    fin: r.fin
+                })
+            })
+        })
+        /*
         let series: { name: string; values: number[]; color: string; }[] = [];
 
         data.datos.forEach(d => {
@@ -115,7 +170,7 @@
             fontSize: 200,
             fontFamily: "Montserrat",
             lineWidth: 40
-        })
+        })*/
     }
 
     let canvas : HTMLCanvasElement;
@@ -125,6 +180,7 @@
 <PopupSeleccion title="Buscar espacios" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW/>
 
 <div class="flex flex-col gap-2 justify-between">
+    <CheckBox bind:checked={todosLosEspacios}>Todos los espacios</CheckBox>
     <div class="flex flex-col md:flex-row gap-2 md:items-baseline md:justify-between">
         <span>Espacios: 
             <span class="commaList">
@@ -135,13 +191,35 @@
         </span>
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
-    <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+    <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
+        <DatePicker time range label="Fechas:" classes="md:min-w-md" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <div class="flex flex-row gap-2 justify-start items-baseline flex-wrap">
+            <span>Rango:</span>
+            <span class="flex gap-2 items-baseline w-fit">
+                <TextField bind:value={anios} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
+                <span>años</span>
+            </span>
+            <span class="flex gap-2 items-baseline w-fit">
+                <TextField bind:value={meses} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
+                <span>meses</span>
+            </span>
+            <span class="flex gap-2 items-baseline w-fit">
+                <TextField bind:value={dias} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
+                <span>días</span>
+            </span>
+            <span class="flex gap-2 items-baseline w-fit">
+                <TextField bind:value={horas} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
+                <span>horas</span>
+            </span>
+        </div>
+    </div>
     <div class="w-full flex justify-end">
         <Button action={generar} disabled={!completo}>Generar reporte</Button>
     </div>
 </div>
 
-<Warning text="No se encontraron eventos en el rango de fechas indicado." visible={data !== null && data.datos.length === 0}/>
+<Warning text={textoWarning} visible={!completo}/>
+<Warning text="No se encontraron datos en el rango de fechas indicado." visible={data !== null && data.datos.length === 0}/>
 
 {#if data !== null && data.datos.length > 0}
     <canvas bind:this={canvas}></canvas>
@@ -150,13 +228,13 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table cols={["Espacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
+    <Table classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Espacio", rangos.map(r => `${formatDate(r.inicio, true)} - ${formatDate(r.fin, true)}`)].flat()}>
         {#each data.datos as d}
         <tr>
             <td>{d.espacio}</td>
-            <td>{formatDate(d.fechaDesde)}</td>
-            <td>{formatDate(d.fechaHasta)}</td>
-            <td>{d.eventos}</td>
+            {#each rangos as r}
+                <td>{(() => {let aux = d.rangos.find(r2 => r2.inicio === r.inicio && r2.fin === r.fin); return aux === undefined ? 0 : aux.participantes})()}</td>
+            {/each}
         </tr>
         {/each}
     </Table>

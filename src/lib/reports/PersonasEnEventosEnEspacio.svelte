@@ -145,8 +145,8 @@
         {#each data.datos as d}
         <tr>
             <td>{d.evento}</td>
-            <td>{formatDate(fechaDesde)}</td>
-            <td>{formatDate(fechaHasta)}</td>
+            <td>{formatDate(d.fechaDesde)}</td>
+            <td>{formatDate(d.fechaHasta)}</td>
             <td>{d.participantes}</td>
         </tr>
         {/each}
