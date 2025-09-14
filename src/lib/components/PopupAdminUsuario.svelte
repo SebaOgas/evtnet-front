@@ -317,7 +317,7 @@
 
 
     {#if interacciones !== null}
-    <Popup title={`Grupos de ${usuario.apellido}, ${usuario.nombre} (@${usuario.username})`} bind:visible={interaccionesVisibles} fitH={true} fitW={true}>
+    <Popup title={`Interacciones de ${usuario.apellido}, ${usuario.nombre} (@${usuario.username})`} bind:visible={interaccionesVisibles} fitH={true} fitW={true}>
         <div class="flex flex-col md:flex-row justify-start items-start w-full gap-12">
             <div class="flex flex-col gap-2 w-full">
                 {#each interacciones.interacciones as ev}
