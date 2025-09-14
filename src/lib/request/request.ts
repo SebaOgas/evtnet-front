@@ -89,7 +89,7 @@ export async function request(
         if (DEBUG) {
             console.warn(`Using proxy for request: ${url}`);
         } else {
-            throw new HttpError(-1, "No se pudo realizar la solicitud");
+            throw new HttpError(-1, "No se pudo realizar la solicituda");
             
         }
     });
@@ -100,7 +100,12 @@ export async function request(
 
     if (response instanceof Response && !isOk(response.status) && response.status !== 404) {
         if (block) loading.set(false);
-        throw new HttpError(-1, "No se pudo realizar la solicitud");
+        try {
+            let error = await response.json() as HttpError;
+            throw error;
+        } catch (e) {
+            throw new HttpError(-1, "No se pudo realizar la solicitud");
+        }
     }
 
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {

@@ -78,7 +78,7 @@ export const UsuariosService = {
         let args = new Map<string, string>();
         args.set("mail", mail);
 
-        await request(HttpRequestType.PUT, "usuarios/enviarCodigoRecuperarContrasena", true, args);
+        await request(HttpRequestType.POST, "usuarios/enviarCodigoRecuperarContrasena", true, args);
     },
 
     recuperarContrasena: async (mail: string, password: string, codigo: string) => {
