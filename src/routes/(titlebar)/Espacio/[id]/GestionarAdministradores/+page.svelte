@@ -203,7 +203,7 @@
         </div>
 	</div>
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
-        <Button action={()=>{goto(previousPage)}}>Atrás</Button>
+        <Button action={()=>{goto(`/Espacio/${id}/Administrar`)}}>Atrás</Button>
     </div>
 </div>
 
@@ -267,6 +267,6 @@
 <Popup bind:visible={popupExitoPropiestarioVisible} fitH fitW>
     Cambio de propietario realizado exitosamente
     <div class="flex justify-center items-center w-full">
-        <Button action={() => {goto(`/Espacio/${id}`)}}>Aceptar</Button>
+        <Button action={() => {goto(`/Espacio/${id}/Administrar`)}}>Aceptar</Button>
     </div>
 </Popup>

@@ -94,7 +94,7 @@
   </div>
 
   <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
-    <Button action={() => {goto(previousPage)}}>Atrás</Button>
+    <Button action={() => {goto(`/Espacio/${id}/Administrar`)}}>Atrás</Button>
     <Button action={() => {goto(`${page.url.pathname}/Nueva`)}}>Realizar reseña</Button>
   </div>
 </div>
