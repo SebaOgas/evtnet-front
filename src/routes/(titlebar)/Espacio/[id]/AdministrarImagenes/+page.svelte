@@ -250,7 +250,7 @@
         </div>
 	</div>
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
-            <Button action={()=>{goto(previousPage)}}>Atrás</Button>
+            <Button action={()=>{goto(`/Espacio/${id}/Administrar`)}}>Atrás</Button>
             <Button action={guardar} disabled={!cambiosPendientes}>Guardar</Button>
             <Button action={agregarNuevaImagen}>Nueva</Button>
     </div>
@@ -277,6 +277,6 @@
 <Popup bind:visible={popupExitoVisible} fitH fitW>
     Imágenes guardadas exitosamente
     <div class="flex justify-center items-center w-full">
-        <Button action={() => {goto(`/Espacio/${id}`)}}>Aceptar</Button>
+        <Button action={() => {goto(`/Espacio/${id}/Administrar`)}}>Aceptar</Button>
     </div>
 </Popup>
