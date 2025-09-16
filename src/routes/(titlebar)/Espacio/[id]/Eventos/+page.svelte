@@ -232,10 +232,10 @@
 
             <div>
                 <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Hasta $</span></CheckBox>
+                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Precio máximo $</span></CheckBox>
                     <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full md:w-[500px]"/>
                 </div>
-                <Warning text="El monto superior (“Hasta”) debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
+                <Warning text="El monto superior (“Precio máximo”) debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
             </div>            
 
             <div class="flex justify-center items-center mb-4">
