@@ -95,7 +95,7 @@
                     permisosList.includes("AdministracionRoles") || 
                     permisosList.includes("AdministracionRolesReservados")
                 }
-                    <li><a href="/">Parámetros</a></li>
+                    <li><a href="/AdministrarParametros">Parámetros</a></li>
                 {/if}
                 {#if permisosList.includes("AdministracionUsuarios") || 
                     permisosList.includes("AdministracionUsuariosAdministradores")

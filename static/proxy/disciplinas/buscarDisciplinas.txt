@@ -1,0 +1,46 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "texto": "texto buscado",
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1755225458732
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Fútbol",
+        "descripcion": "Descripción ejemplo",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": 1755225458732
+    },
+    {
+        "id": 1,
+        "nombre": "Pádel",
+        "descripcion": "Descripción ejemplo",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": 1755225458732
+    },
+    {
+        "id": 2,
+        "nombre": "Ajedrez",
+        "descripcion": "Descripción ejemplo",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": null
+    },
+    {
+        "id": 3,
+        "nombre": "Metegol",
+        "descripcion": "Descripción ejemplo",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": null
+    }
+]

@@ -43,6 +43,7 @@ RESPONSE BODY
         "AdministracionRolesReservados",
         "AdministracionUsuarios",
         "AdministracionUsuariosAdministradores",
+        "AdministracionDisciplinas",
         "VisionReportes",
         "VisionReportesGenerales",
         "RealizacionBackup",
