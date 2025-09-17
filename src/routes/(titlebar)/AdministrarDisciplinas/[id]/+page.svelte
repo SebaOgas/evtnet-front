@@ -114,7 +114,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Modificar Rol</h1>
+		<h1 class="text-m text-center md:text-start">Modificar Disciplina</h1>
 
 		{#if listo}
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">

@@ -12,7 +12,7 @@
 
     const parametros = [
         { nombre: "Disciplinas", ruta: "/AdministrarDisciplinas" },
-        { nombre: "Icono característica", ruta: "/AdministrarIconosCaracteristica" },
+        { nombre: "Icono característica", ruta: "/AdministrarIconoCaracteristica" },
         { nombre: "Modo de Evento", ruta: "/AdministrarModosEvento" },
         { nombre: "Comision por Inscripcion", ruta: "/AdministrarComisionInscripcion" },
         { nombre: "Comision por Organizacion", ruta: "/AdministrarComisionOrganizacion" },

@@ -2,10 +2,8 @@
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import TextField from "$lib/components/TextField.svelte";
-	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import { HttpError } from "$lib/request/request";
-	import { UsuariosService } from "$lib/services/UsuariosService";
 	import { permisos, token } from "$lib/stores";
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
@@ -91,7 +89,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Alta de Rol</h1>
+		<h1 class="text-m text-center md:text-start">Alta de Disciplina</h1>
 		
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
             <TextField 
