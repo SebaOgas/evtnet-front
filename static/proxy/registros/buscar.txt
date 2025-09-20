@@ -1,0 +1,94 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+registro: string
+
+REQUEST BODY
+
+{
+    "tipos": ["T1", "T2"],
+    "subtipos": ["S1", "S2"],
+    "fechaHoraDesde": 1757696795599,
+    "fechaHoraHasta": 1757696795599,
+    "usuarios": ["sergioooo", "sara"]
+}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    },
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    },
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    },
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    },
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    },
+    {
+        "tipo": "T1",
+        "subtipo": "S1",
+        "fechaHora": 1757696795599,
+        "usuario": {
+            "nombre": "Nombre",
+            "apellido": "Apellido",
+            "username": "usuario"
+        },
+        "solicitud": "/solicitud/al/back?arg1=abc",
+        "descripcion": "Descripcion del log"
+    }
+]
