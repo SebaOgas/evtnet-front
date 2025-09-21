@@ -15,6 +15,8 @@
 	import Table, { exportarCSV } from "$lib/components/Table.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
+	import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
+	import PopupBusquedaUsuarios from "$lib/components/PopupBusquedaUsuarios.svelte";
 
 
     let previousPage: string = base;
@@ -42,21 +44,9 @@
             goto("/");
         }
 
-        switch (tipo) {
-            case "UsuariosGrupos":
-                tipoFormat = "Usuarios y Grupos"
-                break;
-            case "Eventos":
-            case "Espacios":
-            case "Pagos":
-                tipoFormat = tipo;
-                break;
-            case "Parametros":
-                tipoFormat = "Parámetros"
-                break;
-            default:
-                errorPermiso = true;
-                return;
+        if (tipo === undefined) {
+            errorPermiso = true;
+            return;
         }
 
         permisosList = get(permisos);
@@ -68,6 +58,9 @@
 
         try {
             loading.set(true);
+            
+            tipoFormat = (await RegistrosService.obtenerRegistroFormateado(tipo)).nombreFormateado;
+
             tipos = await RegistrosService.obtenerTipos(tipo);
 
             tipos.forEach(t => {
@@ -119,6 +112,11 @@
         selectedSubtipos.forEach(t => {
             filtros.subtipos.push(t);
         })
+        
+        filtros.usuarios = [];
+        selectedUsuarios.forEach(u => {
+            filtros.usuarios.push(u.username);
+        })
 
         try {
             resultados = await RegistrosService.buscar(tipo, filtros)
@@ -161,7 +159,28 @@
 
     let selectedSubtipos : Map<string, string> = new Map<string, string>();
 
-    
+    $: usuario = null as null | DTOBusquedaUsuario;
+	$: popupBusquedaUsuariosVisible = false;
+	async function buscarUsuarios(valor: string) {
+		let ret = await RegistrosService.buscarUsuarios(valor);
+        ret = ret.filter(u => !selectedUsuarios.some(p => p.username === u.username));
+        return ret;
+	}
+
+    let selectedUsuarios : DTOBusquedaUsuario[] = []
+
+    $: (() => {      
+        if (usuario === null) return;
+        selectedUsuarios.push(
+			usuario
+		);
+        selectedUsuarios = [...selectedUsuarios];
+        usuario = null;
+    })()
+
+    function eliminarUsuario(username: string) {
+        selectedUsuarios = selectedUsuarios.filter(p => p.username !== username);
+    }   
 </script>
 
 <PopupSeleccion title="Seleccionar tipos" noSearch forceReSearch multiple={true} bind:visible={popupTiposVisible} searchFunction={searchTipos} bind:selected={selectedTipos}/>
@@ -169,11 +188,12 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+        {#if listo}
+
 		<h1 class="text-m text-center md:text-start">
 			Registro de {tipoFormat}
 		</h1>
 
-        {#if listo}
         <div class="flex flex-col md:flex-row gap-2 md:justify-between md:items-end">
             <div class="flex flex-col gap-2 justify-start items-start">
                 <div class="flex flex-col md:flex-row gap-2 md:gap-8">
@@ -201,6 +221,22 @@
                     </div>
                 </div>
                 <DatePicker label="Rango de fechas" range time bind:startDate={filtros.fechaHoraDesde} bind:endDate={filtros.fechaHoraHasta} maxDate={new Date()} classes="w-full"/>
+                <div class="flex gap-2 justify-start items-baseline">
+                    <span>Usuarios:</span>
+                    {#if selectedUsuarios.length > 0}
+                    <div class="flex flex-col gap-2 justify-start items-start">
+                        {#each selectedUsuarios as u}
+                            <div class="text-xs flex justify-start items-center gap-2">
+                                <span>{u.nombre} {u.apellido} @{u.username}</span>
+                                <Button icon="/icons/trash.svg" action={() => eliminarUsuario(u.username)}></Button>
+                            </div>
+                        {/each}
+                    </div>
+                    {:else}
+                    <span>Todos</span>
+                    {/if}
+                    <Button action={() => popupBusquedaUsuariosVisible = true}>Agregar</Button>
+                </div>
             </div>
             <div class="flex gap-2">
                 <Button action={buscar}>Filtrar</Button>
@@ -228,6 +264,7 @@
     </div>
 </div>
 
+<PopupBusquedaUsuarios searchFunction={buscarUsuarios} bind:selected={usuario} bind:visible={popupBusquedaUsuariosVisible}/>
 
 <PopupError bind:visible={errorPermiso}>
 	No tiene permiso para acceder a ver este registro.

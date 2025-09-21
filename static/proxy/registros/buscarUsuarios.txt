@@ -1,0 +1,49 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+texto: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "username": "username",
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "mail": "username@example.com",
+        "dni": 41213828,
+        "fechaNacimiento": 1757696795599
+    },
+    {
+        "username": "username2",
+        "nombre": "Nombre 2",
+        "apellido": "Apellido 2",
+        "mail": "usr2@mail.com",
+        "dni": 38193802,
+        "fechaNacimiento": 1757696795599
+    },
+    {
+        "username": "username3",
+        "nombre": "Nombre 3",
+        "apellido": "Apellido 3",
+        "mail": "usr3@mail.com",
+        "dni": 12802303,
+        "fechaNacimiento": 1757696795599
+    },
+    {
+        "username": "username4",
+        "nombre": "Nombre 4",
+        "apellido": "Apellido 4",
+        "mail": "usuario4@gmail.com",
+        "dni": 32102903,
+        "fechaNacimiento": 1757696795599
+    }
+]
+

@@ -3,6 +3,9 @@
 	import { base } from "$app/paths";
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
+	import type DTORegistroMeta from "$lib/dtos/registros/DTORegistroMeta";
+	import { HttpError } from "$lib/request/request";
+	import { RegistrosService } from "$lib/services/RegistrosService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
@@ -14,8 +17,12 @@
 	});
 
 	$: errorPermiso = false;
+    $: errorGenerico = ""
+	$: errorGenericoVisible = false
 
     let permisosList : string[] = [];
+
+    let registrosVisibles : DTORegistroMeta[] = []
 
     onMount(async () => {
         if (get(token) === "") {
@@ -32,6 +39,15 @@
             errorPermiso = true;
             return;
         }
+
+        try {
+            registrosVisibles = await RegistrosService.obtenerRegistros();
+        } catch (e) {
+            if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			} 
+        }
     })
 </script>
 
@@ -42,39 +58,19 @@
 			Registros
 		</h1>
 
-        {#if permisosList.includes("VisionLogUsuariosGrupos")}
+        {#each registrosVisibles as r}
             <div class="flex justify-start gap-2 items-baseline">
-                <span>Registro de Usuarios y Grupos</span>
-                <Button action={() => goto("/Registros/UsuariosGrupos")}>Ver</Button>
+                <span>Registro de {r.nombreFormateado}</span>
+                <Button action={() => goto(`/Registros/${r.nombre}`)}>Ver</Button>
             </div>
-        {/if}
-        {#if permisosList.includes("VisionLogEventos")}
-            <div class="flex justify-start gap-2 items-baseline">
-                <span>Registro de Eventos</span>
-                <Button action={() => goto("/Registros/Eventos")}>Ver</Button>
-            </div>
-        {/if}
-        {#if permisosList.includes("VisionLogEspacios")}
-            <div class="flex justify-start gap-2 items-baseline">
-                <span>Registro de Espacios</span>
-                <Button action={() => goto("/Registros/Espacios")}>Ver</Button>
-            </div>
-        {/if}
-        {#if permisosList.includes("VisionLogPagos")}
-            <div class="flex justify-start gap-2 items-baseline">
-                <span>Registro de Pagos</span>
-                <Button action={() => goto("/Registros/Pagos")}>Ver</Button>
-            </div>
-        {/if}
-        {#if permisosList.includes("VisionLogParametros")}
-            <div class="flex justify-start gap-2 items-baseline">
-                <span>Registro de Parámetros</span>
-                <Button action={() => goto("/Registros/Parametros")}>Ver</Button>
-            </div>
-        {/if}
+        {/each}
 	</div>
 </div>
 
 <PopupError bind:visible={errorPermiso} redir={previousPage}>
 	No tiene permiso para acceder a ver registros.
+</PopupError>
+
+<PopupError bind:visible={errorGenericoVisible}>
+	{errorGenerico}
 </PopupError>

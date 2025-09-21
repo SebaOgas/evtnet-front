@@ -21,7 +21,7 @@ RESPONSE BODY
 [
     {
         "tipo": "T1",
-        "subtipo": "S1",
+        "subtipo": "S2",
         "fechaHora": 1757696795599,
         "usuario": {
             "nombre": "Nombre",

@@ -1,0 +1,19 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+nombre: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+
+{
+    "nombre": "UsuariosGrupos",
+    "nombreFormateado": "Usuarios y Grupos"
+}
