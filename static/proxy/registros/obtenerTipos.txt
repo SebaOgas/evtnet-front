@@ -1,0 +1,20 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+registro: string
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+]

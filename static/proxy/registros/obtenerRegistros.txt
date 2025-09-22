@@ -1,0 +1,34 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "nombre": "UsuariosGrupos",
+        "nombreFormateado": "Usuarios y Grupos"
+    },
+    {
+        "nombre": "Eventos",
+        "nombreFormateado": "Eventos"
+    },
+    {
+        "nombre": "Espacios",
+        "nombreFormateado": "Espacios"
+    },
+    {
+        "nombre": "Pagos",
+        "nombreFormateado": "Pagos"
+    },
+    {
+        "nombre": "Parametros",
+        "nombreFormateado": "Parámetros"
+    }
+]
