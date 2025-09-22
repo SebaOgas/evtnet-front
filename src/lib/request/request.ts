@@ -99,13 +99,10 @@ export async function request(
     }
 
     if (response instanceof Response && !isOk(response.status) && response.status !== 404) {
-        if (block) loading.set(false);
-        try {
+        if (block) loading.set(false);                   
             let error = await response.json() as HttpError;
+            error = new HttpError(error.code, error.message);
             throw error;
-        } catch (e) {
-            throw new HttpError(-1, "No se pudo realizar la solicitud");
-        }
     }
 
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {

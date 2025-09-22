@@ -252,9 +252,9 @@
                     <tr>
                         <td>{r.tipo}</td>
                         <td>{r.subtipo}</td>
-                        <td>{formatDate(r.fechaHora, true)}</td>
+                        <td class="!text-wrap">{formatDate(r.fechaHora, true)}</td>
                         <td class="!text-wrap">{r.usuario.nombre} {r.usuario.apellido} @{r.usuario.username}</td>
-                        <td class="!text-wrap !text-start">{r.solicitud}</td>
+                        <td class="!text-wrap !text-start !break-all">{r.solicitud}</td>
                         <td class="!text-wrap !text-start">{r.descripcion}</td>
                     </tr>
                 {/each}
