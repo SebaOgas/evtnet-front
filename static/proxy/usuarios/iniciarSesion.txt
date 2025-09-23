@@ -45,6 +45,7 @@ RESPONSE BODY
         "AdministracionUsuariosAdministradores",
         "AdministracionDisciplinas",
         "AdministracionIconosCaracteristicas",
+        "AdministracionModosEvento",
         "VisionReportes",
         "VisionReportesGenerales",
         "RealizacionBackup",
