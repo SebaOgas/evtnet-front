@@ -1,0 +1,21 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id:int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0,
+    "nombre": "Pendiente",
+    "descripcion": "La denuncia está en proceso de revisión",
+    "fechaAlta": 1753225458732,
+    "fechaBaja": 1755225458732
+}
