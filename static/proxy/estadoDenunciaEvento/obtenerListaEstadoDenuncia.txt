@@ -1,0 +1,42 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "nombre": "Pendiente",
+        "descripcion": "La denuncia está en proceso de revisión",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": 1755225458732
+    },
+    {
+        "id": 1,
+        "nombre": "Pendiente",
+        "descripcion": "La denuncia está en proceso de revisión",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": 1755225458732
+    },
+    {
+        "id": 2,
+        "nombre": "Pendiente",
+        "descripcion": "La denuncia está en proceso de revisión",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": null
+    },
+    {
+        "id": 3,
+        "nombre": "Pendiente",
+        "descripcion": "La denuncia está en proceso de revisión",
+        "fechaAlta": 1753225458732,
+        "fechaBaja": null
+    }
+]

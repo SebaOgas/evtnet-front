@@ -46,6 +46,8 @@ RESPONSE BODY
         "AdministracionDisciplinas",
         "AdministracionIconosCaracteristicas",
         "AdministracionModosEvento",
+        "AdministracionEstadosDenuncia",
+        "AdministracionEstadosSEP",
         "VisionReportes",
         "VisionReportesGenerales",
         "RealizacionBackup",
