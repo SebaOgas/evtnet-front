@@ -93,13 +93,17 @@
             <Table cols={["Ícono", "Alta", "Baja", "Acciones"]}>
                 {#each resultados as d}
                     <tr>
-                        <td><img src="{d.url}" alt=""></td>
+                        <td>
+                            <div class="flex justify-center">
+                                <img src="{d.url}" alt="Ícono" class="w-12 h-12" />
+                            </div>
+                        </td>
                         <td>{formatDate(d.fechaAlta, true)}</td>
                         <td>{#if d.fechaBaja}{formatDate(d.fechaBaja, true)}{/if}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarIconoCaracteristica/${d.id}`)}></Button>
-                                <Button icon="/icons/trash.svg" action={() => {iconoCaracteristicaBaja = d.id; popupBaja = true}}></Button>
+                                {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {iconoCaracteristicaBaja = d.id; popupBaja = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>

@@ -86,6 +86,16 @@ export const IconosCaracteristicasService = {
             let args = new Map<string, string>();
             args.set("id", `${id}`);
             let response : DTOIconoCaracteristica = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerIconoCaracteristicaCompleto", true, args);
+            const byteCharacters = atob(response.url);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+
+            const bytes = new Uint8Array(byteNumbers);
+            let urlCreator = window.URL || window.webkitURL;
+            let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType || 'image/png'}));
+            response.url = url;
             return response;
     },
     modificarIconoCaracteristica: async (icono: DTOModificarIconoCaracteristica) => {

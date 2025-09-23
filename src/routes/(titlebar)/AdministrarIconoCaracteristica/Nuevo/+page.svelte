@@ -10,6 +10,7 @@
 	import { IconosCaracteristicasService } from "$lib/services/IconosCaracteristicasService";
 	import type DTOAltaIconoCaracteristica from "$lib/dtos/iconoscaracteristicas/DTOAltaIconoCaracteristica";
 	import FilePicker, { getImageFileDimensions } from "$lib/components/FilePicker.svelte";
+	import Warning from "$lib/components/Warning.svelte";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -61,12 +62,14 @@
                 if (dims.h !== dims.w) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser cuadrada"
+					completado=false;
                     return
                 }
 
                 if (dims.h < 10) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser más grande (mayor a 10px de ancho y alto)"
+					completado=false;
                     return
                 }
                 errorTamanoImagenIconoVisible = false;
@@ -81,12 +84,27 @@
                 reason: undefined
             }
         }
-        guardar();
+        cargarImagen();
         return {
             valid: true,
             reason: undefined
         }
     }
+
+	async function cargarImagen() {
+		if (icono === null) {
+			data.url = "";
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			if (typeof reader.result === "string") {
+				data.url = reader.result;
+			}
+		};
+		reader.readAsDataURL(icono);
+	}
 
 
 	async function guardar() {
@@ -119,15 +137,21 @@
 		<h1 class="text-m text-center md:text-start">Alta de Ícono Característica</h1>
 		
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
-            <FilePicker
+            {#if data.url !== ""}
+				<div class="flex">
+					<img src="{data.url}" alt="Ícono" class="w-12 h-12" />
+				</div>	
+			{/if}	
+			<FilePicker
 				label=""
 				bind:file={icono}
 				accept={[".jpg", ".svg", ".png"]}
 				validate={validateImagenIcono}
-				classes="flex justify-center"
+				classes="flex"
 				buttonText="Seleccionar imagen"
 				showFileName={false}
 			/>
+			<Warning text={errorTamanoImagenIcono} visible={errorTamanoImagenIconoVisible}/>
         </div>
     </div>
         
