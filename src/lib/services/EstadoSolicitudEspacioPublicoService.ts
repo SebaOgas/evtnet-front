@@ -1,24 +1,24 @@
 import { HttpRequestType, request } from "$lib/request/request";
-import type DTOAltaEstadoDenuncia from "$lib/dtos/estadosdenuncia/DTOAltaEstadoDenuncia";
-import type DTOModificarEstadoDenuncia from "$lib/dtos/estadosdenuncia/DTOModificarEstadoDenuncia";
-import type DTOEstadoDenuncia from "$lib/dtos/estadosdenuncia/DTOEstadoDenuncia";
+import type DTOAltaEstadoSolicitud from "$lib/dtos/estadossolicitudEP/DTOAltaEstadoSolicitud";
+import type DTOModificarEstadoSolicitud from "$lib/dtos/estadossolicitudEP/DTOModificarEstadoSolicitud";
+import type DTOEstadoSolicitud from "$lib/dtos/estadossolicitudEP/DTOEstadoSolicitud";
 
 export const EstadoSolicitudEspacioPublicoService={
     obtenerListaEstadosSolicitud: async () => {
-            let response : DTOEstadoDenuncia[]= await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerListaEstadoSolicitud", true, null);
+            let response : DTOEstadoSolicitud[]= await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerListaEstadoSolicitud", true, null);
             return response;
     },
-    altaEstadoSolicitud: async (EstadoDenuncia: DTOAltaEstadoDenuncia) => {
-        await request(HttpRequestType.PUT, "estadoSolicitudEspacioPublico/alta", true, null, JSON.stringify(EstadoDenuncia));
+    altaEstadoSolicitud: async (estadoSolicitud: DTOAltaEstadoSolicitud) => {
+        await request(HttpRequestType.PUT, "estadoSolicitudEspacioPublico/alta", true, null, JSON.stringify(estadoSolicitud));
     },
     obtenerEstadoSolicitudCompleta: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
-        let response : DTOEstadoDenuncia = await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerEstadoSolicitudCompleta", true, args);
+        let response : DTOEstadoSolicitud = await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerEstadoSolicitudCompleta", true, args);
         return response;
     },
-    modificarEstadoSolicitud: async (EstadoDenuncia: DTOModificarEstadoDenuncia) => {
-        await request(HttpRequestType.PUT, "estadoSolicitudEspacioPublico/modificar", true, null, JSON.stringify(EstadoDenuncia));
+    modificarEstadoSolicitud: async (estadoSolicitud: DTOModificarEstadoSolicitud) => {
+        await request(HttpRequestType.PUT, "estadoSolicitudEspacioPublico/modificar", true, null, JSON.stringify(estadoSolicitud));
     },
     bajaEstadoSolicitud: async (id: number) => {
         let args = new Map<string, string>();
