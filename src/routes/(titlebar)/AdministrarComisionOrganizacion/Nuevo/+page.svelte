@@ -8,8 +8,9 @@
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
 	import Popup from "$lib/components/Popup.svelte";
-	import type DTOAltaModoEvento from "$lib/dtos/modoevento/DTOAltaModoEvento";
-	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
+	import type DTOAltaComision from "$lib/dtos/comision/DTOAltaComision";
+	import { ComisionService } from "$lib/services/ComisionService";
+	import DatePicker from "$lib/components/DatePicker.svelte";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -17,10 +18,14 @@
     $: exitoVisible = false;
 
 	$: data = {
-		nombre: "",
-		descripcion: "",
-	} as DTOAltaModoEvento;
+		montoLimite: 0,
+		porcentaje: 0,
+		fechaDesde: null,
+		fechaHasta: null,
+	} as DTOAltaComision;
 
+    let fechaDesde: Date | null = null;
+	let fechaHasta: Date | null = null;
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -29,7 +34,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionModosEvento")) {
+		if (!userPermisos.includes("AdministracionComisionOrganizacion")) {
 			errorPermiso = true;
 			return;
 		}
@@ -37,18 +42,11 @@
 		
 	});
 
-	function validateNombre(nombre: string) {
-		nombre = nombre.trim();
-		if (nombre.length === 0) {
+	function validateMontoLimite(monto: number) {
+		if (monto <= 0) {
 			return {
 				valid: false,
-				reason: "Es obligatorio ingresar el nombre"
-			};
-		}
-		if (nombre.length > 50) {
-			return {
-				valid: false,
-				reason: "Máximo 50 caracteres"
+				reason: "El monto límite debe ser mayor a 0"
 			};
 		}
 		return {
@@ -59,14 +57,14 @@
 
 	
 	$: completado = (
-		validateNombre(data.nombre).valid
+		validateMontoLimite(data.montoLimite).valid
 	);
 
 	async function guardar() {
 		
 		
 		try {
-			await ModosDeEventoService.altaModoEvento(data);
+			await ComisionService.altaComisionOrganizacion(data);
             exitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -77,7 +75,7 @@
 	}
 
 	function cancelar() {
-		goto("/AdministrarModosEvento");
+		goto("/AdministrarComisionOrganizacion");
 	}
 
 	let minDate = new Date();
@@ -89,25 +87,29 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Alta de Modo Evento</h1>
+		<h1 class="text-m text-center md:text-start">Alta de Comisión por Organización</h1>
 		
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
             <TextField 
-                label="Nombre" 
-                bind:value={data.nombre} 
+                label="Monto Límite" 
+                bind:value={data.montoLimite} 
                 classes="w-full" 
-                validate={validateNombre}
-                forceValidate
                 max={50}
             />
 
             <TextField 
-                label="Descripción"
-                multiline 
-                bind:value={data.descripcion} 
+                label="Porcentaje" 
+                bind:value={data.porcentaje} 
                 classes="w-full"
                 max={100}
             />
+
+			 <div class="position:relative;z-index:100;">
+				<DatePicker minDate={minDate} bind:value={fechaDesde} label="Fecha desde"/>
+			</div>
+			<div class="position:relative;z-index:100;">
+				<DatePicker minDate={minDate} bind:value={fechaHasta} label="Fecha hasta"/>
+			</div>
         </div>
     </div>
         
@@ -123,14 +125,14 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para dar de alta modos de evento.
+	No tiene permiso para dar de alta comisiones por organización.
 </PopupError>
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        ModoEvento añadida exitosamente. 
+        Comisión por organización añadida exitosamente. 
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarModoEventos")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarComisionOrganizacion")}>Aceptar</Button>
     </div>
 </Popup>

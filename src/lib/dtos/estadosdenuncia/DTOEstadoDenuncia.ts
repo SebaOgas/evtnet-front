@@ -1,4 +1,4 @@
-export default interface DTODEstadoDenuncia {
+export default interface DTOEstadoDenuncia {
     id: number;
     nombre: string;
     descripcion: string;

@@ -1,0 +1,21 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id:int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0,
+    "montoLimite": 1000,
+    "porcentaje": 10,
+    "fechaDesde": 1753225458732,
+    "fechaHasta": 1755225458732
+}
