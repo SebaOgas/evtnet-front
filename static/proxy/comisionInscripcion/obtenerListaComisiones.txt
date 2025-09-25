@@ -1,0 +1,42 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+        "id": 0,
+        "montoLimite": 1000,
+        "porcentaje": 10,
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1755225458732
+    },
+    {
+        "id": 1,
+        "montoLimite": 1000,
+        "porcentaje": 10,
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1755225458732
+    },
+    {
+        "id": 2,
+        "montoLimite": 1000,
+        "porcentaje": 10,
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1755225458732
+    },
+    {
+        "id": 3,
+        "montoLimite": 1000,
+        "porcentaje": 10,
+        "fechaDesde": 1753225458732,
+        "fechaHasta": 1755225458732
+    }
+]

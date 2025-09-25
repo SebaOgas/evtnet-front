@@ -48,6 +48,8 @@ RESPONSE BODY
         "AdministracionModosEvento",
         "AdministracionEstadosDenuncia",
         "AdministracionEstadosSEP",
+        "AdministracionComisionInscripcion",
+        "AdministracionComisionOrganizacion",
         "VisionReportes",
         "VisionReportesGenerales",
         "RealizacionBackup",
