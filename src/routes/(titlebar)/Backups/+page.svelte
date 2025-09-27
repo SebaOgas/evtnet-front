@@ -2,7 +2,8 @@
 	import { afterNavigate, goto } from "$app/navigation";
 	import { base } from "$app/paths";
 	import Button from "$lib/components/Button.svelte";
-	import { formatDate } from "$lib/components/DatePicker.svelte";
+	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
 	import type DTOBackup from "$lib/dtos/backups/DTOBackup";
@@ -27,7 +28,7 @@
 
     let backups : DTOBackup[] = []
 
-    onMount(async () => {
+    onMount(() => {
         if (get(token) === "") {
             goto("/");
         }
@@ -37,7 +38,11 @@
             return;
         }
 
-        try {
+        load();
+    })
+
+	async function load() {
+		try {
             backups = await BackupsService.obtenerBackups();
         } catch (e) {
             if (e instanceof HttpError) {
@@ -45,7 +50,7 @@
 				errorGenericoVisible = true;
 			} 
         }
-    })
+	}
 
 
 	function formatNombre(b: DTOBackup) {
@@ -65,14 +70,34 @@
 		}
 		return ret;
 	}
+
+	// Copia Manuale
+	$: popupManualVisible = false;
+	$: fechaCopiaManual = null as Date | null;
+	$: popupManualExitoVisible = false;
+
+	async function programarCopiaManual() {
+		if (fechaCopiaManual === null) return;
+		try {
+            await BackupsService.programarCopiaManual(fechaCopiaManual);
+			fechaCopiaManual = null;
+			popupManualVisible = false;
+			popupManualExitoVisible = true;
+        } catch (e) {
+            if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			} 
+        }
+	}
 </script>
 
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m flex flex-row flex-wrap gap-2 items-baseline">
-            <span>Copias de seguridad</span>
-            <Button>Nueva Copia Manual</Button>
+		<h1 class="flex flex-row flex-wrap gap-2">
+            <span class="text-m">Copias de seguridad</span>
+            <Button action={() => popupManualVisible = true}>Nueva Copia Manual</Button>
             <Button>Programar Copia Automática</Button>
 		</h1>
 
@@ -94,6 +119,24 @@
 
 	</div>
 </div>
+
+<Popup bind:visible={popupManualVisible} title="Realizar Copia de Seguridad Manual" fitW fitH>
+	<DatePicker time label="Fecha y hora:" minDate={new Date()} bind:value={fechaCopiaManual} classes="[&_.calendars-container]:!static"/>
+	<div>Se realizará una copia de seguridad completa.</div>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => popupManualVisible = false}>Atrás</Button>
+		<Button action={programarCopiaManual} disabled={fechaCopiaManual===null}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupManualExitoVisible} title="Éxito" fitW fitH>
+	<div>Copia programada exitosamente</div>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {load(); popupManualExitoVisible = false;}}>Aceptar</Button>
+	</div>
+</Popup>
+
+
 
 <PopupError bind:visible={errorPermiso} redir={previousPage}>
 	No tiene permiso para realizar copias de seguridad.
