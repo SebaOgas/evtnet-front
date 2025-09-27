@@ -1,0 +1,264 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+[
+    {
+      "id": 1,
+      "ruta": "backup_1_auto_comp_2025-07-17_14:24:18",
+      "tamano": 125.5,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": null
+    },
+    {
+      "id": 2,
+      "ruta": "backup_2_auto_inc_1_2025-07-17_14:24:18",
+      "tamano": 23.8,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 1
+    },
+    {
+      "id": 3,
+      "ruta": "backup_3_auto_inc_2_2025-07-17_14:24:18",
+      "tamano": 18.4,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 2
+    },
+    {
+      "id": 4,
+      "ruta": "backup_4_auto_inc_3_2025-07-17_14:24:18",
+      "tamano": 31.2,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 3
+    },
+    {
+      "id": 5,
+      "ruta": "backup_5_manual_2025-07-17_14:24:18",
+      "tamano": 45.2,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Manual",
+      "pendiente": false,
+      "dependeDe": null
+    },
+    {
+      "id": 6,
+      "ruta": "backup_6_auto_inc_4_2025-07-17_14:24:18",
+      "tamano": 27.6,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 4
+    },
+    {
+      "id": 7,
+      "ruta": "backup_7_auto_comp_2025-07-17_14:24:18",
+      "tamano": 142.8,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": null
+    },
+    {
+      "id": 8,
+      "ruta": "backup_8_auto_inc_7_2025-07-17_14:24:18",
+      "tamano": 19.3,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 7
+    },
+    {
+      "id": 9,
+      "ruta": "backup_9_manual_2025-07-17_14:24:18",
+      "tamano": 67.4,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Manual",
+      "pendiente": false,
+      "dependeDe": null
+    },
+    {
+      "id": 10,
+      "ruta": "backup_10_auto_inc_8_2025-07-17_14:24:18",
+      "tamano": 22.1,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 8
+    },
+    {
+      "id": 11,
+      "ruta": "backup_11_auto_inc_10_2025-07-17_14:24:18",
+      "tamano": 35.7,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 10
+    },
+    {
+      "id": 12,
+      "ruta": "backup_12_manual_2025-07-17_14:24:18",
+      "tamano": 12.5,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Manual",
+      "pendiente": false,
+      "dependeDe": 7
+    },
+    {
+      "id": 13,
+      "ruta": "backup_13_auto_inc_11_2025-07-17_14:24:18",
+      "tamano": 28.9,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 11
+    },
+    {
+      "id": 14,
+      "ruta": "backup_14_auto_inc_13_2025-07-17_14:24:18",
+      "tamano": 41.2,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 13
+    },
+    {
+      "id": 15,
+      "ruta": "backup_15_auto_comp_2025-07-17_14:24:18",
+      "tamano": 158.3,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": null
+    },
+    {
+      "id": 16,
+      "ruta": "backup_16_auto_inc_15_2025-07-17_14:24:18",
+      "tamano": 16.7,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 15
+    },
+    {
+      "id": 17,
+      "ruta": "backup_17_manual_pendiente_2025-07-17_14:24:18",
+      "tamano": null,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Manual",
+      "pendiente": true,
+      "dependeDe": null
+    },
+    {
+      "id": 18,
+      "ruta": "backup_18_auto_inc_16_2025-07-17_14:24:18",
+      "tamano": 33.4,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 16
+    },
+    {
+      "id": 19,
+      "ruta": "backup_19_manual_2025-07-17_14:24:18",
+      "tamano": 89.6,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Manual",
+      "pendiente": false,
+      "dependeDe": null
+    },
+    {
+      "id": 20,
+      "ruta": "backup_20_auto_inc_18_2025-07-17_14:24:18",
+      "tamano": 24.8,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 18
+    },
+    {
+      "id": 21,
+      "ruta": "backup_21_manual_pendiente_2025-07-17_14:24:18",
+      "tamano": null,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Manual",
+      "pendiente": true,
+      "dependeDe": 15
+    },
+    {
+      "id": 22,
+      "ruta": "backup_22_auto_inc_20_2025-07-17_14:24:18",
+      "tamano": 37.1,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 20
+    },
+    {
+      "id": 23,
+      "ruta": "backup_23_auto_inc_22_2025-07-17_14:24:18",
+      "tamano": 29.5,
+      "fechaHora": 1753225458732,
+      "tipo": "Incremental",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": 22
+    },
+    {
+      "id": 24,
+      "ruta": "backup_24_manual_2025-07-17_14:24:18",
+      "tamano": 73.2,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Manual",
+      "pendiente": false,
+      "dependeDe": null
+    },
+    {
+      "id": 25,
+      "ruta": "backup_25_auto_comp_2025-07-17_14:24:18",
+      "tamano": 165.9,
+      "fechaHora": 1753225458732,
+      "tipo": "Completa",
+      "programacion": "Automática",
+      "pendiente": null,
+      "dependeDe": null
+    }
+]

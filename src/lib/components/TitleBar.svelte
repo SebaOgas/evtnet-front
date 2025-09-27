@@ -105,7 +105,7 @@
                     <li><a href="/AdministrarDenunciasUsuarios">Denuncias a usuarios</a></li>
                 {/if}
                 {#if permisosList.includes("RealizacionBackup")}
-                    <li><a href="/">Copias de seguridad</a></li>
+                    <li><a href="/Backups">Copias de seguridad</a></li>
                 {/if}
             </menu>
         </li>
