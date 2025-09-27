@@ -12,5 +12,9 @@ export const BackupsService={
         args.set("fechaHora", `${(new Date(fechaHora)).getTime()}`);
 
         await request(HttpRequestType.POST, "backups/programarCopiaManual", true, args);
-    }
+    },
+
+    eliminarCopia: async (copia: DTOBackup) => {
+        await request(HttpRequestType.POST, "backups/eliminarCopia", true, null, JSON.stringify(copia));
+    },
 }

@@ -1,0 +1,20 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "id": 1,
+    "ruta": "backup_1_auto_comp_2025-07-17_14:24:18",
+    "tamano": 125.5,
+    "fechaHora": 1753225458732,
+    "tipo": "Completa",
+    "programacion": "Automática",
+    "pendiente": null,
+    "dependeDe": null
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

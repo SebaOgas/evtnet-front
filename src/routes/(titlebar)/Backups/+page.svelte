@@ -71,7 +71,7 @@
 		return ret;
 	}
 
-	// Copia Manuale
+	// Copia Manual
 	$: popupManualVisible = false;
 	$: fechaCopiaManual = null as Date | null;
 	$: popupManualExitoVisible = false;
@@ -83,6 +83,27 @@
 			fechaCopiaManual = null;
 			popupManualVisible = false;
 			popupManualExitoVisible = true;
+        } catch (e) {
+            if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			} 
+        }
+	}
+
+
+	// Eliminar copia
+	$: popupEliminarVisible = false;
+	$: copiaAEliminar = null as DTOBackup | null;
+	$: popupEliminarExitoVisible = false;
+
+	async function eliminarCopia() {
+		if (copiaAEliminar === null) return;
+		try {
+            await BackupsService.eliminarCopia(copiaAEliminar);
+			copiaAEliminar = null;
+			popupEliminarVisible = false;
+			popupEliminarExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -109,8 +130,8 @@
 					<td class="!text-wrap">{formatDate(b.fechaHora, true)}</td>
 					<td class="!text-wrap">{formatNombre(b)}</td>
 					<td>
-						<div class="w-full flex justify-center items-center">
-							<Button icon="/icons/trash.svg"></Button>
+						<div class="md:w-full flex justify-center items-center">
+							<Button icon="/icons/trash.svg" action={() => {copiaAEliminar = b; popupEliminarVisible = true;}}></Button>
 						</div>
 					</td>
 				</tr>
@@ -133,6 +154,42 @@
 	<div>Copia programada exitosamente</div>
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {load(); popupManualExitoVisible = false;}}>Aceptar</Button>
+	</div>
+</Popup>
+
+
+<Popup bind:visible={popupEliminarVisible} title="Eliminar Copia de Seguridad" fitW fitH>
+	<div class="flex flex-col gap-2 md:max-w-[400px] mb-4">
+		{#if copiaAEliminar !== null}
+			<div>Fecha y hora: {formatDate(copiaAEliminar.fechaHora, true)}</div>
+
+			<div>¿Está seguro de que desea eliminar esta copia de seguridad? Esta acción no puede ser deshecha.</div>
+
+			{#if copiaAEliminar.programacion === "Manual" && copiaAEliminar.pendiente}
+				<div>Esta copia aún no ha sido realizada</div>
+			{/if}
+
+			{#if copiaAEliminar.tipo === "Completa" && copiaAEliminar.programacion === "Automática" && backups.map(b => b.dependeDe).includes(copiaAEliminar.id)}
+				<div>Esta copia completa tiene copias incrementales dependientes. Si la elimina, también eliminará todas las copias incrementales que dependen de ella.</div>
+			{/if}
+
+			{#if copiaAEliminar.tipo === "Incremental" && copiaAEliminar.programacion === "Automática"}
+				<div>Esta copia es incremental. Si la elimina, también eliminará la copia completa y las incrementales vinculadas.</div>
+			{/if}
+		{/if}
+	</div>
+	
+	
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => popupEliminarVisible = false}>Atrás</Button>
+		<Button action={eliminarCopia} >Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupEliminarExitoVisible} title="Éxito" fitW fitH>
+	<div>Copia eliminada exitosamente</div>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {load(); popupEliminarExitoVisible = false;}}>Aceptar</Button>
 	</div>
 </Popup>
 
