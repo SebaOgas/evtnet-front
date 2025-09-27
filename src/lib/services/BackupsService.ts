@@ -1,4 +1,5 @@
 import type DTOBackup from "$lib/dtos/backups/DTOBackup";
+import type DTOProgramacionBackupsAutomaticos from "$lib/dtos/backups/DTOProgramacionBackupsAutomaticos";
 import { HttpRequestType, request } from "$lib/request/request";
 
 export const BackupsService={
@@ -15,6 +16,15 @@ export const BackupsService={
     },
 
     eliminarCopia: async (copia: DTOBackup) => {
-        await request(HttpRequestType.POST, "backups/eliminarCopia", true, null, JSON.stringify(copia));
+        await request(HttpRequestType.DELETE, "backups/eliminarCopia", true, null, JSON.stringify(copia));
+    },
+
+    obtenerProgramacion: async () => {
+        let response : DTOProgramacionBackupsAutomaticos = await request(HttpRequestType.GET, "backups/obtenerProgramacion", false);
+        return response;
+    },
+
+    programarCopiasAutomaticas: async (data: DTOProgramacionBackupsAutomaticos) => {
+        await request(HttpRequestType.PUT, "backups/programarCopiasAutomaticas", true, null, JSON.stringify(data));
     },
 }

@@ -6,7 +6,10 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
+	import TextField from "$lib/components/TextField.svelte";
+	import Warning from "$lib/components/Warning.svelte";
 	import type DTOBackup from "$lib/dtos/backups/DTOBackup";
+	import type DTOProgramacionBackupsAutomaticos from "$lib/dtos/backups/DTOProgramacionBackupsAutomaticos";
 	import type DTORegistroMeta from "$lib/dtos/registros/DTORegistroMeta";
 	import { HttpError } from "$lib/request/request";
 	import { BackupsService } from "$lib/services/BackupsService";
@@ -44,6 +47,7 @@
 	async function load() {
 		try {
             backups = await BackupsService.obtenerBackups();
+			programacion = await BackupsService.obtenerProgramacion();
         } catch (e) {
             if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -111,6 +115,72 @@
 			} 
         }
 	}
+
+
+	// Programar copias automáticas
+	$: popupAutomaticaVisible = false;
+	$: programacion = null as null | DTOProgramacionBackupsAutomaticos;
+	$: popupAutomaticaExitoVisible = false;
+
+	async function programarCopiaAutomatica() {
+		if (programacion === null) return;
+		try {
+            await BackupsService.programarCopiasAutomaticas(programacion);
+			popupAutomaticaVisible = false;
+			popupAutomaticaExitoVisible = true;
+        } catch (e) {
+            if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			} 
+        }
+	}
+
+	$: (() => {
+		if (programacion === null) return;
+
+		if (programacion.frecuencia.meses < 0) programacion.frecuencia.meses = 0;
+
+		if (programacion.frecuencia.dias < 0) programacion.frecuencia.dias = 0;
+
+		if (programacion.frecuencia.horas < 0) programacion.frecuencia.horas = 0;
+
+		if (programacion.copiasIncrementalesPorCompleta < 0) programacion.copiasIncrementalesPorCompleta = 0;
+
+		if (programacion.copiasAnterioresAConservar < 0) programacion.copiasAnterioresAConservar = 0;
+	})()
+
+	$: warningFrecuencia = (() => {
+		if (programacion === null) return "";
+		
+		if (programacion.frecuencia.dias > 30) return "No puede indicar más de 30 días ni más de 23 horas";
+		
+		if (programacion.frecuencia.horas > 23) return "No puede indicar más de 30 días ni más de 23 horas";
+
+		if (
+			programacion.frecuencia.meses === 0
+			&& programacion.frecuencia.dias === 0
+			&& programacion.frecuencia.horas === 0
+		) {
+			return "Es obligatorio establecer al menos uno de los campos anteriores: meses, días u horas";
+		}
+
+		return "";
+	})()
+
+	function validateFechaHoraInicio(fecha: Date | null) {
+        if (fecha === null) {
+            return {
+                valid: false,
+                reason: "Es obligatorio ingresar la fecha de inicio"
+            };
+        }
+
+		return {
+			valid: true,
+			reason: undefined
+		}
+	}
 </script>
 
 
@@ -119,7 +189,7 @@
 		<h1 class="flex flex-row flex-wrap gap-2">
             <span class="text-m">Copias de seguridad</span>
             <Button action={() => popupManualVisible = true}>Nueva Copia Manual</Button>
-            <Button>Programar Copia Automática</Button>
+            <Button action={() => popupAutomaticaVisible = true}>Programar Copia Automática</Button>
 		</h1>
 
 		<Table cols={["Ruta", "Tamaño", "Fecha y Hora", "Nombre", "Acciones"]}>
@@ -193,6 +263,85 @@
 	</div>
 </Popup>
 
+
+
+<Popup bind:visible={popupAutomaticaVisible} title="Realizar Copia de Seguridad Manual" fitW fitH>
+	<div class="flex flex-col gap-2 md:max-w-[600px] mb-4">
+		{#if programacion !== null}
+		<div class="flex flex-wrap gap-2 justify-start items-center w-full">
+			<span>Realizar cada:</span>
+			<span class="flex flex-1 justify-start items-center gap-2">
+				<TextField 
+					label={null} 
+					bind:value={programacion.frecuencia.meses} 
+					classes="flex-1 min-w-16 [&>input]:w-full"
+					integer
+				/>
+				<span>meses</span>
+			</span>
+			
+			<span class="flex flex-1 justify-start items-center gap-2">
+				<TextField 
+					label={null} 
+					bind:value={programacion.frecuencia.dias} 
+					classes="flex-1 min-w-16 [&>input]:w-full"
+					integer
+				/>
+				<span>días</span>
+			</span>
+			
+			<span class="flex flex-1 justify-start items-center gap-2">
+				<TextField 
+					label={null} 
+					bind:value={programacion.frecuencia.horas} 
+					classes="flex-1 min-w-16 [&>input]:w-full"
+					integer
+				/>
+				<span>horas</span>
+			</span>
+		</div>
+		<Warning text={warningFrecuencia} visible={warningFrecuencia !== ""}/>
+
+		<DatePicker time label="Empezando en:" bind:value={programacion.fechaHoraInicio} classes="[&_.calendars-container]:!static" validate={validateFechaHoraInicio}/>
+
+		<div class="flex flex-wrap gap-2 justify-start items-center w-full">
+			<span>Realizar por cada copia completa</span>
+			<span class="flex flex-1 justify-start items-center gap-2">
+				<TextField 
+					label={null} 
+					bind:value={programacion.copiasIncrementalesPorCompleta} 
+					classes="flex-1 min-w-16 [&>input]:w-full"
+					integer
+				/>
+				<span>incrementales</span>
+			</span>
+		</div>
+
+		<div class="">
+			<span>Conservar</span>
+			<TextField 
+				label={null} 
+				bind:value={programacion.copiasAnterioresAConservar} 
+				classes="flex-1 min-w-16 inline-block"
+					integer
+			/>
+			<span>copias completas (e incrementales dependientes) anteriores</span>
+		</div>
+		{/if}
+	</div>
+	
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => popupAutomaticaVisible = false}>Atrás</Button>
+		<Button action={programarCopiaAutomatica}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupAutomaticaExitoVisible} title="Éxito" fitW fitH>
+	<div>Copias programadas exitosamente</div>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupAutomaticaExitoVisible = false;}}>Aceptar</Button>
+	</div>
+</Popup>
 
 
 <PopupError bind:visible={errorPermiso} redir={previousPage}>
