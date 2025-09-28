@@ -5,16 +5,16 @@ import { HttpRequestType, request } from "$lib/request/request";
 
 export const ParametroService={
     obtenerListaParametros: async () => {
-            let response : DTOParametro[]= await request(HttpRequestType.GET, "parametro/obtenerListaParametros", true, null);
-            return response;
+            let response = await request(HttpRequestType.GET, "parametro/obtenerListaParametros", true, null);
+            return response.content as DTOParametro[];
     },
     altaParametro: async (parametro: DTOAltaParametro) => {
-        await request(HttpRequestType.PUT, "parametro/alta", true, null, JSON.stringify(parametro));
+        await request(HttpRequestType.POST, "parametro/alta", true, null, JSON.stringify(parametro));
     },
     obtenerParametroCompleto: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
-        let response : DTOParametro = await request(HttpRequestType.GET, "parametro/obtenerParametroCompleta", true, args);
+        let response : DTOParametro = await request(HttpRequestType.GET, "parametro/obtenerParametroCompleto", true, args);
         return response;
     },
     modificarParametro: async (parametro: DTOModificarParametro) => {

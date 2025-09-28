@@ -9,10 +9,11 @@
 	import { onMount } from "svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import { page } from "$app/state";
-	import type DTOModificarParametro from "$lib/dtos/parametros/DTOModificarParametro.ts";
-	import type DTOParametro from "$lib/dtos/parametros/DTOParametro";
-	import { ParametroService } from "$lib/services/ParametroService";
+	import type DTOModificarMotivoCalificacion from "$lib/dtos/motivoCalificacion/DTOModificarMotivoCalificacion.ts";
+	import type DTOMotivoCalificacion from "$lib/dtos/motivoCalificacion/DTOMotivoCalificacion";
+	import { CalificacionService } from "$lib/services/CalificacionService";
 	import DatePicker from "$lib/components/DatePicker.svelte";
+	import ComboBox from "$lib/components/ComboBox.svelte";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -24,17 +25,20 @@
 	$: data = {
 		id: id,
 		nombre: "",
-		valor: 0,
-	} as DTOModificarParametro;
+		idTipoCalificacion: 0,
 
-	let original : DTOParametro = {
+	} as DTOModificarMotivoCalificacion;
+
+	let original : DTOMotivoCalificacion = {
 		id: id,
 		nombre: "",
-		valor: 0,
+		idTipoCalificacion: 0,
+		nombreTipoCalificacion: ""
 	};
 
-	let fechaDesde: Date | null = null;
-	let fechaHasta: Date | null = null;
+	let tiposCalificacion : Map<string, string> = new Map();
+	let tiposCalificacionArray: {id: number, nombre: string}[] = [];
+	let tipoCalificacionSeleccionado:string | null = null;
 
 	let listo = false;
 
@@ -51,11 +55,16 @@
 		}
 
 		try{
-            original = await ParametroService.obtenerParametroCompleto(id);
+			tiposCalificacionArray = await CalificacionService.obtenerTiposCalificacion();
+			tiposCalificacionArray.forEach(tc => {
+				tiposCalificacion.set(tc.id.toString(), tc.nombre);
+			});
+            original = await CalificacionService.obtenerMotivoCalificacionCompleto(id);
 		
             data.id = original.id;
             data.nombre = original.nombre;
-            data.valor = original.valor;
+            data.idTipoCalificacion = original.idTipoCalificacion;
+			tipoCalificacionSeleccionado = original.idTipoCalificacion.toString();
         }catch(e){
             if(e instanceof HttpError){
                 error = e.message;
@@ -93,7 +102,7 @@
 	async function guardar() {
 		
 		try {
-			await ParametroService.modificarParametro(data);
+			await CalificacionService.modificarMotivoCalificacion(data);
             exitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -115,11 +124,11 @@
 </script>
 
 <div id="content">
-	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Modificar Parámetro</h1>
+	<div class="p-2 text-xs flex flex-col gap-2  grow md:grow-0">
+		<h1 class="text-m text-center md:text-start">Modificar Motivo de Calificación</h1>
 
 		{#if listo}
-        <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
+        <div class="flex flex-col gap-2  grow w-full md:max-w-[1000px]">
             <TextField 
                 label="Monto Límite" 
                 bind:value={data.nombre} 
@@ -129,18 +138,8 @@
                 max={50}
             />
 
-            <TextField 
-                label="Porcentaje"
-                bind:value={data.valor} 
-                classes="w-full"
-                max={100}
-            /> 
-			<div class="position:relative;z-index:100;">
-				<DatePicker minDate={minDate} bind:value={fechaDesde} label="Fecha desde"/>
-			</div>
-			<div class="position:relative;z-index:100;">
-				<DatePicker minDate={minDate} bind:value={fechaHasta} label="Fecha hasta"/>
-			</div>
+            <ComboBox options={tiposCalificacion} bind:selected={tipoCalificacionSeleccionado} placeholder="Seleccionar tipo de calificación" maxHeight={6}/>
+			
         </div>
 		{/if}
     </div>
@@ -158,14 +157,14 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para modificar Parámetros.
+	No tiene permiso para modificar motivos de calificación.
 </PopupError>
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        Parámetro modificado exitosamente.
+        Motivo de calificación modificado exitosamente.
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarParametrizacion")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarMotivoCalificacion")}>Aceptar</Button>
     </div>
 </Popup>

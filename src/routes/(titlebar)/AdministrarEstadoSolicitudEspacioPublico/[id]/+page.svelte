@@ -159,6 +159,6 @@
         EstadoSolicitud modificada exitosamente. 
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarEstadoSolicituds")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarEstadoSolicitudEspacioPublico")}>Aceptar</Button>
     </div>
 </Popup>

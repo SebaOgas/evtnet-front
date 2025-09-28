@@ -88,7 +88,7 @@
         </h1>
 
         {#if listo}
-            <Table cols={["Monto Límite", "Porcentaje", "Alta", "Baja", "Acciones"]}>
+            <Table cols={["Monto Límite", "Porcentaje", "Desde", "Hasta", "Acciones"]}>
                 {#each resultados as d}
                     <tr>
                         <td>{d.montoLimite}</td>

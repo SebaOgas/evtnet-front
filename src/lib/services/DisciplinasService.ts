@@ -24,11 +24,11 @@ export const DisciplinasService = {
         return response;
   },
   buscarDisciplinas: async (filtros: DTOBusquedaDisciplina) => {
-        let response : DTODisciplina[]= await request(HttpRequestType.PUT, "disciplinas/buscarDisciplinas", true, null, JSON.stringify(filtros));
-        return response;
+        let response = await request(HttpRequestType.PUT, "disciplinas/buscarDisciplinas", true, null, JSON.stringify(filtros));
+        return response.content as DTODisciplina[];
   },
   altaDisciplina: async (disciplina: DTOAltaDisciplina) => {
-        await request(HttpRequestType.PUT, "disciplinas/alta", true, null, JSON.stringify(disciplina));
+        await request(HttpRequestType.POST, "disciplinas/alta", true, null, JSON.stringify(disciplina));
   },
   obtenerDisciplinaCompleta: async (id: number) => {
         let args = new Map<string, string>();

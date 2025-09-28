@@ -104,7 +104,7 @@
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/view.svg" action={() => {modoEventoDetalle = d; popupDetalle = true}}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarModosEvento/${d.id}`)}></Button>
-                                <Button icon="/icons/trash.svg" action={() => {modoEventoBaja = d.id; popupBaja = true}}></Button>
+                                {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {modoEventoBaja = d.id; popupBaja = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>

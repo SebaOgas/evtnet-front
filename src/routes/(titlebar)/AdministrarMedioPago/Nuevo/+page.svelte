@@ -88,12 +88,12 @@
                     return
                 }
 
-                if (dims.h < 10) {
+                /* if (dims.h < 10) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser más grande (mayor a 10px de ancho y alto)"
 					completado=false;
                     return
-                }
+                } */
                 errorTamanoImagenIconoVisible = false;
                 errorTamanoImagenIcono = "";
         
@@ -175,7 +175,7 @@
 			<FilePicker
 				label=""
 				bind:file={icono}
-				accept={[".jpg", ".svg", ".png"]}
+				accept={[".svg", ".png"]}
 				validate={validateImagenIcono}
 				classes="flex"
 				buttonText="Seleccionar imagen"

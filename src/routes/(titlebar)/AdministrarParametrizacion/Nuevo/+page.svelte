@@ -18,7 +18,7 @@
 
 	$: data = {
 		nombre: "",
-		valor: 0
+		valor: ""
 	} as DTOAltaParametro;
 
 	onMount(async () => {

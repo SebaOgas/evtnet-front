@@ -5,16 +5,16 @@ import type DTOEstadoSolicitud from "$lib/dtos/estadossolicitudEP/DTOEstadoSolic
 
 export const EstadoSolicitudEspacioPublicoService={
     obtenerListaEstadosSolicitud: async () => {
-            let response : DTOEstadoSolicitud[]= await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerListaEstadoSolicitud", true, null);
-            return response;
+            let response = await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerListaEstadoSolicitud", true, null);
+            return response.content as DTOEstadoSolicitud[];
     },
     altaEstadoSolicitud: async (estadoSolicitud: DTOAltaEstadoSolicitud) => {
-        await request(HttpRequestType.PUT, "estadoSolicitudEspacioPublico/alta", true, null, JSON.stringify(estadoSolicitud));
+        await request(HttpRequestType.POST, "estadoSolicitudEspacioPublico/alta", true, null, JSON.stringify(estadoSolicitud));
     },
     obtenerEstadoSolicitudCompleta: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
-        let response : DTOEstadoSolicitud = await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerEstadoSolicitudCompleta", true, args);
+        let response : DTOEstadoSolicitud = await request(HttpRequestType.GET, "estadoSolicitudEspacioPublico/obtenerEstadoSolicitudCompleto", true, args);
         return response;
     },
     modificarEstadoSolicitud: async (estadoSolicitud: DTOModificarEstadoSolicitud) => {

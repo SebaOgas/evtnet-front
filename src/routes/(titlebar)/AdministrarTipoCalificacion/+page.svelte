@@ -118,7 +118,7 @@
 
 
 <Popup bind:visible={popupBaja} fitH fitW>
-	¿Está seguro de que desea dar de baja a este medio de pago?
+	¿Está seguro de que desea dar de baja a este tipo de calificación?
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {popupBaja = false}}>Cancelar</Button>
 		<Button action={baja}>Confirmar</Button>
@@ -126,7 +126,7 @@
 </Popup>
 
 <Popup bind:visible={exitoBaja} fitH fitW>
-	Medio de pago dado de baja exitosamente
+	Tipo de calificación dado de baja exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
 	</div>
@@ -137,5 +137,5 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-    No tiene permiso para administrar medios de pago.
+    No tiene permiso para administrar tipos de calificación.
 </PopupError>

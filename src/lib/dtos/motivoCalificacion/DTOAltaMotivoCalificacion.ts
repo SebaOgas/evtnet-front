@@ -1,4 +1,4 @@
 export default interface DTOAltaMotivoCalificacion {
     nombre: string;
-    idTipoCalificacion: number;
+    idTipoCalificacion: number|string;
 }

@@ -125,7 +125,7 @@
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/view.svg" action={() => {disciplinaDetalle = d; popupDetalle = true}}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarDisciplinas/${d.id}`)}></Button>
-                                <Button icon="/icons/trash.svg" action={() => {disciplinaBaja = d.id; popupBaja = true}}></Button>
+                                {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {disciplinaBaja = d.id; popupBaja = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>
