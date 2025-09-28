@@ -9,10 +9,9 @@
 	import { onMount } from "svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import { page } from "$app/state";
-	import type DTOModificarMotivoCalificacion from "$lib/dtos/motivoCalificacion/DTOModificarMotivoCalificacion.ts";
-	import type DTOMotivoCalificacion from "$lib/dtos/motivoCalificacion/DTOMotivoCalificacion";
-	import { CalificacionService } from "$lib/services/CalificacionService";
-	import ComboBox from "$lib/components/ComboBox.svelte";
+	import type DTOModificarParametro from "$lib/dtos/parametros/DTOModificarParametro.ts";
+	import type DTOParametro from "$lib/dtos/parametros/DTOParametro";
+	import { ParametroService } from "$lib/services/ParametroService";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -24,21 +23,16 @@
 	$: data = {
 		id: id,
 		nombre: "",
-		idTipoCalificacion: 0,
-	} as DTOModificarMotivoCalificacion;
+		valor:"",
+	} as DTOModificarParametro;
 
-	let original : DTOMotivoCalificacion = {
+	let original : DTOParametro = {
 		id: id,
 		nombre: "",
-		idTipoCalificacion: 0,
-		nombreTipoCalificacion: ""
+		valor: ""
 	};
 
 	let listo = false;
-
-	let tiposCalificacion : Map<string, string> = new Map();
-	let tiposCalificacionArray: {id: number, nombre: string}[] = [];
-	let tipoCalificacionSeleccionado: {id: number, nombre: string} | null = null;
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -47,20 +41,17 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionMotivoCalificacion")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}
 
 		try{
-            original = await CalificacionService.obtenerMotivoCalificacionCompleto(id);
-			tiposCalificacionArray = await CalificacionService.obtenerTiposCalificacion();
-			tiposCalificacionArray.forEach(tc => {
-				tiposCalificacion.set(tc.id.toString(), tc.nombre);
-			});
+            original = await ParametroService.obtenerParametroCompleto(id);
+			
             data.id = original.id;
             data.nombre = original.nombre;
-            data.idTipoCalificacion = original.idTipoCalificacion;
+            data.valor = original.valor;
         }catch(e){
             if(e instanceof HttpError){
                 error = e.message;
@@ -98,7 +89,7 @@
 	async function guardar() {
 		
 		try {
-			await CalificacionService.modificarMotivoCalificacion(data);
+			await ParametroService.modificarParametro(data);
             exitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -115,7 +106,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Modificar Motivo de Calificación</h1>
+		<h1 class="text-m text-center md:text-start">Modificar Parámetro</h1>
 
 		{#if listo}
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
@@ -128,8 +119,13 @@
                 max={50}
             />
 
-            <ComboBox options={tiposCalificacion} bind:selected={tipoCalificacionSeleccionado} placeholder="Seleccionar tipo de calificación" maxHeight={6}/>
-        </div>
+            <TextField 
+                label="Valor" 
+                bind:value={data.valor} 
+                classes="w-full"
+                max={100}
+            />
+		</div>
 		{/if}
     </div>
         

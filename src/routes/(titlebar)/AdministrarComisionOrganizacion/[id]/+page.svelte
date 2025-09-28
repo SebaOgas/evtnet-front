@@ -92,7 +92,8 @@
 	);
 
 	async function guardar() {
-		
+		data.fechaDesde = fechaDesde;
+		data.fechaHasta = fechaHasta;
 		try {
 			await ComisionService.modificarComisionOrganizacion(data);
             exitoVisible = true;
@@ -116,11 +117,11 @@
 </script>
 
 <div id="content">
-	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow md:grow-0">
+	<div class="p-2 text-xs flex flex-col gap-2  grow md:grow-0">
 		<h1 class="text-m text-center md:text-start">Modificar Comisión por Organización</h1>
 
 		{#if listo}
-        <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
+        <div class="p-2 text-xs flex flex-col gap-2  grow md:grow-0">
             <TextField 
                 label="Monto Límite" 
                 bind:value={data.montoLimite} 

@@ -156,9 +156,9 @@
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        ModoEvento modificada exitosamente. 
+        ModoEvento modificado exitosamente. 
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarModoEventos")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarModosEvento")}>Aceptar</Button>
     </div>
 </Popup>

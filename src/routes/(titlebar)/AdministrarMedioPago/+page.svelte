@@ -94,9 +94,11 @@
                 {#each resultados as d}
                     <tr>
                         <td>
-                            <div class="flex justify-center">
-                                <img src="{d.url}" alt="Ícono" class="w-12 h-12" />
-                            </div>
+                            {#if d.url !== ""}
+                                <div class="flex justify-center">
+                                    <img src="{d.url}" alt="Ícono" class="w-12 h-12" />
+                                </div>
+                            {/if}
                         </td>
                         <td>{d.nombre}</td>
                         <td>{#if d.fechaBaja}{formatDate(d.fechaBaja, true)}{/if}</td>

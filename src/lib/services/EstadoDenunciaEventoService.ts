@@ -5,16 +5,16 @@ import type DTOEstadoDenuncia from "$lib/dtos/estadosdenuncia/DTOEstadoDenuncia"
 
 export const EstadoDenunciaEventoService={
     obtenerListaEstadosDenuncia: async () => {
-            let response : DTOEstadoDenuncia[]= await request(HttpRequestType.GET, "estadoDenunciaEvento/obtenerListaEstadoDenuncia", true, null);
-            return response;
+            let response = await request(HttpRequestType.GET, "estadoDenunciaEvento/obtenerListaEstadoDenuncia", true, null);
+            return response.content as DTOEstadoDenuncia[];
     },
     altaEstadoDenuncia: async (EstadoDenuncia: DTOAltaEstadoDenuncia) => {
-        await request(HttpRequestType.PUT, "estadoDenunciaEvento/alta", true, null, JSON.stringify(EstadoDenuncia));
+        await request(HttpRequestType.POST, "estadoDenunciaEvento/alta", true, null, JSON.stringify(EstadoDenuncia));
     },
     obtenerEstadoDenunciaCompleta: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
-        let response : DTOEstadoDenuncia = await request(HttpRequestType.GET, "estadoDenunciaEvento/obtenerEstadoDenunciaCompleto", true, args);
+        let response : DTOEstadoDenuncia = await request(HttpRequestType.GET, "estadoDenunciaEvento/obtenerEstadoDenunciaEventoCompleto", true, args);
         return response;
     },
     modificarEstadoDenuncia: async (EstadoDenuncia: DTOModificarEstadoDenuncia) => {

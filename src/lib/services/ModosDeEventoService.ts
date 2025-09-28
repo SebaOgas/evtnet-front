@@ -14,11 +14,11 @@ export const ModosDeEventoService = {
         return response;
   },
   obtenerListaModosEvento: async () => {
-          let response : DTOModoEvento[] = await request(HttpRequestType.PUT, "modosDeEvento/obtenerListaModosEvento", true, null);
-          return response;
+          let response = await request(HttpRequestType.GET, "modosDeEvento/obtenerListaModosEvento", true, null);
+          return response.content as DTOModoEvento[];
   },
   altaModoEvento: async (modoEvento: DTOAltaModoEvento) => {
-        await request(HttpRequestType.PUT, "modosDeEvento/alta", true, null, JSON.stringify(modoEvento));
+        await request(HttpRequestType.POST, "modosDeEvento/alta", true, null, JSON.stringify(modoEvento));
   },
   obtenerModoEventoCompleta: async (id: number) => {
         let args = new Map<string, string>();

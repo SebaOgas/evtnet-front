@@ -61,8 +61,9 @@ export const IconosCaracteristicasService = {
         });
     },
     obtenerIconosCaracteristicas: async () => {
-        let response : DTOIconoCaracteristica[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerIconosCaracteristicas", false, null);
-        return response.map(iconoObj => {
+        let response  = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerIconosCaracteristicas", false, null);
+        let data=response.content as DTOIconoCaracteristica[];
+        return data.map(iconoObj => {
             const byteCharacters = atob(iconoObj.url);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
@@ -71,15 +72,16 @@ export const IconosCaracteristicasService = {
 
             const bytes = new Uint8Array(byteNumbers);
             let urlCreator = window.URL || window.webkitURL;
-            let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+            let mimeType = iconoObj.contentType === "svg" ? "image/svg+xml" : "image/png";
+            let url = urlCreator.createObjectURL(new Blob([bytes], {type: mimeType}));
             iconoObj.url = url;
             return iconoObj;
         });
     },
     bajaIconoCaracteristica: async (idIcono: number) => {
         let args = new Map<string, string>();
-        args.set("idIcono", `${idIcono}`);
-        await request(HttpRequestType.DELETE, "iconosCaracteristicas/bajaIconoCaracteristica", true, args);
+        args.set("id", `${idIcono}`);
+        await request(HttpRequestType.DELETE, "iconosCaracteristicas/baja", true, args);
         return;
     },
     obtenerIconoCaracteristicaCompleto: async (id: number) => {
@@ -94,7 +96,8 @@ export const IconosCaracteristicasService = {
 
             const bytes = new Uint8Array(byteNumbers);
             let urlCreator = window.URL || window.webkitURL;
-            let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType || 'image/png'}));
+            let mimeType = response.contentType === "svg" ? "image/svg+xml" : "image/png";
+            let url = urlCreator.createObjectURL(new Blob([bytes], {type: mimeType}));
             response.url = url;
             return response;
     },
@@ -102,6 +105,6 @@ export const IconosCaracteristicasService = {
             await request(HttpRequestType.PUT, "iconosCaracteristicas/modificar", true, null, JSON.stringify(icono));
     },
     altaIconoCaracteristica: async (icono: DTOAltaIconoCaracteristica) => {
-            await request(HttpRequestType.PUT, "iconosCaracteristicas/alta", true, null, JSON.stringify(icono));
+            await request(HttpRequestType.POST, "iconosCaracteristicas/alta", true, null, JSON.stringify(icono));
     },
 }

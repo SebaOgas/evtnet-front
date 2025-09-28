@@ -81,12 +81,12 @@
 
                 let dims = await getImageFileDimensions(file);               
 
-                if (dims.h !== dims.w) {
+                /* if (dims.h !== dims.w) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser cuadrada"
 					completado=false;
                     return
-                }
+                } */
 
                 if (dims.h < 10) {
                     errorTamanoImagenIconoVisible = true;
@@ -175,7 +175,7 @@
 			<FilePicker
 				label=""
 				bind:file={icono}
-				accept={[".jpg", ".svg", ".png"]}
+				accept={[".svg", ".png"]}
 				validate={validateImagenIcono}
 				classes="flex"
 				buttonText="Seleccionar imagen"

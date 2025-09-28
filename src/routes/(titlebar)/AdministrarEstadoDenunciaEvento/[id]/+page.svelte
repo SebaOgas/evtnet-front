@@ -159,6 +159,6 @@
         Estado Denuncia modificada exitosamente. 
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarEstadoDenuncias")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarEstadoDenunciaEvento")}>Aceptar</Button>
     </div>
 </Popup>

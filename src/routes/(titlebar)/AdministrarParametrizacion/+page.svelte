@@ -95,7 +95,7 @@
                         <td>{d.valor}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
-                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarParametro/${d.id}`)}></Button>
+                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarParametrizacion/${d.id}`)}></Button>
                                 <Button icon="/icons/trash.svg" action={() => {parametroBaja = d.id; popupBaja = true}}></Button>
                             </div>
                         </td>

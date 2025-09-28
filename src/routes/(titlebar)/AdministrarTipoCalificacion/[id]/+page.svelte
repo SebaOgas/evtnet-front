@@ -13,6 +13,7 @@
 	import { CalificacionService } from "$lib/services/CalificacionService";
 	import FilePicker, { getImageFileDimensions } from "$lib/components/FilePicker.svelte";
 	import Warning from "$lib/components/Warning.svelte";
+	import TextField from "$lib/components/TextField.svelte";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -26,7 +27,8 @@
 
 	$: data = {
 		id: id,
-		url: ""
+		url: "",
+		nombre:""
 	} as DTOModificarTipoCalificacion;
 
 	let original : DTOTipoCalificacion = {
@@ -57,6 +59,7 @@
 		
             data.id = original.id;
             data.url = original.url;
+			data.nombre = original.nombre;
         }catch(e){
             if(e instanceof HttpError){
                 error = e.message;
@@ -65,10 +68,31 @@
         }
 		listo = true;
 	});
+	
+	function validateNombre(nombre: string) {
+		nombre = nombre.trim();
+		if (nombre.length === 0) {
+			return {
+				valid: false,
+				reason: "Es obligatorio ingresar el nombre"
+			};
+		}
+		if (nombre.length > 50) {
+			return {
+				valid: false,
+				reason: "Máximo 50 caracteres"
+			};
+		}
+		return {
+			valid: true,
+			reason: undefined
+		};
+	}
 
-	$:completado=(
+	$: completado = (
+		validateNombre(data.nombre).valid &&
 		data.url.trim().length > 0
-	)
+	);
 
 	function validateImagenIcono(file: File | null, preventRequest = false) {
         if (!preventRequest) {
@@ -80,15 +104,15 @@
                     return
                 }
 
-                let dims = await getImageFileDimensions(file);               
-
+                 let dims = await getImageFileDimensions(file);               
+/*
                 if (dims.h !== dims.w) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser cuadrada"
 					completado=false;
                     return
                 }
-
+ */
                 if (dims.h < 10) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser más grande (mayor a 10px de ancho y alto)"
@@ -159,14 +183,21 @@
 
 		{#if listo}
         <div class="flex flex-col gap-2 overflow-y-auto grow w-full md:max-w-[1000px]">
-			
+			<TextField 
+                label="Nombre" 
+                bind:value={data.nombre} 
+                classes="w-full" 
+                validate={validateNombre}
+                forceValidate
+                max={50}
+            />
 			<div class="flex">
 				<img src="{data.url}" alt="Ícono" class="w-12 h-12" />
 			</div>			
 			<FilePicker
 				label=""
 				bind:file={icono}
-				accept={[".jpg", ".svg", ".png"]}
+				accept={[".svg", ".png"]}
 				validate={validateImagenIcono}
 				classes="flex"
 				buttonText="Seleccionar imagen"
@@ -190,12 +221,12 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para modificar iconos de característica.
+	No tiene permiso para modificar tipos de calificación.
 </PopupError>
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        Icono de característica modificado exitosamente. 
+        Tipo de calificación modificado exitosamente. 
     </span>
     <div class="flex w-full justify-center">
         <Button action={() => goto("/AdministrarTipoCalificacion")}>Aceptar</Button>

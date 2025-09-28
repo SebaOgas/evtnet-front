@@ -24,7 +24,7 @@
 
 	let tiposCalificacion : Map<string, string> = new Map();
 	let tiposCalificacionArray: {id: number, nombre: string}[] = [];
-	let tipoCalificacionSeleccionado: {id: number, nombre: string} | null = null;
+	let tipoCalificacionSeleccionado:string | null = null;
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -78,6 +78,7 @@
 
 	async function guardar() {
 		try {
+			data.idTipoCalificacion = tipoCalificacionSeleccionado ? tipoCalificacionSeleccionado : 0;
 			await CalificacionService.altaMotivoCalificacion(data);
             exitoVisible = true;
 		} catch (e) {
@@ -101,7 +102,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2  grow md:grow-0">
-		<h1 class="text-m text-center md:text-start">Alta de Parámetro</h1>
+		<h1 class="text-m text-center md:text-start">Alta de Motivo de Calificación</h1>
 		
         <div class="flex flex-col gap-2 grow w-full md:max-w-[1000px]">
             <TextField 
@@ -128,14 +129,14 @@
 </PopupError>
 
 <PopupError bind:visible={errorPermiso}>
-	No tiene permiso para dar de alta parámetros.
+	No tiene permiso para dar de alta motivos de calificación.
 </PopupError>
 
 <Popup bind:visible={exitoVisible} fitH fitW>
 	<span>
-        Parámetro añadido exitosamente.
+        Motivo de calificación añadido exitosamente.
     </span>
     <div class="flex w-full justify-center">
-        <Button action={() => goto("/AdministrarParametrizacion")}>Aceptar</Button>
+        <Button action={() => goto("/AdministrarMotivoCalificacion")}>Aceptar</Button>
     </div>
 </Popup>

@@ -145,7 +145,7 @@
 			<FilePicker
 				label=""
 				bind:file={icono}
-				accept={[".jpg", ".svg", ".png"]}
+				accept={[".svg", ".png"]}
 				validate={validateImagenIcono}
 				classes="flex"
 				buttonText="Seleccionar imagen"
