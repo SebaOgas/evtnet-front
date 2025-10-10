@@ -43,8 +43,10 @@ export async function request(
     useAuth : boolean = true, //Autenticar al usuario al realizar la solicitud
     baseUrl : string = BASE_URL //Ruta base de la API, es concatenada antes de path
 ) : Promise<any> {
-    let headers : any = {
-        'Content-Type': 'application/json'
+    let headers : any = {}
+
+    if (typeof body === "string") {
+        headers["Content-Type"] = "application/json";
     }
 
     if (useAuth) {  
@@ -179,7 +181,7 @@ export async function request(
             case "application/json":
                 return await response.json()
             default:
-                return await {content: response.blob(), contentType: response.headers.get("content-type")};
+                return {content: await response.blob(), contentType: response.headers.get("content-type")};
         }
     }
 

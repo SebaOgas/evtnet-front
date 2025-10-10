@@ -57,3 +57,8 @@ export const loading : Writable<boolean> = writable(false);
 export const token : Writable<string> = createPersistentStore('token', "");
 export const permisos : Writable<string[]> = createPersistentStore('permisos', []);
 export const username : Writable<string> = createPersistentStore('username', "");
+export const user : Writable<{
+        nombre: string,
+        apellido: string,
+        roles: string[]
+    } | null> = createPersistentStore('user', null);
