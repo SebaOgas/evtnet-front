@@ -23,18 +23,18 @@ export const RegistrosService = {
         let response : DTORegistro[] = await request(HttpRequestType.PUT, "registros/buscar", true, args, JSON.stringify(filtros));
         return response;
     },
-    obtenerTipos: async (registro: string) => {
+    obtenerEntidades: async (registro: string) => {
         let args = new Map<string, string>();
         args.set("registro", registro);
 
-        let response : string[] = await request(HttpRequestType.GET, "registros/obtenerTipos", false, args);
+        let response : string[] = await request(HttpRequestType.GET, "registros/obtenerEntidades", false, args);
         return response;
     },
-    obtenerSubtipos: async (registro: string) => {
+    obtenerAcciones: async (registro: string) => {
         let args = new Map<string, string>();
         args.set("registro", registro);
 
-        let response : string[] = await request(HttpRequestType.GET, "registros/obtenerSubtipos", false, args);
+        let response : string[] = await request(HttpRequestType.GET, "registros/obtenerAcciones", false, args);
         return response;
     },
     buscarUsuarios: async (texto: string) => {
