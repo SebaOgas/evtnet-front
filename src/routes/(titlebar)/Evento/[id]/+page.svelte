@@ -168,17 +168,6 @@
                 <span class="text-xs">${("" + data.precio.toFixed(2)).replace(".", ",")}</span>
             </div>
 
-            {#if data.modos.length > 0}
-                <div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
-                    <span class="text-s">Modos de evento:</span>
-                    <div class="commaList">
-                        {#each data.modos as modo}
-                            <span>{modo}</span>
-                        {/each}
-                    </div>
-                </div>
-            {/if}
-
             {#if data.disciplinas.length > 0}
                 <div class="mb-2 mt-2 flex flex-col gap-2 md:flex-row md:items-baseline">
                     <span class="text-s">Disciplinas:</span>
