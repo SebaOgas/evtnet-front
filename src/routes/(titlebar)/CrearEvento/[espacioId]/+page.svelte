@@ -41,10 +41,6 @@
 		try {
 			datosCreacion = await EventosService.obtenerDatosCreacionEvento(esEspacioNoRegistrado ? null : espacioId);
             
-            if (datosCreacion.tiposInscripcion.length > 0) {
-                data.tipoInscripcion = datosCreacion.tiposInscripcion[0].id
-            }
-            
             fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + datosCreacion.diasHaciaAdelante - 1)
             
             // Cargar periodos libres, para cuando se organiza de forma libre
@@ -85,7 +81,6 @@
 			longitud: undefined
 		},
 		modos: [],
-		tipoInscripcion: -1,
 		precio: 0,
 		maxParticipantes: 2
 	};
@@ -122,11 +117,6 @@
 
 	$: if (datosCreacion) {
 		data.idEspacio = esEspacioNoRegistrado ? null : espacioId;
-		
-		tiposInscripcionOptions = new Map();
-		datosCreacion.tiposInscripcion.forEach(tipo => {
-			tiposInscripcionOptions.set(tipo.id, tipo.nombre);
-		});
 
 		// For private spaces with schedule, we would need to load schedules
 		// This would require another service call that's not specified in the requirements
@@ -593,12 +583,6 @@
 				{/each}
 			</div>
 		</div>
-
-		<ComboBox 
-			options={tiposInscripcionOptions} 
-			bind:selected={data.tipoInscripcion} 
-			placeholder="Tipo de inscripción"
-		/>
 
         <div class="flex flex-col md:flex-row md:gap-2 md:items-baseline">
             <span>Precio de inscripción</span>

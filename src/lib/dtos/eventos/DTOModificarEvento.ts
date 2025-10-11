@@ -32,17 +32,6 @@ export default interface DTOModificarEvento {
         nombre: string
     }[],
 
-    modos: {
-        id: number,
-        nombre: string
-    }[],
-
-    tiposInscripcion: {
-        id: number,
-        nombre: string,
-        seleccionado: boolean
-    }[],
-
     precioInscripcion: number,
     comisionInscripcion: number,
 

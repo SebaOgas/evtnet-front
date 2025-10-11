@@ -4,7 +4,6 @@ export default interface DTOEvento {
     fechaDesde: Date,
     fechaHasta: Date,
     precio: number,
-    modos: string[],
     disciplinas: string[],
     espacio: {
         id: number,

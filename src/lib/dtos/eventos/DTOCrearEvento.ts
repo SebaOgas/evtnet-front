@@ -25,8 +25,6 @@ export default interface DTOCrearEvento {
     },
 
     //Todos los espacios
-    modos: number[],
-    tipoInscripcion: number, 
     precio: number, //Sin comisión
     maxParticipantes: number
 }
