@@ -3,6 +3,7 @@
 	import {Shadow} from 'svelte-loading-spinners'
 	import {loading} from "$lib/stores"
 	import { onMount } from 'svelte';
+	import PopupPago from '$lib/components/PopupPago.svelte';
 
 	onMount(async () => {
 		try {
@@ -41,6 +42,8 @@
 		<Shadow color="#f79256" unit="vw" size="20" duration="2s"/>
 	</div>
 {/if}
+
+<PopupPago/>
 
 <style>
 	.spinner-bg {

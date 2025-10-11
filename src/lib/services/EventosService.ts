@@ -21,6 +21,8 @@ import type Page from "$lib/request/Page";
 import type DTODenunciaEventoCompleta from "$lib/dtos/eventos/DTODenunciaEventoCompleta";
 import type DTODatosParaCambioEstadoDenuncia from "$lib/dtos/eventos/DTODatosParaCambioEstadoDenuncia";
 import type DTOCambioEstadoDenuncia from "$lib/dtos/eventos/DTOCambioEstadoDenuncia";
+import type DTOPreferenciaPago from "$lib/dtos/usuarios/DTOPreferenciaPago";
+import { preferences } from "$lib/stores";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -93,9 +95,9 @@ export const EventosService = {
         return response;
     },
     verificarDatosPrePago: async (data: DTOInscripcion) => {
-        let response : {valido: boolean} = await request(HttpRequestType.PUT, "eventos/verificarDatosPrePago", true, null, JSON.stringify(data));
+        let response : {valido: boolean, preferencias: DTOPreferenciaPago[]} = await request(HttpRequestType.PUT, "eventos/verificarDatosPrePago", true, null, JSON.stringify(data));
 
-        return response.valido;
+        return response;
     },
     inscribirse: async (data: DTOInscripcion) => {
         await request(HttpRequestType.POST, "eventos/inscribirse", true, null, JSON.stringify(data));

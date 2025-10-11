@@ -1,6 +1,6 @@
 export default interface DTOPago {
-    medio: string,
-    datos: {
-        paymentId: number | undefined
-    }
+    paymentId: number,
+    status: string,
+    external_reference: string,
+    preference_id: string
 }
