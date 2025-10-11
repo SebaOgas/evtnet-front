@@ -20,7 +20,7 @@ import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import type DTOUsuarioCompleto from "$lib/dtos/usuarios/DTOUsuarioCompleto";
 import type Page from "$lib/request/Page";
 import {HttpRequestType, request } from "$lib/request/request";
-import { permisos, token, username } from "$lib/stores";
+import { permisos, token, user, username } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -36,6 +36,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        user.set(response.user);
     },
 
     registrarse: async (
@@ -46,6 +47,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        user.set(response.user);
     },
 
     ingresarCodigo: async (
@@ -59,6 +61,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        user.set(response.user);
     },
 
     enviarCodigo: async () => {
@@ -92,6 +95,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        user.set(response.user);
     },
 
     restablecerContrasena: async (currentPassword: string, newPassword: string) => {
@@ -116,15 +120,9 @@ export const UsuariosService = {
         args.set("username", username);
         
         let response = await request(HttpRequestType.GET, "usuarios/obtenerFotoDePerfil", false, args);
-
-        const bytes = new Uint8Array(response.content.length);
-    
-        for (let i = 0; i < response.content.length; i++) {
-            bytes[i] = response.content.charCodeAt(i);
-        }
         
         let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+        let url = urlCreator.createObjectURL(response.content);
 
         return url;
     },
@@ -135,14 +133,17 @@ export const UsuariosService = {
         
         let response = await request(HttpRequestType.GET, "usuarios/obtenerImagenDeCalificacion", false, args, null, false);
         
-        const bytes = new Uint8Array(response.content.length);
+        /*const bytes = new Uint8Array(response.content.length);
 
         for (let i = 0; i < response.content.length; i++) {
             bytes[i] = response.content.charCodeAt(i);
         }
         
         let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));*/
+        
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(response.content);
 
 
         return url;

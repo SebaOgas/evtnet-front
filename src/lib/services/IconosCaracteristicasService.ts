@@ -12,14 +12,17 @@ export const IconosCaracteristicasService = {
         
         let response = await request(HttpRequestType.GET, "iconosCaracteristicas/obtener", false, args);
 
-        const bytes = new Uint8Array(response.content.length);
+       /* const bytes = new Uint8Array(response.content.length);
     
         for (let i = 0; i < response.content.length; i++) {
             bytes[i] = response.content.charCodeAt(i);
         }
         
         let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
+        let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));*/
+
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(response.content);
 
         return url;
     },
@@ -37,6 +40,7 @@ export const IconosCaracteristicasService = {
             const bytes = new Uint8Array(byteNumbers);
             let urlCreator = window.URL || window.webkitURL;
             let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+
             iconoObj.urlIcono = url;
             return iconoObj;
         });

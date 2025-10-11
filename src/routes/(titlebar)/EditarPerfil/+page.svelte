@@ -223,11 +223,19 @@
 
         let fd : FormData = new FormData();
 
-        for (const [key, value] of Object.entries(data)) {
+        /*for (const [key, value] of Object.entries(data)) {
             fd.append(key, value);
-        }
+        }*/
+        if (data.fechaNacimiento === null) return;
+
+        fd.append("nombre", data.nombre);
+        fd.append("apellido", data.apellido);
+        fd.append("dni", data.dni);
+        fd.append("fechaNacimiento", (new Date(data.fechaNacimiento)).getTime().toString() ?? "");
+        fd.append("cbu", (data.cbu && data.cbu !== "null") ? data.cbu : "");
+
         if (fotoDePerfil !== null) {
-            fd.append("fotoDePerfil", fotoDePerfil)
+            fd.append("fotoDePerfil", fotoDePerfil, fotoDePerfil.name)
         }
 
         try {
@@ -237,7 +245,7 @@
             if (e instanceof HttpError) {
                 error = e.message
                 errorVisible = true;
-            }        
+            }                    
         }
     }
 </script>

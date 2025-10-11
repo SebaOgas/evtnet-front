@@ -63,5 +63,10 @@ RESPONSE BODY
         "VisionLogParametros",
         "CreacionEspaciosPublicos"
     ],
-    "username": "usuario"
+    "username": "usuario",
+    "user": {
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "roles": ["Usuario"]
+    }
 }

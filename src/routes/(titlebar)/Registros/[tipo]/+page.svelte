@@ -61,7 +61,7 @@
             
             tipoFormat = (await RegistrosService.obtenerRegistroFormateado(tipo)).nombreFormateado;
 
-            tipos = await RegistrosService.obtenerTipos(tipo);
+            tipos = await RegistrosService.obtenerEntidades(tipo);
 
             tipos.forEach(t => {
                 selectedTipos.set(t, t);
@@ -69,7 +69,7 @@
 
             selectedTipos = new Map(selectedTipos);
 
-            subtipos = await RegistrosService.obtenerSubtipos(tipo);
+            subtipos = await RegistrosService.obtenerAcciones(tipo);
 
             subtipos.forEach(t => {
                 selectedSubtipos.set(t, t);
@@ -247,7 +247,7 @@
         </div>
 
         {#if resultados.length > 0}
-            <Table bind:raw={raw} cols={["Tipo", "Subtipo", "Fecha y Hora", "Usuario", "Solicitud HTTP", "Descripción"]}>
+            <Table bind:raw={raw} cols={["Entidad", "Acción", "Fecha y Hora", "Usuario", "Solicitud HTTP", "Descripción"]} classes="min-h-[30vw]">
                 {#each resultados as r}
                     <tr>
                         <td>{r.tipo}</td>

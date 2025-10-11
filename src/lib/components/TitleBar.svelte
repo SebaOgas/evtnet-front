@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { afterNavigate, goto } from "$app/navigation";
-	import { permisos, token, username } from "$lib/stores";
+	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { permisos, token, username, user } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
@@ -14,6 +15,19 @@
             return;
         }
         menu.style.display = "flex";
+        userMenu.style.display = "none";
+    }
+
+    let userMenu : HTMLElement;
+    let toggleUserMenu = () => {
+        let display = userMenu.style.display;
+
+        if (display === "flex") {
+            userMenu.style.display = "none";
+            return;
+        }
+        userMenu.style.display = "flex";
+        menu.style.display = "none";
     }
 
     function cerrarSesion() {
@@ -25,12 +39,15 @@
 
     afterNavigate(() => {
         menu.style.display = "none";
+        userMenu.style.display = "none";
     })
 
     $: permisosList = [] as string[];
+    $: urlFotoDePerfil = "/icons/placeholder.png"
 
-    onMount(() => {
+    onMount(async () => {
         permisosList = get(permisos);
+        urlFotoDePerfil = await UsuariosService.obtenerFotoDePerfil(get(username));
     })
 </script>
 
@@ -42,9 +59,36 @@
         <a href="/" class="text-xl font-bold text-white">evtnet</a>
     </div>
 
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <img on:click={toggleMenu} id="burger" src="/icons/menu.png" alt="Logo" class="icon-white object-contain cursor-pointer"/>
-	<menu bind:this={menu} class="bg-light flex items-end lg:gap-2 cursor-pointer text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit">		
+    <div class="flex items-center">
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <img src={urlFotoDePerfil} alt="" class="userpic lg:hidden h-[38px] w-[38px] rounded-full cursor-pointer" on:click={toggleUserMenu}>
+
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <img on:click={toggleMenu} id="burger" src="/icons/menu.png" alt="Logo" class="icon-white object-contain cursor-pointer"/>
+    </div>
+
+    
+    <menu bind:this={menu} class="bg-light flex items-end lg:items-center lg:gap-2 text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit">		
+        
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div class="hidden xl:flex flex-col bold whitespace-nowrap text-end gap-0 leading-none cursor-pointer z-20" on:click={() => {if (permisosList.includes("VisionPerfilPropio")) goto("/Perfil")}}>
+            <div>{get(user)?.nombre} {get(user)?.apellido}</div>
+            <div class="commaList">
+                {#each get(user)?.roles as r}
+                    <span>{r}</span>
+                {/each}
+            </div>
+        </div>
+
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <img src={urlFotoDePerfil} alt="" class="userpic hidden lg:block xl:hidden h-[38px] w-[38px] rounded-full cursor-pointer z-20" on:click={toggleUserMenu}>
+
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <img src={urlFotoDePerfil} alt="" class="hidden xl:block userpic h-[38px] w-[38px] rounded-full cursor-pointer z-20" on:click={() => {if (permisosList.includes("VisionPerfilPropio")) goto("/Perfil")}}>
+
+        <div class="sep hidden lg:block w-[2px] min-w-[2px] h-[28px] bg-white"></div>
+        
         {#if permisosList.includes("VisionEventos") || permisosList.includes("AdministracionDenunciasEventos")}
         <li>
             <span>Eventos</span>
@@ -85,7 +129,12 @@
             permisosList.includes("AdministracionRolesReservados") ||
             permisosList.includes("AdministracionUsuarios") || 
             permisosList.includes("AdministracionUsuariosAdministradores") ||
-            permisosList.includes("RealizacionBackup")
+            permisosList.includes("RealizacionBackup") ||
+            permisosList.includes("VisionLogUsuariosGrupos") || 
+            permisosList.includes("VisionLogEventos") || 
+            permisosList.includes("VisionLogEspacios") || 
+            permisosList.includes("VisionLogPagos") || 
+            permisosList.includes("VisionLogParametros")
         }
 		<li>
             <span>Administración</span>
@@ -107,6 +156,14 @@
                 {#if permisosList.includes("RealizacionBackup")}
                     <li><a href="/Backups">Copias de seguridad</a></li>
                 {/if}
+                {#if permisosList.includes("VisionLogUsuariosGrupos") || 
+                    permisosList.includes("VisionLogEventos") || 
+                    permisosList.includes("VisionLogEspacios") || 
+                    permisosList.includes("VisionLogPagos") || 
+                    permisosList.includes("VisionLogParametros")
+                }
+                    <li><a href="/Registros">Registros</a></li>
+                {/if}
             </menu>
         </li>
         {/if}
@@ -115,22 +172,34 @@
 		    <li><a href="/Reportes">Reportes</a></li>
         {/if}
 
-        {#if permisosList.includes("VisionLogUsuariosGrupos") || 
-            permisosList.includes("VisionLogEventos") || 
-            permisosList.includes("VisionLogEspacios") || 
-            permisosList.includes("VisionLogPagos") || 
-            permisosList.includes("VisionLogParametros")
-        }
-		    <li><a href="/Registros">Registros</a></li>
-        {/if}
+        <div class="sep hidden lg:block w-[2px] min-w-[2px] h-[28px] bg-white"></div>
+
+        <!-- svelte-ignore a11y_invalid_attribute -->
+        <li class="hidden lg:block"><a href="#" on:click={cerrarSesion}>Cerrar Sesión</a></li>
+	</menu>
+
+    
+    
+    <menu bind:this={userMenu} class="userMenu hidden bg-light items-end gap-2 text-s text-white font-bold p-s flex-col w-full">
+        <div class="flex flex-col gap-0 items-end leading-none">
+            <span>{get(user)?.nombre} {get(user)?.apellido}</span>
+            <span class="text-xs">@{get(username)}</span>
+            <span class="commaList text-xs">
+                {#each get(user)?.roles as r}
+                    <span>{r}</span>
+                {/each}
+            </span>
+        </div>
 
         {#if permisosList.includes("VisionPerfilPropio")}
-		    <li><a href="/Perfil">Mi Perfil</a></li>
+            <li>
+                <a href="/Perfil">Ver mi perfil</a>
+            </li>
         {/if}
 
         <!-- svelte-ignore a11y_invalid_attribute -->
-        <li><a href="#" on:click={cerrarSesion}>Cerrar Sesión</a></li>
-	</menu>
+        <li><a href="#" class="lg:hidden" on:click={cerrarSesion}>Cerrar Sesión</a></li>
+    </menu>
 </div>
 
 <style>
@@ -145,7 +214,7 @@ a {
     text-decoration: none;
 }
 
-#titlebar img {
+#titlebar img:not(.userpic) {
     height: 52px;
 }
 
@@ -175,16 +244,13 @@ menu>li:hover>a {
     align-items: end;
 }
 
-
-
-
 @media screen and (width >= 64rem) {
 
     #burger {
         display: none;
     }
 
-    #titlebar>menu {
+    #titlebar>menu:not(.userMenu) {
         position: static;
         display: flex !important;
         z-index: 0;
@@ -196,6 +262,7 @@ menu>li:hover>a {
 
     #titlebar>menu>li>span {
         display: inline;
+        cursor: pointer;
     }
 
     #titlebar>menu>li>span+menu {
