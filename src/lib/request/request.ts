@@ -1,4 +1,5 @@
-import {loading, token} from "$lib/stores"
+import { goto } from "$app/navigation";
+import {loading, permisos, token, username} from "$lib/stores"
 import { get } from "svelte/store";
 
 export enum HttpRequestType {
@@ -100,11 +101,11 @@ export async function request(
         return code >= 200 && code < 300;
     }
 
-    if (response instanceof Response && !isOk(response.status) && response.status !== 404) {
+    if (response instanceof Response && !isOk(response.status) && response.status !== 404 && response.status !== 401) {
         if (block) loading.set(false);                   
-            let error = await response.json() as HttpError;
-            error = new HttpError(error.code, error.message);
-            throw error;
+        let error = await response.json() as HttpError;
+        error = new HttpError(error.code, error.message);
+        throw error;
     }
 
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {
@@ -183,6 +184,13 @@ export async function request(
             default:
                 return {content: await response.blob(), contentType: response.headers.get("content-type")};
         }
+    } else if (response.status === 401) {
+        token.set("");
+        permisos.set([]);
+        username.set("");
+        try {
+            goto("/");
+        } catch (e) {}
     }
 
     let res = await response.json()
