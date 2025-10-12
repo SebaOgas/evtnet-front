@@ -6,6 +6,7 @@
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
+	import Warning from "$lib/components/Warning.svelte";
 	import type DTOSuperEvento from "$lib/dtos/eventos/DTOSuperEvento";
 	import { HttpError } from "$lib/request/request";
 	import { SupereventosService } from "$lib/services/SupereventosService";
@@ -85,6 +86,9 @@
                         </div>
                         <div class="ml-4">
                             {evento.nombreEspacio}
+                        </div>
+                        <div class="ml-4">
+                            <Warning visible={evento.cancelado} text="Cancelado"/>
                         </div>
                     </div>
                 {/each}
