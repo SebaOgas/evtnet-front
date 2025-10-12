@@ -11,3 +11,4 @@ export default interface DTOEspacio {
     esAdmin: boolean,
     idChat: number | null
 }
+//TODO modificar para que traiga subespacio

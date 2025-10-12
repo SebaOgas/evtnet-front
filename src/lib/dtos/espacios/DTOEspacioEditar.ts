@@ -13,3 +13,4 @@ export default interface DTOEspacio {
     esPropietario: boolean,
     esPublico: boolean
 }
+//TODO modificar para que traiga subespacio y documentación
