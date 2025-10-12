@@ -19,5 +19,10 @@ RESPONSE BODY
         "Permiso2",
         "Permiso3"
     ],
-    "username": "usuario"
+    "username": "usuario",
+    "user": {
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "roles": ["Usuario"]
+    }
 }

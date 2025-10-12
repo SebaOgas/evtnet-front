@@ -9,8 +9,11 @@ export const ImagenesEspaciosService = {
         args.set("orden", `${orden}`);
         
         let response = await request(HttpRequestType.GET, "imagenesEspacios/obtener", false, args);
+    
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(response.content);
 
-        const byteCharacters = atob(response.content);
+        /*const byteCharacters = atob(response.content);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -18,7 +21,7 @@ export const ImagenesEspaciosService = {
         const byteArray = new Uint8Array(byteNumbers);
         const blob= new Blob([byteArray], { type: response.contentType });
         let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(blob);
+        let url = urlCreator.createObjectURL(blob);*/
 
         return {
             id: response.id,

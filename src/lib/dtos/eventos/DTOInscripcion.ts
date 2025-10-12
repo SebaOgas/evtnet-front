@@ -9,5 +9,5 @@ export default interface DTOInscripcion {
         dni: string
     }[],
     precioInscripcion: number,
-    datosPago: DTOPago | undefined
+    datosPago: DTOPago[]
 }

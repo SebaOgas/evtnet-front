@@ -21,6 +21,8 @@
 
     export let forceValidate : boolean = false;
 
+    export let integer : boolean = false;
+
     //Para textarea
     export let multiline : boolean = false
     export let resize : boolean = false
@@ -31,6 +33,14 @@
 
     $: valido = true;
     $: razonInvalidez = "";
+
+    $: (() => {
+        if (!integer) return;
+
+        if (typeof value === "string")
+			value = parseInt(value);
+		if (Number.isNaN(value)) value = 0;
+    })()
 
     function validar()  {
         let result = validate("" + value);

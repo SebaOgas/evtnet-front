@@ -27,5 +27,21 @@ RESPONSE TYPE JSON
 RESPONSE BODY
 
 {
-    "valido": true
+    "valido": true,
+    "preferencias": [
+        {
+            "concepto": "Inscripción",
+            "montoBruto": 1000,
+            "comision": 0.1, 
+            "preference_id": "abcd",
+            "public_key": "efgh",
+            "completada": false,
+            "data": {
+                "paymentId": 1234,
+                "status": "approved",
+                "external_reference": "h9bsduba9si",
+                "preference_id": "abcd"
+            }
+        }
+    ]
 }

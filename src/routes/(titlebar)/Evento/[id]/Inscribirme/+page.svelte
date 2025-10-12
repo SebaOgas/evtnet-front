@@ -7,7 +7,7 @@
 	import TextField from "$lib/components/TextField.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import PopupPago from "$lib/components/PopupPago.svelte";
+	import { startPopupPago } from "$lib/components/PopupPago.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import { token, permisos } from "$lib/stores";
@@ -118,16 +118,18 @@
 			username: "", // Will be set by backend
 			invitados: invitados,
 			precioInscripcion: calcularPrecioTotal(),
-			datosPago: undefined
+			datosPago: []
 		};
 
 		try {
-			const datosCorrectos = await EventosService.verificarDatosPrePago(inscripcionData);
-			if (!datosCorrectos) {
+			const response = await EventosService.verificarDatosPrePago(inscripcionData);
+			if (!response.valido) {
 				errorGenerico = "Los datos ingresados no son válidos";
 				errorGenericoVisible = true;
 				return;
 			}
+						
+			startPopupPago(procesarPago, response.preferencias);
 
 			popupPagoVisible = true;
 		} catch (e) {
@@ -138,8 +140,8 @@
 		}
 	}
 
-	async function procesarPago(datosPago: DTOPago) {
-		if (!evento) return;
+	async function procesarPago(datosPago: DTOPago[]) {
+		if (!evento) return;		
 
 		const inscripcionData: DTOInscripcion = {
 			idEvento: id,
@@ -294,12 +296,6 @@
 		<Button action={realizarPago} disabled={!evento || !validarFormulario()}>Realizar pago</Button>
 	</div>
 </div>
-
-<PopupPago 
-	bind:visible={popupPagoVisible} 
-	monto={calcularPrecioTotal()} 
-	action={procesarPago}
-/>
 
 <Popup bind:visible={popupExitoVisible} fitH fitW>
 	Inscripción realizada exitosamente

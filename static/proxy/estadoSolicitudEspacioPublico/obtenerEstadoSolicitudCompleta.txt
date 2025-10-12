@@ -1,0 +1,19 @@
+REQUEST TYPE GET
+
+REQUEST ARGS
+
+id:int
+
+REQUEST BODY
+
+{}
+
+RESPONSE TYPE JSON
+
+RESPONSE BODY
+
+{
+    "id": 0,
+    "nombre": "Pendiente",
+    "descripcion": "La solicitud ha sido enviada y está esperando revisión"
+}

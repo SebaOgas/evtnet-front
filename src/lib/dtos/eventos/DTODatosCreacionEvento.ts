@@ -1,11 +1,6 @@
 export default interface DTODatosCreacionEvento {
     nombreEspacio: string | null,
 
-    tiposInscripcion: {
-        id: number,
-        nombre: string
-    }[],
-
     comisionInscripcion: number,
 
     espacioPublico: boolean | null, //Solo usado para espacios registrados

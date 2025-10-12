@@ -1,0 +1,20 @@
+REQUEST TYPE PUT
+
+REQUEST ARGS
+
+REQUEST BODY
+
+{
+    "frecuencia": {
+        "meses": 1,
+        "dias": 15,
+        "horas": 12
+    },
+    "fechaHoraInicio": 1753225458732,
+    "copiasIncrementalesPorCompleta": 3,
+    "copiasAnterioresAConservar": 2
+}
+
+RESPONSE TYPE TEXT
+
+RESPONSE BODY

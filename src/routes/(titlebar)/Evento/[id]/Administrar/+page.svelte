@@ -50,12 +50,6 @@
                 errorPermiso = true;
                 return;
             }
-			
-			// Set up reactive data
-			if (data.tiposInscripcion.length > 0) {
-				const selected = data.tiposInscripcion.find(t => t.seleccionado);
-				tipoInscripcionSeleccionado = selected ? selected.id : data.tiposInscripcion[0].id;
-			}
 
 			// Convert disciplinas and modos to Maps
 			disciplinasSeleccionadas.clear();
@@ -63,12 +57,6 @@
 				disciplinasSeleccionadas.set(d.id, d.nombre);
 			});
 			disciplinasSeleccionadas = disciplinasSeleccionadas;
-
-			modosSeleccionados.clear();
-			data.modos.forEach(m => {
-				modosSeleccionados.set(m.id, m.nombre);
-			});
-			modosSeleccionados = modosSeleccionados;
 
 			// Set up ubicacion for MapDisplay
 			if (data.ubicacion.latitud && data.ubicacion.longitud) {
@@ -122,8 +110,6 @@
 			longitud: undefined
 		},
 		disciplinas: [],
-		modos: [],
-		tiposInscripcion: [],
 		precioInscripcion: 0,
 		comisionInscripcion: 0,
 		cantidadMaximaParticipantes: 2,
@@ -169,7 +155,6 @@
 
 	// Popup states
 	$: popupDisciplinasVisible = false;
-	$: popupModosVisible = false;
 	$: popupSupereventosVisible = false;
 
 	// Horario selection logic (for private spaces with schedule)
@@ -248,10 +233,6 @@
         data.usarCronograma = usar;
     }
 
-	// ComboBox options
-	$: tiposInscripcionOptions = new Map(
-		data.tiposInscripcion.map(tipo => [tipo.id, tipo.nombre])
-	);
 
 	// Search functions
 	async function buscarDisciplinas(val: string) {
@@ -536,14 +517,6 @@
 
 		// Set selected disciplines and modes
 		data.disciplinas = Array.from(disciplinasSeleccionadas.entries()).map(([id, nombre]) => ({id, nombre}));
-		data.modos = Array.from(modosSeleccionados.entries()).map(([id, nombre]) => ({id, nombre}));
-
-		// Set selected inscription type
-		if (tipoInscripcionSeleccionado !== undefined) {
-			data.tiposInscripcion.forEach(tipo => {
-				tipo.seleccionado = tipo.id === tipoInscripcionSeleccionado;
-			});
-		}
 
 		// Generate observations for confirmation
 		observaciones = generarObservaciones();
@@ -737,24 +710,6 @@
 				{/each}
 			</div>
 		</div>
-
-		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
-			<div class="flex justify-start gap-2 items-baseline">
-				<span>Modos de evento</span>
-				<Button action={() => {popupModosVisible = true}}>Seleccionar</Button>
-			</div>
-			<div class="commaList">
-				{#each modosSeleccionados as m}
-					<span>{m[1]}</span>
-				{/each}
-			</div>
-		</div>
-
-		<ComboBox 
-			options={tiposInscripcionOptions} 
-			bind:selected={tipoInscripcionSeleccionado} 
-			placeholder="Tipo de inscripción"
-		/>
 
 		<div class="flex flex-col md:flex-row md:gap-2 md:items-baseline">
 			<span>Precio de inscripción</span>
@@ -955,14 +910,6 @@
 	bind:visible={popupDisciplinasVisible} 
 	searchFunction={buscarDisciplinas} 
 	bind:selected={disciplinasSeleccionadas}
-/>
-
-<PopupSeleccion 
-	title="Seleccionar modos de evento" 
-	multiple={true} 
-	bind:visible={popupModosVisible} 
-	searchFunction={buscarModos} 
-	bind:selected={modosSeleccionados}
 />
 
 <PopupSeleccion 

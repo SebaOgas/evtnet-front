@@ -43,6 +43,16 @@ RESPONSE BODY
         "AdministracionRolesReservados",
         "AdministracionUsuarios",
         "AdministracionUsuariosAdministradores",
+        "AdministracionDisciplinas",
+        "AdministracionIconosCaracteristicas",
+        "AdministracionModosEvento",
+        "AdministracionEstadosDenuncia",
+        "AdministracionEstadosSEP",
+        "AdministracionComisionInscripcion",
+        "AdministracionComisionOrganizacion",
+        "AdministracionTiposCalificacion",
+        "AdministracionMotivoCalificacion",
+        "AdministracionMediosPago",
         "VisionReportes",
         "VisionReportesGenerales",
         "RealizacionBackup",
@@ -53,5 +63,10 @@ RESPONSE BODY
         "VisionLogParametros",
         "CreacionEspaciosPublicos"
     ],
-    "username": "usuario"
+    "username": "usuario",
+    "user": {
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "roles": ["Usuario"]
+    }
 }

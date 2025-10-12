@@ -23,5 +23,10 @@ RESPONSE BODY
     "permisos": [
         "HabilitarCuenta"
     ],
-    "username": "usuario"
+    "username": "usuario",
+    "user": {
+        "nombre": "Nombre",
+        "apellido": "Apellido",
+        "roles": ["Usuario"]
+    }
 }
