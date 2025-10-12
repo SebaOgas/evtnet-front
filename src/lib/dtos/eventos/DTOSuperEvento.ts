@@ -9,6 +9,7 @@ export default interface DTOSuperEvento {
         fechaDesde: Date,
         fechaHasta: Date,
         nombreEspacio: string,
-        esAdministrador: boolean
+        esAdministrador: boolean,
+        cancelado: boolean
     }[]
 }
