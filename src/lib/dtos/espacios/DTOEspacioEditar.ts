@@ -12,8 +12,10 @@ export default interface DTOEspacio {
     esPropietario: boolean,
     esPublico: boolean,
     basesYCondiciones:DTOArchivo | null,
-    documentacion:DTOArchivo[],
-    estado:DTOEspacioEstado | null
+    documentacion:DTOArchivo[]|null,
+    estado:DTOEspacioEstado | null,
+    estadosEspacio: DTOEstadoEspacio[] | null
+    requiereAprobacion: boolean
 }
 export interface DTOSubespacioEditar{
     id?: number,
@@ -29,6 +31,12 @@ export interface DTOArchivo{
 }
 
 export interface DTOEspacioEstado{
+    id: number,
+    nombre: string,
+    descripcion: string
+}
+
+export interface DTOEstadoEspacio{
     id: number,
     nombre: string,
     descripcion: string

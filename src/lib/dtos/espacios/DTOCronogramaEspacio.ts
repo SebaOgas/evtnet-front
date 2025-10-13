@@ -1,6 +1,6 @@
 export default interface DTOCronogramaEspacio {
     nombreEspacio: string,
-    id: number,
+    idCronograma: number,
     fechaDesde: Date,
     fechaHasta: Date,
     diasHaciaAdelante: number

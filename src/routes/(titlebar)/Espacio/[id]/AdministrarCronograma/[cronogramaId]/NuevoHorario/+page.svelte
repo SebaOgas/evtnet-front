@@ -22,6 +22,7 @@
     $: errorPermiso = false;
     $: espacioId = Number(page.params.id);
     $: cronogramaId = Number(page.params.cronogramaId);
+    $: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: data = {
         nombreEspacio: "",
@@ -40,6 +41,7 @@
     $: horaInicio = null as string | null;
     $: horaFin = null as string | null;
     $: precioTexto = "";
+    $: precioAdicionalTexto = "";
 
     // Force validation states
     $: forceValidateHorario = false;
@@ -78,6 +80,18 @@
                 reason: "Seleccione el horario"
             };
         }
+        if(inicio > fin) {
+            return {
+                valid: false,
+                reason: "El horario de inicio debe ser anterior al de fin"
+            };
+        }
+        if(inicio === fin) {
+            return {
+                valid: false,
+                reason: "El horario de inicio y fin no pueden ser iguales"
+            };
+        }
         return {
             valid: true,
             reason: undefined
@@ -90,6 +104,30 @@
                 valid: false,
                 reason: "Ingrese el precio para organizar eventos en este horario"
             };
+            
+        }
+
+        const numero = parseFloat(precio.replace(',', '.'));
+        if (isNaN(numero) || numero < 0) {
+            return {
+                valid: false,
+                reason: "El precio debe ser un número no negativo"
+            };
+        }
+
+        return {
+            valid: true,
+            reason: undefined
+        };
+    }
+
+    function validatePrecioAdicional(precio: string) {
+        if (precio.trim() === "") {
+            return {
+                valid: false,
+                reason: "Ingrese el precio adicional por inscripción"
+            };
+            
         }
 
         const numero = parseFloat(precio.replace(',', '.'));
@@ -157,8 +195,9 @@
             horaHasta.setHours(parseInt(horaFinH), parseInt(horaFinM), 0, 0);
 
             const precio = parseFloat(precioTexto.replace(',', '.'));
+            const precioAdicional = parseFloat(precioAdicionalTexto.replace(',', '.')) || 0;
 
-            await CronogramaService.crearHorario(cronogramaId, diaSeleccionado!, horaDesde, horaHasta, precio);
+            await CronogramaService.crearHorario(cronogramaId, diaSeleccionado!, horaDesde, horaHasta, precio, precioAdicional);
             popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
@@ -172,7 +211,7 @@
     }
 
     function cancelar() {
-        goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}`);
+        goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}?idSubEspacio=${idSubEspacio}`);
     }
 
     onMount(async () => {
@@ -248,6 +287,20 @@
                     Precio más comisión: {formatearPrecio(calcularPrecioConComision(parseFloat(precioTexto.replace(',', '.'))))}
                 </p>
             {/if}
+        </div>
+        <div>
+            <span class="text-xs">Precio adicional por inscripción:</span>
+            <div class="flex items-start gap-1 mt-1">
+                <span class="mt-2 mb-2">$</span>
+                <TextField 
+                    label="" 
+                    bind:value={precioAdicionalTexto} 
+                    placeholder="10000,00"
+                    classes="flex-1"
+                    validate={validatePrecioAdicional}
+                    forceValidate={forceValidatePrecio}
+                />
+            </div>
         </div>
     </div>
 

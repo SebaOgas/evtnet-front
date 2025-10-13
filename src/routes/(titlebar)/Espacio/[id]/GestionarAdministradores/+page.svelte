@@ -57,7 +57,7 @@
 
         try {
             nombreEspacio = await EspaciosService.obtenerNombreEspacio(id);
-            await filtrarAdministradores();            
+            filtrarAdministradores();            
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -73,8 +73,8 @@
                 errorPermiso = true;
                 return;
             }
-            resultadosAnteriores = data.administradores.filter(r => !r.fechasAdministracion.some(f => f.fechaHasta == null));
-            resultados = data.administradores.filter(r => r.fechasAdministracion.some(f => f.fechaHasta == null));
+            resultadosAnteriores = data.dtoAdministradores.filter(r => !r.fechasAdministracion.some(f => f.fechaHasta == null));
+            resultados = data.dtoAdministradores.filter(r => r.fechasAdministracion.some(f => f.fechaHasta == null));
             resultados = [...resultados];
             resultadosAnteriores = [...resultadosAnteriores];
         }catch(e){
@@ -102,7 +102,7 @@
 
     async function eliminarAdministrador() {
         try {
-            await EspaciosService.eliminarAdministradorEspacio(id, administrador.id);
+            await EspaciosService.eliminarAdministradorEspacio(id, administrador.username);
             popupExitoEliminacionVisible = true;
             await filtrarAdministradores();
         } catch (e) {
@@ -117,7 +117,7 @@
     async function confirmarEntregarPropietarioAdmin() {
         if (administrador === null) return;
 		try {
-			await EspaciosService.entregarPropietario(id, administrador.id);
+			await EspaciosService.entregarPropietario(id, administrador.username);
             popupExitoPropiestarioVisible = true;
             //filtrarAdministradores();
 		} catch (e) {
@@ -158,8 +158,10 @@
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex flex-row gap-2">
-                        <Button icon="/icons/upgrade.svg" action={() => {administrador.id=r.id; popupOrganizadorConfirmacionVisible=true}} classes="shrink-0"></Button>
-                            <Button icon="/icons/cross.svg" action={() => {popupConfirmEliminarAdministradorVisible = true; administrador.id=r.id}} classes="shrink-0"></Button>
+                            {#if !r.esPropietario}
+                                <Button icon="/icons/upgrade.svg" action={() => {administrador = {...r}; popupOrganizadorConfirmacionVisible = true}} classes="shrink-0"></Button>
+                                <Button icon="/icons/cross.svg" action={() => {popupConfirmEliminarAdministradorVisible = true; administrador = {...r}}} classes="shrink-0"></Button>
+                            {/if}
                         </div>
                     </div>
                     <div class="flex flex-col items-center w-full">
@@ -186,7 +188,7 @@
                             <span class="text-s">{r.nombreApellido}</span>
                         </div>
                         <div class="flex gap-2 shrink-0">
-                            <Button icon="/icons/check.png" action={() => {administrador=r;popupAdministradorConfirmacionVisible=true}} classes="shrink-0"></Button>
+                            <Button icon="/icons/check.png" action={() => {administrador = {...r}; popupAdministradorConfirmacionVisible = true}} classes="shrink-0"></Button>
                         </div>
                     </div>
                     <div class="flex flex-col items-center w-full">

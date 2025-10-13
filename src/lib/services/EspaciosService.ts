@@ -119,17 +119,19 @@ export const EspaciosService = {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
         let response : DTOAdministradoresEspacio = await request(HttpRequestType.GET, "espacios/obtenerAdministradoresEspacio", true, args);
-        response.administradores.map(iconoObj => {
-            const byteCharacters = atob(iconoObj.urlFotoPerfil);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
+        response.dtoAdministradores.map(iconoObj => {
+            if(iconoObj.urlFotoPerfil!=null && iconoObj.urlFotoPerfil!=""){
+                const byteCharacters = atob(iconoObj.urlFotoPerfil);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
 
-            const bytes = new Uint8Array(byteNumbers);
-            let urlCreator = window.URL || window.webkitURL;
-            let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
-            iconoObj.urlFotoPerfil = url;
+                const bytes = new Uint8Array(byteNumbers);
+                let urlCreator = window.URL || window.webkitURL;
+                let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+                iconoObj.urlFotoPerfil = url;
+            }
             return iconoObj;
         });
         return response;
@@ -142,10 +144,10 @@ export const EspaciosService = {
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "espacios/buscarUsuariosNoAdministradores", false, args);
         return response;
     },
-    eliminarAdministradorEspacio: async (idEspacio: number, idUsuario: number) => {
+    eliminarAdministradorEspacio: async (idEspacio: number, username: string) => {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
-        args.set("idUsuario", `${idUsuario}`);
+        args.set("username", `${username}`);
         await request(HttpRequestType.DELETE, "espacios/eliminarAdministradorEspacio", true, args);
     },
     agregarAdministradorEspacio: async (idEspacio: number, username:string) => {
@@ -154,10 +156,10 @@ export const EspaciosService = {
         args.set("username", `${username}`);
         await request(HttpRequestType.POST, "espacios/agregarAdministradorEspacio", true, args);
     },
-    entregarPropietario: async (idEspacio: number, idUsuario: number) => {
+    entregarPropietario: async (idEspacio: number, username:string) => {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
-        args.set("idUsuario", `${idUsuario}`);
+        args.set("username", `${username}`);
         await request(HttpRequestType.PUT, "espacios/entregarPropietario", true, args);
     },
     obtenerResenasEspacio: async (idEspacio: number) => {

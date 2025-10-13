@@ -56,7 +56,7 @@ export const CronogramaService = {
     verificarVigencia: async (idEspacio: number, idCronograma: number | null, fechaDesde: Date, fechaHasta: Date) => {
         let args = new Map<string, string>();
         args.set("idEspacio", `${idEspacio}`);
-        args.set("idCronograma", `${idCronograma}`);
+        if(idCronograma!=null)args.set("idCronograma", `${idCronograma}`);
         args.set("fechaDesde", `${(new Date(fechaDesde)).getTime()}`);
         args.set("fechaHasta", `${(new Date(fechaHasta)).getTime()}`);
 
@@ -65,13 +65,13 @@ export const CronogramaService = {
         return response;
     },
     crearCronograma: async (
-        idEspacio: number, 
+        idSubEspacio: number, 
         fechaDesde: Date, 
         fechaHasta: Date, 
         diasHaciaAdelante: number
     ) => {
         let data = {
-            idEspacio: idEspacio,
+            idSubEspacio: idSubEspacio,
             fechaDesde: (new Date(fechaDesde)).getTime(),
             fechaHasta: (new Date(fechaHasta)).getTime(),
             diasHaciaAdelante: diasHaciaAdelante
@@ -85,13 +85,15 @@ export const CronogramaService = {
         idCronograma: number, 
         fechaDesde: Date, 
         fechaHasta: Date, 
-        diasHaciaAdelante: number
+        diasHaciaAdelante: number,
+        idSubEspacio: number 
     ) => {
         let data = {
             idCronograma: idCronograma,
             fechaDesde: (new Date(fechaDesde)).getTime(),
             fechaHasta: (new Date(fechaHasta)).getTime(),
-            diasHaciaAdelante: diasHaciaAdelante
+            diasHaciaAdelante: diasHaciaAdelante,
+            idSubEspacio: idSubEspacio
         }
 
         await request(HttpRequestType.PUT, "cronogramas/modificarCronograma", true, null, JSON.stringify(data));
@@ -109,14 +111,16 @@ export const CronogramaService = {
         diaSemana: number,
         horaDesde: Date, 
         horaHasta: Date, 
-        precio: number
+        precio: number,
+        adicional:number
     ) => {
         let data = {
             idCronograma: idCronograma,
             diaSemana: diaSemana,
             horaDesde: (new Date(horaDesde)).getTime(),
             horaHasta: (new Date(horaHasta)).getTime(),
-            precio: precio
+            precioOrganizacion: precio,
+            adicionalPorInscripcion: adicional
         }
 
         await request(HttpRequestType.POST, "cronogramas/crearHorario", true, null, JSON.stringify(data));
@@ -139,7 +143,7 @@ export const CronogramaService = {
             idCronograma: idCronograma,
             fechaDesde: (new Date(fechaDesde)).getTime(),
             fechaHasta: (new Date(fechaHasta)).getTime(),
-            tipoExcepcion: tipoExcepcion
+            idTipoExcepcion: tipoExcepcion
         }
 
         await request(HttpRequestType.POST, "cronogramas/crearExcepcion", true, null, JSON.stringify(data));

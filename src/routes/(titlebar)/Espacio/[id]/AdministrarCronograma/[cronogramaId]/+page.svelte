@@ -19,6 +19,7 @@
 
     $: espacioId = Number(page.params.id);
     $: cronogramaId = Number(page.params.cronogramaId);
+    $: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: data = {
 		nombreEspacio: "",
@@ -104,9 +105,12 @@
         <h2 class="text-m text-center">
             {data.nombreEspacio}
         </h2>
-        <h3 class="text-s text-center">
-            Del {formatDate(data.fechaDesde)} al {formatDate(data.fechaHasta)}
-        </h3>
+        <div class="flex flex-row items-center justify-center w-full gap-0">
+            <h3 class="m-0">
+                Del {formatDate(data.fechaDesde)} al {formatDate(data.fechaHasta)}
+            </h3>
+            <Button icon="/icons/edit.svg" classes="ml-1" action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Modificar?idSubEspacio=${idSubEspacio}`)}}></Button>
+        </div>
         
         <div class="flex flex-col gap-4 mt-4">
             {#each data.horarios as horario}
@@ -136,9 +140,9 @@
     </div>
 
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
-        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma`)}}>Atrás</Button>
-        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/NuevoHorario`)}}>Nuevo horario</Button>
-        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones`)}}>Administrar Excepciones</Button>
+        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma?idSubEspacio=${idSubEspacio}`)}}>Atrás</Button>
+        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/NuevoHorario?idSubEspacio=${idSubEspacio}`)}}>Nuevo horario</Button>
+        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones?idSubEspacio=${idSubEspacio}`)}}>Administrar Excepciones</Button>
     </div>
 </div>  
 

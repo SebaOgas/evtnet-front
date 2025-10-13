@@ -19,6 +19,7 @@
 
     $: espacioId = Number(page.params.id);
     $: cronogramaId = Number(page.params.cronogramaId);
+    $: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: data = {
 		nombreEspacio: "",
@@ -133,8 +134,8 @@
     </div>
 
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
-        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}`)}}>Atrás</Button>
-        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones/Nueva`)}}>Nueva excepción</Button>
+        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}?idSubEspacio=${idSubEspacio}`)}}>Atrás</Button>
+        <Button action={() => {goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones/Nueva?idSubEspacio=${idSubEspacio}`)}}>Nueva excepción</Button>
     </div>
 </div>  
 

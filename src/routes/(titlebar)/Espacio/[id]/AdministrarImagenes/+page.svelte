@@ -14,6 +14,8 @@
 	import FilePicker, { getImageFileDimensions }  from "$lib/components/FilePicker.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import { ImagenesEspaciosService } from "$lib/services/ImagenesEspaciosService";
+	import type { DTOSubespacioDetalle } from "$lib/dtos/espacios/DTOEspacio";
+	import type { DTOEspacioEstado } from "$lib/dtos/espacios/DTOEspacioEditar";
 
     let previousPage: string = base;
     $: errorPermiso = false;
@@ -30,10 +32,10 @@
 		latitud: 0,
 		longitud: 0,
 		cantidadImagenes: 0,
-		disciplinas: [],
-		caracteristicas: [],
 		esAdmin: false,
-        idChat: null
+        idChat: null,
+        subEspacios:[] as DTOSubespacioDetalle[],
+        estado: {} as DTOEspacioEstado
     } as DTOEspacio;
 
     $: imagenes = [] as {id: number, src: string, orden: number, archivo: File|null}[]
