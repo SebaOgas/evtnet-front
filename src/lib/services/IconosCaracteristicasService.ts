@@ -44,11 +44,12 @@ export const IconosCaracteristicasService = {
             iconoObj.urlIcono = url;
             return iconoObj;
         });
+        return response;
     },
     obtenerListaIconos: async () => {
-        let response : {id: number, url: string, contentType?: string}[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerListaIconos", false, null);
+        let response : {id: number, icono: string, contentType?: string}[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerListaIconos", false, null);
         return response.map(iconoObj => {
-            const byteCharacters = atob(iconoObj.url);
+            const byteCharacters = atob(iconoObj.icono);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
                 byteNumbers[i] = byteCharacters.charCodeAt(i);

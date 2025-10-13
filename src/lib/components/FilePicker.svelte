@@ -25,63 +25,63 @@
 
 <script lang="ts">
 
-    import Button from "./Button.svelte";
-    import Warning from "./Warning.svelte";
+	import Button from "./Button.svelte";
+	import Warning from "./Warning.svelte";
 
-    export let label : string | null = "Label";
-    export let classes : string = "";
-    export let file : File | null = null; // sigue para compatibilidad
-    export let placeholder : string = "Ningún archivo seleccionado";
+    export let label : string | null = "Label"
+
+    export let classes : string = ""
+
+    export let file : File | null = null;
+
+    export let placeholder : string = "Ningún archivo seleccionado"
+
     export let accept : string[] = [""];
+
     export let validate : (v: File | null) => {valid: boolean; reason: string | null | undefined} = (v: File | null) => {return {valid: true, reason: undefined}};
+
     export let buttonText: string = "Seleccionar";
     export let showFileName: boolean = true;
-    
-    // NUEVO: aceptar múltiples archivos
-    export let multiple: boolean = false;
-    export let files: File[] = [];
 
-    function validar() {        
-        if (!multiple) {
-            let result = validate(file);
-            valido = result.valid;
-            razonInvalidez = result.reason ?? "";
-        } else {
-            // Si querés validar múltiples archivos, adaptá la función
-            valido = true;
+    function validar()  {        
+        let result = validate(file);
+       
+        valido = result.valid;
+        if (result.reason === null || result.reason === undefined) {
             razonInvalidez = "";
+        } else {
+            razonInvalidez = result.reason;
         }
     }
     
     $: valido = true;
     $: razonInvalidez = "";
-    let acceptString = accept.reduce((acc, curr) => `${acc}, ${curr}`, "");
-    let el: HTMLInputElement;
-    function openInput() { el.click(); }
 
-    $: filename = !multiple
-        ? placeholder
-        : files.length > 0 
-            ? files.map(f => f.name).join(", ")
-            : "";
+    let acceptString = accept.reduce((acc, curr) => `${acc}, ${curr}`, "")
+
+    let el: HTMLInputElement;
+
+    function openInput() {
+        el.click();
+    }
+
+    $: filename = placeholder
 
     function changeFile() {     
-        if (el.files !== null && el.files.length > 0) {
-            if (multiple) {
-                files = Array.from(el.files);
-                file = files[0]; // para compatibilidad con código existente
-            } else {
-                file = el.files[0];
-                files = [];
-            }
+        if (el.files !== null && el.files[0] !== undefined) {
+            file = el.files[0]
+            filename = el.files[0].name;
         } else {
-            file = null;
-            files = [];
-        }
-        validar();
+            file = null
+            filename = placeholder
+        }  
+        validar(); 
     }
 
 </script>
+
+
+
 
 <label class="{classes} flex flex-col md:items-center gap-2 md:flex-row mt-2 mb-2" for="inputfile">
     {#if label !== null}
@@ -93,14 +93,6 @@
         {/if}
         <Button action={openInput}>{buttonText}</Button>
     </div>
-    <input 
-        type="file" 
-        id="inputfile" 
-        class="hidden" 
-        bind:this={el} 
-        on:change={changeFile} 
-        accept={acceptString}
-        {multiple} 
-    >
+    <input type="file" id="inputfile" class="hidden" bind:this={el} on:change={changeFile} accept={acceptString}>
     <Warning visible={!valido} text={razonInvalidez}/>
 </label>

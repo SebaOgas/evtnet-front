@@ -44,27 +44,22 @@ export async function request(
     useAuth : boolean = true, //Autenticar al usuario al realizar la solicitud
     baseUrl : string = BASE_URL //Ruta base de la API, es concatenada antes de path
 ) : Promise<any> {
-    let headers: any = {};
+    let headers : any = {}
 
-    if (useAuth) {  
-        headers["Authorization"] = "Bearer " + get(token);
+    if (typeof body === "string") {
+        headers["Content-Type"] = "application/json";
     }
 
-    let data: RequestInit = {
+    if (useAuth) {  
+        headers["Authorization"] = "Bearer " +  get(token)
+    }
+
+    let data : RequestInit = {
         method: type,
         headers: headers,
         mode: 'cors',
         credentials: "include"
-    };
-
-    //Si el body es FormData, NO seteamos Content-Type (el navegador lo hace automáticamente)
-    if (body instanceof FormData) {
-        data.body = body;
-    } else if (body !== null) {
-        headers["Content-Type"] = "application/json";
-        data.body = body;
     }
-
 
     let argUrl = "?"
 
