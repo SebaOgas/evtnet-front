@@ -4,9 +4,9 @@
 	import Button from "$lib/components/Button.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
-	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
+	import { startPopupPago } from "$lib/components/PopupPago.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
@@ -16,14 +16,14 @@
 	import { CronogramaService } from "$lib/services/CronogramaService";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EventosService } from "$lib/services/EventosService";
-	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
 	let espacioId: number;
 	let datosCreacion: DTODatosCreacionEvento | null = null;
-	let esEspacioNoRegistrado = false;
+
+	let subespaciosOpciones : Map<number, string> = new Map<number, string>();
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -36,12 +36,13 @@
 
 		const espacioIdParam = $page.params.espacioId as string;
 		espacioId = parseInt(espacioIdParam);
-		esEspacioNoRegistrado = espacioId === -1;
 
 		try {
-			datosCreacion = await EventosService.obtenerDatosCreacionEvento(esEspacioNoRegistrado ? null : espacioId);
-            
-            fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + datosCreacion.diasHaciaAdelante - 1)
+			datosCreacion = await EventosService.obtenerDatosCreacionEvento(espacioId);
+
+			datosCreacion.subespacios.forEach(s => {
+				subespaciosOpciones.set(s.id, s.nombre);
+			})
             
             // Cargar periodos libres, para cuando se organiza de forma libre
             if (datosCreacion.administrador) {
@@ -69,28 +70,30 @@
 	let data: DTOCrearEvento = {
 		nombre: "",
 		descripcion: "",
-		idEspacio: null,
+		idSubespacio: null,
 		usarCronograma: true,
-		fechaDesde: null,
-		fechaHasta: null,
+		fechaHoraInicio: null,
+		fechaHoraFin: null,
 		horarioId: -1,
 		disciplinas: [],
-		direccion: "",
-		ubicacion: {
-			latitud: undefined,
-			longitud: undefined
-		},
-		modos: [],
 		precio: 0,
 		maxParticipantes: 2
 	};
 
-	let ubicacionMarcada: {x: number, y: number} | undefined = undefined;
+	$: (() => {
+		data.idSubespacio;
+		if (datosCreacion == null) return;
+
+		datosCreacion.subespacios.forEach(s => {
+			if (s.id === data.idSubespacio) {
+				fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + s.diasHaciaAdelante - 1)
+			}
+		})
+
+	})()
 
 	// Validation states
 	$: warningNombreVisible = false;
-	$: warningDireccionVisible = false;
-	$: warningUbicacionVisible = false;
 	$: warningPrecioVisible = false;
 	$: warningMaxParticipantesVisible = false;
 	$: warningHorarioVisible = false;
@@ -106,43 +109,21 @@
 
 	// Popup states
 	$: popupDisciplinasVisible = false;
-	$: popupModosVisible = false;
 
 	// Selected items
 	let disciplinasSeleccionadas: Map<number, string> = new Map();
-	let modosSeleccionados: Map<number, string> = new Map();
-
-	// ComboBox options
-	let tiposInscripcionOptions: Map<number, string> = new Map();
-
-	$: if (datosCreacion) {
-		data.idEspacio = esEspacioNoRegistrado ? null : espacioId;
-
-		// For private spaces with schedule, we would need to load schedules
-		// This would require another service call that's not specified in the requirements
-	}
 
 	// Search functions for PopupSeleccion
 	async function buscarDisciplinas(val: string) {
+		let ret: Map<number, string> = new Map();
+
+		if (data.idSubespacio === null) return ret;
+
 		let response;
-		if (esEspacioNoRegistrado) {
-			response = await DisciplinasService.buscar(val);
-		} else {
-			response = await DisciplinasService.buscarPorEspacio(val, espacioId);
-		}
 
-		let ret: Map<number, string> = new Map();
-		response.forEach((item) => {
-			ret.set(item.id, item.nombre);
-		});
+		response = await DisciplinasService.buscarPorSubespacio(val, data.idSubespacio);
 
-		return ret;
-	}
-
-	async function buscarModos(val: string) {
-		let response = await ModosDeEventoService.buscar(val);
-
-		let ret: Map<number, string> = new Map();
+		
 		response.forEach((item) => {
 			ret.set(item.id, item.nombre);
 		});
@@ -156,19 +137,6 @@
 			return {
 				valid: false,
 				reason: "El nombre del evento es obligatorio"
-			};
-		}
-		return {
-			valid: true,
-			reason: undefined
-		};
-	}
-
-	function validateDireccion(val: string) {
-		if (val.trim() === "") {
-			return {
-				valid: false,
-				reason: "La dirección es obligatoria"
 			};
 		}
 		return {
@@ -192,6 +160,12 @@
 	}
 
 	function validateMaxParticipantes(val: string) {
+		if (datosCreacion == null) {
+			return {
+				valid: false,
+				reason: "No se ha seleccionado el subespacio"
+			};
+		}
 		const num = parseInt(val);
 		if (!/^\-?[0-9]+$/.test(val)) {
 			return {
@@ -205,17 +179,40 @@
 				reason: "Debe haber al menos dos participantes"
 			};
 		}
+
+		let capacidadMaxima = 0;
+
+		datosCreacion.subespacios.forEach(s => {
+			if (s.id === data.idSubespacio) {
+				capacidadMaxima = s.capacidadMaxima;
+			}
+		})
+
+		if (capacidadMaxima === 0) {
+			return {
+				valid: false,
+				reason: "No se ha seleccionado el subespacio"
+			};
+		}
+
+		if (num > capacidadMaxima) {
+			return {
+				valid: false,
+				reason: "La capacidad máxima del subespacio es de " + capacidadMaxima + " personas"
+			};
+		}
+
 		return {
 			valid: true,
 			reason: undefined
 		};
 	}
 
-	async function crearEvento() {
+	
+
+	async function validatePreCrear() {
 		// Reset warnings
 		warningNombreVisible = false;
-		warningDireccionVisible = false;
-		warningUbicacionVisible = false;
 		warningPrecioVisible = false;
 		warningMaxParticipantesVisible = false;
 		warningHorarioVisible = false;
@@ -229,16 +226,6 @@
 			hasErrors = true;
 		}
 
-		if (esEspacioNoRegistrado && data.direccion.trim() === "") {
-			warningDireccionVisible = true;
-			hasErrors = true;
-		}
-
-		if (esEspacioNoRegistrado && ubicacionMarcada === undefined) {
-			warningUbicacionVisible = true;
-			hasErrors = true;
-		}
-
 		if (data.precio < 0) {
 			warningPrecioVisible = true;
 			hasErrors = true;
@@ -249,29 +236,45 @@
 			hasErrors = true;
 		}
 
-        if (!esEspacioNoRegistrado && !datosCreacion?.espacioPublico && data.usarCronograma && !horarioSeleccionado) {
+        if (!datosCreacion?.espacioPublico && data.usarCronograma && !horarioSeleccionado) {
             warningHorarioVisible = true;
 			hasErrors = true;
         }
 
-        if ((esEspacioNoRegistrado || datosCreacion?.espacioPublico || !datosCreacion?.espacioPublico && !data.usarCronograma ) && (data.fechaDesde === null || data.fechaHasta === null)) {
+        if ((datosCreacion?.espacioPublico || !datosCreacion?.espacioPublico && !data.usarCronograma ) && (data.fechaHoraInicio === null || data.fechaHoraFin === null)) {
             warningFechaHoraVisible = true;
             hasErrors = true;
         }
 
-		if (hasErrors) {           
-			return;
-		}
+		return hasErrors;
+	}
 
-		// Set location data for unregistered spaces
-		if (esEspacioNoRegistrado && ubicacionMarcada) {
-			data.ubicacion.latitud = ubicacionMarcada.x;
-			data.ubicacion.longitud = ubicacionMarcada.y;
+	async function pagarCreacionEvento() {
+		if (await validatePreCrear()) {           
+			return;
 		}
 
 		// Set selected disciplines and modes
 		data.disciplinas = Array.from(disciplinasSeleccionadas.keys());
-		data.modos = Array.from(modosSeleccionados.keys());
+
+		try {
+			let preferencias = await EventosService.pagarCreacionEvento(data);
+			startPopupPago(crearEvento, preferencias);
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
+	}
+
+	async function crearEvento() {
+		if (await validatePreCrear()) {           
+			return;
+		}
+
+		// Set selected disciplines and modes
+		data.disciplinas = Array.from(disciplinasSeleccionadas.keys());
 
 		try {
 			eventoId = await EventosService.crearEvento(data);
@@ -295,8 +298,8 @@
 
     function toggleUsarCronograma(usar: boolean) {
         if (data.usarCronograma !== usar) {
-            data.fechaDesde = null;
-            data.fechaHasta = null;
+            data.fechaHoraInicio = null;
+            data.fechaHoraFin = null;
             horarioSeleccionado = false;
         }
         data.usarCronograma = usar;
@@ -310,8 +313,9 @@
     $: horarios = [] as {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[];
 
     async function buscarHorarios() {
+		if (data.idSubespacio === null) return;
         try {
-            horarios = await CronogramaService.buscarHorariosDisponibles(espacioId, fechaBusquedaHorarios);
+            horarios = await CronogramaService.buscarHorariosDisponibles(data.idSubespacio, fechaBusquedaHorarios);
             selectedHorarioId = null;
         } catch (e) {
             if (e instanceof HttpError) {
@@ -328,6 +332,7 @@
 
     $: selectedHorarioId = null as number | null;
     $: precioOrganizacion = 0;
+	$: adicionalInscripcion = 0;
     $: horarioSeleccionado = false;
 
     function openPopupHorario() {
@@ -347,9 +352,11 @@
         if (selectedHorarioId !== null) {
             horarios.forEach(h => {
                 if (h.id === selectedHorarioId) {
-                    data.fechaDesde =  h.fechaHoraDesde
-                    data.fechaHasta =  h.fechaHoraHasta
+                    data.fechaHoraInicio =  h.fechaHoraDesde
+                    data.fechaHoraFin =  h.fechaHoraHasta
                     precioOrganizacion = h.precioOrganizacion;
+					//TODO: 
+					//adicionalInscripcion = h.adicionalInscripcion;
                 }
             })
         }
@@ -376,8 +383,8 @@
 
     $: (async () => {
         try {
-            if (data.fechaDesde !== null && data.fechaHasta !== null && datosCreacion?.espacioPublico && espacioId === -1) {
-                eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(espacioId, data.fechaDesde, data.fechaHasta);
+            if (data.fechaHoraInicio !== null && data.fechaHoraFin !== null && datosCreacion?.espacioPublico && espacioId === -1) {
+                eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(espacioId, data.fechaHoraInicio, data.fechaHoraFin);
             }
         } catch (e) {
             if (e instanceof HttpError) {
@@ -433,14 +440,6 @@
 	bind:selected={disciplinasSeleccionadas}
 />
 
-<PopupSeleccion 
-	title="Seleccionar modos de evento" 
-	multiple={true} 
-	bind:visible={popupModosVisible} 
-	searchFunction={buscarModos} 
-	bind:selected={modosSeleccionados}
-/>
-
 
 {#if datosCreacion}
 <div id="content">
@@ -463,155 +462,135 @@
 			rows={6}
 		/>
 
-		{#if !esEspacioNoRegistrado}
-            <div class="mb-2 md:flex justify-start items-center gap-1">
-                <span>Espacio:</span>
-                <br/>
-                <span>{datosCreacion.nombreEspacio}</span>
-            </div>
-        {/if}
+		<div class="mb-2 md:flex justify-start items-center gap-1">
+			<span>Espacio:</span>
+			<br/>
+			<span>{datosCreacion.nombreEspacio}</span>
+		</div>
 
-		{#if !esEspacioNoRegistrado && datosCreacion?.administrador}
+		<div class="flex flex-col md:flex-row justify-start md:items-center gap-2">
+			<span class="flex flex-row items-baseline">
+				<span>Subespacio</span>
+				<Button classes="text-xs info_subespacio">i</Button> 
+			</span>
+			<ComboBox classes="!md:w-[50%]" options={subespaciosOpciones} bind:selected={data.idSubespacio} placeholder="Subespacio" maxHeight={8}/>
+		</div>
+
+		{#if data.idSubespacio !== null}
+			{#if datosCreacion?.administrador}
 			<div class="mb-2 md:flex justify-start items-center gap-2">
 				<span>Organizar evento:</span>
-				<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
-					<Button 
-						action={() => toggleUsarCronograma(true)}
-						classes="grow { + data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
-					>
-						<span>Según cronograma</span>
-					</Button>
-					<Button 
-						action={() => toggleUsarCronograma(false)}
-						classes="grow {!data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
-					>
-						<span>De forma libre</span>
-					</Button>
+					<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
+						<Button 
+							action={() => toggleUsarCronograma(true)}
+							classes="grow { + data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
+						>
+							<span>Según cronograma</span>
+						</Button>
+						<Button 
+							action={() => toggleUsarCronograma(false)}
+							classes="grow {!data.usarCronograma ? "" : "bg-white [&>span]:text-black"}"
+						>
+							<span>De forma libre</span>
+						</Button>
+					</div>
+				</div>
+			{/if}
+
+			{#if datosCreacion?.espacioPublico}
+				<!--Público-->
+				<DatePicker range time minDate={new Date()} bind:startDate={data.fechaHoraInicio} bind:endDate={data.fechaHoraFin} label="Fecha y Hora"/>
+				<Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
+				{#if eventosSuperpuestos !== null}
+					<span>Hay {eventosSuperpuestos} eventos organizados en este espacio para este horario</span>
+				{/if}
+			{:else if !datosCreacion?.espacioPublico && data.usarCronograma}
+				<!--Privado con cronograma-->
+				<div class="md:flex justify-start items-center">
+					<span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs" action={openPopupHorario}>Cambiar</Button></span>
+					{#if horarioSeleccionado}
+						<div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
+							<div>{formatDate(data.fechaHoraInicio, true)}</div>
+							<div>a</div>
+							<div>{formatDate(data.fechaHoraFin, true)}</div>
+						</div>
+						{#if !datosCreacion?.administrador}
+							<span>Cuota por organización: {precioOrganizacion}</span>
+							<span>Adicional por inscripción: {adicionalInscripcion}</span>
+						{/if}
+					{/if}
+				</div>
+				<Warning visible={warningHorarioVisible} text="Es obligatorio seleccionar el horario"/>
+			{:else if !datosCreacion?.espacioPublico && !data.usarCronograma && datosCreacion?.administrador}
+				<!--Privado sin cronograma-->
+				<div>
+					<span>Periodo</span>
+					<!--TO-DO-->
+					<ComboBox 
+						options={periodosLibres.cb} 
+						bind:selected={selectedPeriodoLibre}
+						placeholder="Seleccione el periodo"
+					/>
+				</div>
+				{#if selectedPeriodoLibreData !== undefined}
+					<DatePicker 
+						range 
+						time 
+						minDate={periodoLibreMinDate} 
+						maxDate={periodoLibreMaxDate} 
+						bind:startDate={data.fechaHoraInicio} 
+						bind:endDate={data.fechaHoraFin} 
+						label="Fecha y Hora"
+					/>
+				{/if}
+				<Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
+			{/if}
+
+			<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
+				<div class="flex justify-start gap-2 items-baseline">
+					<span>Disciplinas</span>
+					<Button action={() => {popupDisciplinasVisible = true}}>Seleccionar</Button>
+				</div>
+				<div class="commaList">
+					{#each disciplinasSeleccionadas as d}
+						<span>{d[1]}</span>
+					{/each}
 				</div>
 			</div>
-		{/if}
 
-		{#if datosCreacion?.espacioPublico}
-            <!--Público-->
-            <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
-            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
-            {#if eventosSuperpuestos !== null}
-                <span>Hay {eventosSuperpuestos} eventos organizados en este espacio para este horario</span>
-            {/if}
-        {:else if esEspacioNoRegistrado}
-            <!--No registrado-->
-            <DatePicker range time minDate={new Date()} bind:startDate={data.fechaDesde} bind:endDate={data.fechaHasta} label="Fecha y Hora"/>
-            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
-            <TextField 
-				label="Dirección" 
-				bind:value={data.direccion} 
-				validate={validateDireccion} 
-				forceValidate={warningDireccionVisible}
+			<div class="flex flex-col md:flex-row md:gap-2 md:items-baseline">
+				<span>Precio de inscripción</span>
+				<div class="mb-2 flex items-center gap-2">
+					<span>$</span>
+					<TextField 
+						label={null}
+						bind:value={precioString} 
+						validate={validatePrecio} 
+						forceValidate={warningPrecioVisible}
+					/>
+				</div>
+				<div class="text-xs">
+					Precio más comisión: ${(data.precio * (1 + (datosCreacion?.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+				</div>
+			</div>
+			
+
+			<TextField 
+				label="Cantidad máxima de participantes" 
+				bind:value={maxParticipantesString} 
+				validate={validateMaxParticipantes} 
+				forceValidate={warningMaxParticipantesVisible}
 			/>
-
-			<div class="mb-2">
-				<span>Ubicación</span>
-				<MapDisplay 
-					latitude={-32.89084} 
-					longitude={-68.82717} 
-					bind:marked={ubicacionMarcada} 
-					zoom={12}
-				/>
-				<Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
-			</div>
-        {:else if !datosCreacion?.espacioPublico && data.usarCronograma}
-            <!--Privado con cronograma-->
-            <div class="md:flex justify-start items-center">
-                <span class="text-s flex flex-row gap-2 items-center">Horario: <Button classes="text-xs" action={openPopupHorario}>Cambiar</Button></span>
-                {#if horarioSeleccionado}
-                    <div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
-                        <div>{formatDate(data.fechaDesde, true)}</div>
-                        <div>a</div>
-                        <div>{formatDate(data.fechaHasta, true)}</div>
-                    </div>
-                    {#if !datosCreacion?.administrador}
-                        <span>Cuota por organización: {precioOrganizacion}</span>
-                    {/if}
-                {/if}
-            </div>
-            <Warning visible={warningHorarioVisible} text="Es obligatorio seleccionar el horario"/>
-        {:else if !datosCreacion?.espacioPublico && !data.usarCronograma && datosCreacion?.administrador}
-            <!--Privado sin cronograma-->
-            <div>
-                <span>Periodo</span>
-                <!--TO-DO-->
-                <ComboBox 
-                    options={periodosLibres.cb} 
-                    bind:selected={selectedPeriodoLibre}
-                    placeholder="Seleccione el periodo"
-                />
-            </div>
-            {#if selectedPeriodoLibreData !== undefined}
-                <DatePicker 
-                    range 
-                    time 
-                    minDate={periodoLibreMinDate} 
-                    maxDate={periodoLibreMaxDate} 
-                    bind:startDate={data.fechaDesde} 
-                    bind:endDate={data.fechaHasta} 
-                    label="Fecha y Hora"
-                />
-		    {/if}
-            <Warning text="La fecha y hora es obligatoria" visible={warningFechaHoraVisible}/>
 		{/if}
 
-		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
-			<div class="flex justify-start gap-2 items-baseline">
-				<span>Disciplinas</span>
-				<Button action={() => {popupDisciplinasVisible = true}}>Seleccionar</Button>
-			</div>
-			<div class="commaList">
-				{#each disciplinasSeleccionadas as d}
-					<span>{d[1]}</span>
-				{/each}
-			</div>
-		</div>
-
-		<div class="mb-2 flex flex-col gap-2 md:flex-row md:items-baseline">
-			<div class="flex justify-start gap-2 items-baseline">
-				<span>Modos de evento</span>
-				<Button action={() => {popupModosVisible = true}}>Seleccionar</Button>
-			</div>
-			<div class="commaList">
-				{#each modosSeleccionados as m}
-					<span>{m[1]}</span>
-				{/each}
-			</div>
-		</div>
-
-        <div class="flex flex-col md:flex-row md:gap-2 md:items-baseline">
-            <span>Precio de inscripción</span>
-            <div class="mb-2 flex items-center gap-2">
-                <span>$</span>
-                <TextField 
-                    label={null}
-                    bind:value={precioString} 
-                    validate={validatePrecio} 
-                    forceValidate={warningPrecioVisible}
-                />
-            </div>
-            <div class="text-xs">
-                Precio más comisión: ${(data.precio * (1 + (datosCreacion?.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
-            </div>
-        </div>
 		
 
-		<TextField 
-			label="Cantidad máxima de participantes" 
-			bind:value={maxParticipantesString} 
-			validate={validateMaxParticipantes} 
-			forceValidate={warningMaxParticipantesVisible}
-		/>
+		
 	</div>
 
 	<div class="flex gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => goto("/")}>Cancelar</Button>
-		<Button action={crearEvento}>Aceptar</Button>
+		<Button action={pagarCreacionEvento}>Aceptar</Button>
 	</div>
 </div>
 {/if}

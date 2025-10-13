@@ -1,19 +1,26 @@
 export default interface DTOEvento {
     nombre: string,
     descripcion: string,
-    fechaDesde: Date,
-    fechaHasta: Date,
-    precio: number,
+    fechaHoraInicio: Date,
+    fechaHoraFin: Date,
+    precioBase: number,
+    precioTotal: number,
     disciplinas: string[],
     espacio: {
         id: number,
-        nombre: string
-    } | undefined,
-    direccion: string,
-    ubicacion: {
-        latitud: number | undefined,
-        longitud: number | undefined,
+        nombre: string,
+        direccion: string,
+        latitud: number,
+        longitud: number,
     },
+    subespacio: {
+        id: number,
+        nombre: string,
+        descripcion: string
+    },
+    estado: string,
+    motivoCancelacion: string,
+    cupoLleno: boolean,
     superevento: {
         id: number,
         nombre: string
@@ -25,5 +32,6 @@ export default interface DTOEvento {
         apellido: string
     }[],
     administrador: boolean,
+    organizador: boolean,
     idChat: number | null
 }

@@ -18,7 +18,6 @@
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import TimeRangePicker, { parseTime } from "$lib/components/TimeRangePicker.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
-	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
 	import Warning from "$lib/components/Warning.svelte";
 
     $: errorPermiso = false;
@@ -29,14 +28,12 @@
     $: filtros = {
 		texto: "",
 		ubicacion: undefined,
-		fechaDesde: null,
+		fechaDesde: new Date(),
 		fechaHasta: null,
 		horaDesde: null,
 		horaHasta: null,
 		tiposEspacio: [],
-		espaciosNoRegistrados: false,
 		disciplinas: [],
-		modos: [],
 		precioLimite: undefined,
 		buscarEventos: true,
 		buscarSuperventos: true
@@ -59,7 +56,6 @@
             filtros.horaHasta = parseTime(horaHasta)
 
         filtros.tiposEspacio = []
-        filtros.espaciosNoRegistrados = false;
         if (tipoEspacioSeleccionado !== undefined) {
             let aux = idToCombination.get(tipoEspacioSeleccionado);
             if (aux !== undefined)
@@ -69,7 +65,6 @@
 
             if (nr !== -1) {
                 filtros.tiposEspacio.splice(nr, 1)
-                filtros.espaciosNoRegistrados = true;
             }
 
         }
@@ -77,11 +72,6 @@
         filtros.disciplinas = [];
         disciplinas.keys().forEach(d => {
             filtros.disciplinas.push(d);
-        })
-
-        filtros.modos = [];
-        modos.keys().forEach(d => {
-            filtros.modos.push(d);
         })
 
         if (ubicacion !== undefined && buscarPorUbicacion) {
@@ -137,22 +127,6 @@
         return ret;
     }
 
-    $: popupModosVisible = false;
-
-    let modos : Map<number, string> = new Map<number, string>();
-
-    async function buscarModos(val: string) {
-        let response = await ModosDeEventoService.buscar(val);
-
-        let ret : Map<number, string> = new Map();
-
-        response.forEach((val) => {
-            ret.set(val.id, val.nombre);
-        });
-
-        return ret;
-    }
-
     let horaDesde : string | null;
     let horaHasta : string | null;
 
@@ -193,11 +167,6 @@
 
         try {
 			let tiposEspacioRaw : {id: number, nombre: string, checked: boolean | undefined}[] = await EspaciosService.obtenerTiposEspacio();
-            tiposEspacioRaw.push({
-                id: -1,
-                nombre: "No Registrado",
-                checked: undefined
-            })
 
             let aux = generateCombinations(
                 tiposEspacioRaw.map(item => ({id: item.id, nombre: item.nombre}))
@@ -270,7 +239,6 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
 </script>
 
 <PopupSeleccion title="Disciplinas" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas}/>
-<PopupSeleccion title="Modos de evento" multiple={true} bind:visible={popupModosVisible} searchFunction={buscarModos} bind:selected={modos}/>
 
 <PopupUbicacion bind:visible={popupUbicacionVisible} max={100000} bind:ubicacion={ubicacion} bind:radius={rango}/>
 
@@ -332,22 +300,6 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
                 <div class="commaList">
                     {#each disciplinas as d}
                         <span>{d[1]}</span>
-                    {/each}
-                </div>
-                {:else}
-                Cualquiera
-                {/if}
-            </div>
-
-            <div class="md:flex flex-row justify-start items-center gap-4">
-                <div class="flex justify-start gap-2 items-center">
-                    <span>Modos de evento</span>
-                    <Button action={() => {popupModosVisible = !popupModosVisible}}>Seleccionar</Button>
-                </div>
-                {#if modos.size > 0}
-                <div class="commaList">
-                    {#each modos as m}
-                        <span>{m[1]}</span>
                     {/each}
                 </div>
                 {:else}
