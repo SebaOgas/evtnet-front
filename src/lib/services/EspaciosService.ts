@@ -21,33 +21,12 @@ import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
 
 
 export const EspaciosService = {
-    /* crearEspacio: async (data: DTOCrearEspacio) => {
+    crearEspacio: async (data: DTOCrearEspacio) => {
 
         let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, JSON.stringify(data));
 
         return response.id;
-    }, */
-    crearEspacio: async (data: DTOCrearEspacio, basesYCondiciones: File, documentacion: File[] = []) => {
-        const formData = new FormData();
-
-        formData.append(
-            "espacio",
-            new Blob([JSON.stringify(data)], { type: "application/json" })
-        );
-
-        if (basesYCondiciones) {
-            formData.append("basesYCondiciones", basesYCondiciones);
-        }
-
-        for (const doc of documentacion) {
-            formData.append("documentacion", doc);
-        }
-
-        const response: { id: number } = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, formData);
-
-        return response.id;
     },
-
     obtenerEspacio: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
@@ -138,7 +117,7 @@ export const EspaciosService = {
     },
     buscarUsuariosNoAdministradores: async (idEspacio: number, texto: string) => {
         let args = new Map<string, string>();
-        args.set("idEspacio", `${idEspacio}`);
+        args.set("idEvento", `${idEspacio}`);
         args.set("texto", texto);
 
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "espacios/buscarUsuariosNoAdministradores", false, args);

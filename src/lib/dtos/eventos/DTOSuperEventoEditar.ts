@@ -12,6 +12,7 @@ export default interface DTOSuperEventoEditar {
         fechaHasta: Date,
         nombreEspacio: string,
         crear: boolean, //Por defecto false,
-        eliminar: boolean //Por defecto false
+        eliminar: boolean, //Por defecto false
+        cancelado: boolean
     }[]
 }
