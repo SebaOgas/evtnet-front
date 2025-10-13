@@ -15,6 +15,8 @@
     import { base } from '$app/paths'
 	import { ImagenesEspaciosService } from "$lib/services/ImagenesEspaciosService";
 	import Carousel from "$lib/components/Carousel.svelte";
+	import type { DTOSubespacioDetalle } from "$lib/dtos/espacios/DTOEspacio";
+	import type { DTOEspacioEstado } from "$lib/dtos/espacios/DTOEspacioEditar";
 
     let previousPage : string = base ;
 
@@ -39,7 +41,9 @@
 		disciplinas: [],
 		caracteristicas: [],
 		esAdmin: false,
-        idChat: null
+        idChat: null,
+        subEspacios: [] as DTOSubespacioDetalle[],
+        estado:{} as DTOEspacioEstado,
     } as DTOEspacio;
 
     $: errorGenerico = ""
@@ -78,7 +82,7 @@
             
             listo = true;
             
-            data.caracteristicas?.forEach(async car => {
+            /* data.caracteristicas?.forEach(async car => {
                 let img = await IconosCaracteristicasService.obtener(car.imagenId);
                 
                 caracteristicas.push({
@@ -86,7 +90,7 @@
 					imgUrl: img
 				})
                 caracteristicas = [...caracteristicas]
-            });
+            }); */
 
         } catch (e) {
             if (e instanceof HttpError) {
@@ -105,6 +109,13 @@
         <h1 class="text-m text-center">
             {data.nombre}
         </h1>
+        
+
+		{#if data.esAdmin}
+			<span>Estado del espacio</span>
+			{data.estado!.nombre}
+            {data.estado!.descripcion}
+		{/if}		
         <h1 class="text-s text-center">
             {data.tipoEspacio}
         </h1>
@@ -159,13 +170,15 @@
 
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
         <Button action={() => {goto(`/Espacios`)}}>Atrás</Button>
-        <Button action={() => {goto(`/CrearEvento/${id}`)}}>Organizar evento</Button>
-        <Button action={() => {goto(`${page.url.pathname}/Resenas`)}}>Ver reseñas</Button>
-        <Button icon="/icons/share.svg"></Button>   
-        
-        {#if data.esAdmin}
-            <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>           
-            <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
+        {#if data.estado!.id==2 || data.estado!.id==3}
+            <Button action={() => {goto(`/CrearEvento/${id}`)}}>Organizar evento</Button>
+            <Button action={() => {goto(`${page.url.pathname}/Resenas`)}}>Ver reseñas</Button>
+            <Button icon="/icons/share.svg"></Button>   
+            
+            {#if data.esAdmin }
+                <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>           
+                <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
+            {/if}
         {/if}
     </div>
 </div>  

@@ -20,6 +20,7 @@
 
 	$: errorPermiso = false;
 	$: id = Number(page.params.id);
+	$: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 	$: nombreEspacio = "";
 
 	$: fechaDesde = null as Date | null;
@@ -142,7 +143,7 @@
 		// Check for conflicts
 		verificando = true;
 		try {
-			verificacion = await CronogramaService.verificarVigencia(id, null, fechaDesde!, fechaHasta!);
+			verificacion = await CronogramaService.verificarVigencia(idSubEspacio, null, fechaDesde!, fechaHasta!);
 			if (verificacion.cronogramasSuperpuestos.length > 0) {
 				popupErrorVisible = true;
 			} else {
@@ -162,7 +163,7 @@
 		popupConfirmacionVisible = false;
 		
 		try {
-			idCronogramaNuevo = await CronogramaService.crearCronograma(id, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante));
+			idCronogramaNuevo = await CronogramaService.crearCronograma(idSubEspacio, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante));
 			popupExitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -173,7 +174,7 @@
 	}
 
 	function cancelar() {
-		goto(`/Espacio/${id}/AdministrarCronograma`);
+		goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${idSubEspacio}`);
 	}
 </script>
 
@@ -244,7 +245,7 @@
 
 		<div class="flex justify-center items-center gap-2 w-full">
 			<Button action={() => {popupErrorVisible = false}}>Cerrar</Button>
-			<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma`)}}>Administrar cronogramas</Button>
+			<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${idSubEspacio}`)}}>Administrar cronogramas</Button>
 		</div>
 	</div>
 </Popup>
@@ -253,7 +254,7 @@
 <Popup bind:visible={popupExitoVisible} fitH fitW>
 	Cronograma generado correctamente
 	<div class="flex justify-center items-center w-full">
-		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronogramaNuevo}`)}}>Aceptar</Button>
+		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronogramaNuevo}?idSubEspacio=${idSubEspacio}`)}}>Aceptar</Button>
 	</div>
 </Popup>
 

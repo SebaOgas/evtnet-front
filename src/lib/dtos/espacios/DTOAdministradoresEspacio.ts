@@ -1,6 +1,6 @@
 export default interface DTOAdministradoresEspacio{
     esPropietario: boolean;
-    administradores: DTOAdministrador[];
+    dtoAdministradores: DTOAdministrador[];
 }
 
 export interface DTOAdministrador{
@@ -9,6 +9,7 @@ export interface DTOAdministrador{
     username:string;
     urlFotoPerfil:string;
     contentType:string;
+    esPropietario:boolean;
     fechasAdministracion: {
         fechaDesde:Date;
         fechaHasta?:Date;

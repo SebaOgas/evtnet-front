@@ -21,12 +21,13 @@
 	$: errorPermiso = false;
 	$: id = Number(page.params.id);
 	$: idCronograma = Number(page.params.cronogramaId);
+	$: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
 	$: listo = false
 
 	$: data = {
 		nombreEspacio: "",
-		id: 0,
+		idCronograma: 0,
 		fechaDesde: new Date(),
 		fechaHasta: new Date(),
 		diasHaciaAdelante: 0
@@ -177,7 +178,7 @@
 		popupConfirmacionVisible = false;
 		
 		try {
-			await CronogramaService.modificarCronograma(idCronograma, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante));
+			await CronogramaService.modificarCronograma(idCronograma, fechaDesde!, fechaHasta!, parseInt(diasHaciaAdelante), idSubEspacio);
 			popupExitoVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -188,7 +189,7 @@
 	}
 
 	function cancelar() {
-		goto(`/Espacio/${id}/AdministrarCronograma`);
+		goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${idSubEspacio}`);
 	}
 </script>
 
@@ -276,7 +277,7 @@
 
 		<div class="flex justify-center items-center gap-2 w-full">
 			<Button action={() => {popupErrorVisible = false}}>Cerrar</Button>
-			<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma`)}}>Administrar cronogramas</Button>
+			<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${idSubEspacio}`)}}>Administrar cronogramas</Button>
 		</div>
 	</div>
 </Popup>
@@ -285,7 +286,7 @@
 <Popup bind:visible={popupExitoVisible} fitH fitW>
 	Cronograma modificado correctamente
 	<div class="flex justify-center items-center w-full">
-		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronograma}`)}}>Aceptar</Button>
+		<Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${idCronograma}?idSubEspacio=${idSubEspacio}`)}}>Aceptar</Button>
 	</div>
 </Popup>
 

@@ -1,3 +1,5 @@
+import type { DTOEspacioEstado } from "./DTOEspacioEditar"
+
 export default interface DTOEspacio {
     nombre: string,
     tipoEspacio: string,
@@ -9,5 +11,17 @@ export default interface DTOEspacio {
     disciplinas: string[],
     caracteristicas: {imagenId: number, nombre: string}[],
     esAdmin: boolean,
-    idChat: number | null
+    idChat: number | null,
+    estado: DTOEspacioEstado | null,
+}
+
+export interface DTOSubespacioDetalle{
+    nombre:string,
+    descripcion:string,
+    capacidadMaxima: number,
+    disciplinas:string[]
+    caracteristicas: {
+        imagenId: number,
+        nombre: string
+    }[]
 }

@@ -17,6 +17,7 @@
     $: errorPermiso = false;
 
     $: id = Number(page.params.id);
+    $: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: data = {
 		nombre: "",
@@ -37,7 +38,7 @@
         }
 
         try {
-            data = await CronogramaService.obtenerCronogramasEspacio(id);            
+            data = await CronogramaService.obtenerCronogramasEspacio(idSubEspacio);            
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -50,7 +51,7 @@
 <div id="content">
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
         <h1 class="text-s text-center">
-            Administrar cronogramas de espacio
+            Administrar cronogramas
         </h1>
         <h2 class="text-m text-center">
             {data.nombre}
@@ -69,8 +70,7 @@
                             </div>
                         </div>
                         <div class="ml-4 flex gap-2">
-                            <Button icon="/icons/edit.svg" action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${cronograma.id}/Modificar`)}}></Button>
-                            <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${cronograma.id}`)}}></Button>
+                            <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Espacio/${id}/AdministrarCronograma/${cronograma.id}?idSubEspacio=${idSubEspacio}`)}}></Button>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
 
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
         <Button action={() => {goto(`/Espacio/${id}/Administrar`)}}>Atrás</Button>
-        <Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/Nuevo`)}}>Nuevo</Button>
+        <Button action={() => {goto(`/Espacio/${id}/AdministrarCronograma/Nuevo?idSubEspacio=${idSubEspacio}`)}}>Nuevo</Button>
     </div>
 </div>  
 
