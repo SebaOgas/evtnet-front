@@ -15,6 +15,7 @@
     import { base } from '$app/paths'
 	import { ImagenesEspaciosService } from "$lib/services/ImagenesEspaciosService";
 	import Carousel from "$lib/components/Carousel.svelte";
+	import type { DTOSubespacioDetalle } from "$lib/dtos/espacios/DTOEspacio";
 
     let previousPage : string = base ;
 
@@ -36,10 +37,9 @@
 		latitud: 0,
 		longitud: 0,
 		cantidadImagenes: 0,
-		disciplinas: [],
-		caracteristicas: [],
 		esAdmin: false,
-        idChat: null
+        idChat: null,
+        subEspacios: [] as DTOSubespacioDetalle[],
     } as DTOEspacio;
 
     $: errorGenerico = ""
@@ -130,16 +130,16 @@
         </div>
         {/if}
 
-        <div class="mb-2 mt-2">
+        <!-- <div class="mb-2 mt-2">
             <span class="text-s">Disciplinas:</span>
             <div class="commaList">
                 {#each data.disciplinas as d}
                     <span>{d}</span>
                 {/each}
             </div>
-        </div>
+        </div> -->
 
-        {#if caracteristicas !== null && caracteristicas.length === caracteristicas.length}
+        <!-- {#if caracteristicas !== null && caracteristicas.length === caracteristicas.length}
             <div class="mb-2 mt-2 w-full md:w-[50vw]">
                 <div class="w-full mx-auto mb-4 text-s">
                     Características:
@@ -153,7 +153,28 @@
                     {/each}
                 </ul>
             </div>
-        {/if}
+        {/if} -->
+        <h2 class="text-m text-center">
+            SubEspacios
+        </h2>
+        <div class="mb-2 mt-2">
+            <div class="flex flex-col gap-2">
+                {#each data.subEspacios as se}
+                    <div>
+                        <div>{se.nombre}</div>
+                        <div>Capacidad máxima: {se.capacidadMaxima}</div>
+                        <div>Disciplinas: {
+                            se.disciplinas
+                                .map((d) => {
+                                    return d;
+                                })
+                                .filter(Boolean)
+                                .join(", ")
+                        }</div>
+                    </div>
+                {/each}
+            </div>           
+        </div>
     </div>
 
 
