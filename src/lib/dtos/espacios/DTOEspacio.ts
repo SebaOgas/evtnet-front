@@ -6,9 +6,18 @@ export default interface DTOEspacio {
     latitud: number,
     longitud: number,
     cantidadImagenes: number,
-    disciplinas: string[],
-    caracteristicas: {imagenId: number, nombre: string}[],
+    subEspacios: DTOSubespacioDetalle[],
     esAdmin: boolean,
     idChat: number | null
 }
-//TODO modificar para que traiga subespacio
+
+export interface DTOSubespacioDetalle{
+    nombre:string,
+    descripcion:string,
+    capacidadMaxima: number,
+    disciplinas:string[]
+    caracteristicas: {
+        imagenId: number,
+        nombre: string
+    }[]
+}

@@ -136,7 +136,7 @@ export const EspaciosService = {
     },
     buscarUsuariosNoAdministradores: async (idEspacio: number, texto: string) => {
         let args = new Map<string, string>();
-        args.set("idEvento", `${idEspacio}`);
+        args.set("idEspacio", `${idEspacio}`);
         args.set("texto", texto);
 
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "espacios/buscarUsuariosNoAdministradores", false, args);
