@@ -51,6 +51,11 @@ export const EventosService = {
 
         return response;
     },
+    pagarCreacionEvento: async (data: DTOCrearEvento) => {
+        let response : DTOPreferenciaPago[] = await request(HttpRequestType.PUT, "eventos/pagarCreacionEvento", true, null, JSON.stringify(data));
+
+        return response;
+    },
     crearEvento: async (data: DTOCrearEvento) => {
         let response : {id: number} = await request(HttpRequestType.POST, "eventos/crearEvento", true, null, JSON.stringify(data));
 
