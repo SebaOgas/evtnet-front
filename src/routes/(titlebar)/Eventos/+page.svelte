@@ -355,7 +355,7 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
                     {:else if r.fechaHoraProximoEvento !== undefined}
                         <div class="flex justify-between items-center">
                             <span class="text-s">{r.nombre}</span>
-                            <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Superevento/${r.id}`)}} classes="shrink-0"></Button>
+                            <Button icon="/icons/arrow-right.svg" action={() => {goto(`/SuperEvento/${r.id}`)}} classes="shrink-0"></Button>
                         </div>
                         <div class="flex justify-start items-center text-xs ml-4">
                             <img src={"/icons/superevento.svg"} alt="S" class="object-contain">

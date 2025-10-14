@@ -202,7 +202,7 @@
 					<p>Este evento pertenece a un superevento.</p>
 					<p>¿Desea verlo?</p>
                     <div class="flex justify-center">
-					    <Button classes="text-xs" action={() => goto(`/Superevento/${evento !== null ? evento.idSuperevento : ""}`)}>Ver Superevento</Button>
+					    <Button classes="text-xs" action={() => goto(`/SuperEvento/${evento !== null ? evento.idSuperevento : ""}`)}>Ver Superevento</Button>
                     </div>
 				</div>
 			{/if}
