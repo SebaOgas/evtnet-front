@@ -282,11 +282,11 @@
                     forceValidate={forceValidatePrecio}
                 />
             </div>
-            {#if precioTexto && validatePrecio(precioTexto).valid}
+            <!-- {#if precioTexto && validatePrecio(precioTexto).valid}
                 <p class="text-xs mt-1">
                     Precio más comisión: {formatearPrecio(calcularPrecioConComision(parseFloat(precioTexto.replace(',', '.'))))}
                 </p>
-            {/if}
+            {/if} -->
         </div>
         <div>
             <span class="text-xs">Precio adicional por inscripción:</span>
@@ -314,7 +314,7 @@
 
 <Popup title="Horario creado exitosamente" bind:visible={popupExitoVisible} fitH fitW>
     <div class="flex justify-center items-center w-full">
-        <Button action={() => goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}`)}>
+        <Button action={() => goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}?idSubEspacio=${idSubEspacio}`)}>
             Aceptar
         </Button>
     </div>

@@ -47,11 +47,11 @@
 
         filtros.horaDesde = null
         if (horaDesde !== null && horaDesde !== undefined)
-            filtros.horaDesde = parseTime(horaDesde)
+            filtros.horaDesde = parseTime(horaDesde).getTime()
 
         filtros.horaHasta = null
         if (horaHasta !== null && horaHasta !== undefined)
-            filtros.horaHasta = parseTime(horaHasta)
+            filtros.horaHasta = parseTime(horaHasta).getTime()
 
         filtros.disciplinas = [];
         disciplinas.keys().forEach(d => {

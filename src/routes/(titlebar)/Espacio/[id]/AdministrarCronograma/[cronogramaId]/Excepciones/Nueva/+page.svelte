@@ -21,6 +21,7 @@
     $: errorPermiso = false;
     $: espacioId = Number(page.params.id);
     $: cronogramaId = Number(page.params.cronogramaId);
+    $: idSubEspacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: listo = false
 
@@ -213,7 +214,7 @@
 
 <Popup title="Excepción creada exitosamente" bind:visible={popupExitoVisible} fitH fitW>
     <div class="flex justify-center items-center w-full">
-        <Button action={() => goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones`)}>
+        <Button action={() => goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}/Excepciones?idSubEspacio=${idSubEspacio}`)}>
             Aceptar
         </Button>
     </div>
