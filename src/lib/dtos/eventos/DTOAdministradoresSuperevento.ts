@@ -12,8 +12,7 @@ export default interface DTOAdministradoresSuperevento {
 
         historico: {
             fechaDesde: Date,
-            fechaHasta: Date | null,
-            organizador: boolean
+            fechaHasta: Date | null
         }[]
     }[]
 }

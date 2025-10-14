@@ -214,22 +214,6 @@
                 {/if}
             </div>
 
-            <div class="md:flex flex-row justify-start items-center gap-4">
-                <div class="flex justify-start gap-2 items-center">
-                    <span>Modos de evento</span>
-                    <Button action={() => {popupModosVisible = !popupModosVisible}}>Seleccionar</Button>
-                </div>
-                {#if modos.size > 0}
-                <div class="commaList">
-                    {#each modos as m}
-                        <span>{m[1]}</span>
-                    {/each}
-                </div>
-                {:else}
-                Cualquiera
-                {/if}
-            </div>
-
             <div>
                 <div class="flex justify-start items-center gap-2">
                     <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Precio máximo $</span></CheckBox>

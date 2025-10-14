@@ -18,15 +18,37 @@ import type DTOBusquedaSEP from "$lib/dtos/espacios/DTOBusquedaSEP";
 import type DTOResultadoBusquedaSEP from "$lib/dtos/espacios/DTOResultadoBusquedaSEP";
 import type DTOSolicitudEPCompleta from "$lib/dtos/espacios/DTOSolicitudEPCompleta";
 import type DTOBusquedaEspacio from "$lib/dtos/espacios/DTOBusquedaEspacio";
+import type { DTOEncargadoSubespacio } from "$lib/dtos/espacios/DTOEncargadoSubespacio";
 
 
 export const EspaciosService = {
-    crearEspacio: async (data: DTOCrearEspacio) => {
+    /* crearEspacio: async (data: DTOCrearEspacio) => {
 
         let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, JSON.stringify(data));
 
         return response.id;
+    }, */
+    crearEspacio: async (data: DTOCrearEspacio, basesYCondiciones: File, documentacion: File[] = []) => {
+        const formData = new FormData();
+
+        formData.append(
+            "espacio",
+            new Blob([JSON.stringify(data)], { type: "application/json" })
+        );
+
+        if (basesYCondiciones) {
+            formData.append("basesYCondiciones", basesYCondiciones);
+        }
+
+        for (const doc of documentacion) {
+            formData.append("documentacion", doc);
+        }
+
+        const response: { id: number } = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, formData);
+
+        return response.id;
     },
+
     obtenerEspacio: async (id: number) => {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
@@ -43,8 +65,23 @@ export const EspaciosService = {
 
         return response;
     },
-    editarEspacio: async (data: DTOEspacioEditar) => {
-        await request(HttpRequestType.PUT, "espacios/editarEspacio", true, null, JSON.stringify(data));
+    editarEspacio: async (data: DTOEspacioEditar, basesYCondiciones: File | null, documentacion: File[] = []) => {
+        const formData = new FormData();
+
+        formData.append(
+            "espacio",
+            new Blob([JSON.stringify(data)], { type: "application/json" })
+        );
+
+        if (basesYCondiciones) {
+            formData.append("basesYCondiciones", basesYCondiciones);
+        }
+
+        for (const doc of documentacion) {
+            formData.append("documentacion", doc);
+        }
+
+        await request(HttpRequestType.PUT, "espacios/editarEspacio", true, null, formData);
     },
     dejarDeAdministrar: async (espacioId: number) => {
         let args = new Map<string, string>();
@@ -117,7 +154,7 @@ export const EspaciosService = {
     },
     buscarUsuariosNoAdministradores: async (idEspacio: number, texto: string) => {
         let args = new Map<string, string>();
-        args.set("idEvento", `${idEspacio}`);
+        args.set("idEspacio", `${idEspacio}`);
         args.set("texto", texto);
 
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "espacios/buscarUsuariosNoAdministradores", false, args);
@@ -215,5 +252,32 @@ export const EspaciosService = {
     buscarEspaciosPropios: async () => {
         let response : DTOBusquedaEspacio[] = await request(HttpRequestType.GET, "espacios/buscarEspaciosPropios", false);
         return response;
+    },
+    obtenerEncargadosSubespacios: async (idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+        let response : DTOEncargadoSubespacio[] = await request(HttpRequestType.GET, "espacios/obtenerEncargadosSubespacios", true, args);
+        response.map(iconoObj => {
+            if(iconoObj.urlFotoPerfil!=null && iconoObj.urlFotoPerfil!=""){
+                const byteCharacters = atob(iconoObj.urlFotoPerfil);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+
+                const bytes = new Uint8Array(byteNumbers);
+                let urlCreator = window.URL || window.webkitURL;
+                let url = urlCreator.createObjectURL(new Blob([bytes], {type: iconoObj.contentType || 'image/png'}));
+                iconoObj.urlFotoPerfil = url;
+            }
+            return iconoObj;
+        });
+        return response;
+    },
+    agregarEncargadoSubespacio: async (isSubespacio: number, username:string) => {
+        let args = new Map<string, string>();
+        args.set("isSubEspacio", `${isSubespacio}`);
+        args.set("username", `${username}`);
+        await request(HttpRequestType.POST, "espacios/agregarEncargadoSubespacio", true, args);
     },
 }
