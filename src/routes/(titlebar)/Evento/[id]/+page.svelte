@@ -31,21 +31,31 @@
 	$: data = {
 		nombre: "",
 		descripcion: "",
-		fechaDesde: new Date(),
-		fechaHasta: new Date(),
-		precio: 0,
-		modos: [],
+		fechaHoraInicio: new Date(),
+		fechaHoraFin: new Date(),
+		precioBase: 0,
+		precioTotal: 0,
 		disciplinas: [],
-		espacio: undefined,
-		direccion: "",
-		ubicacion: {
-			latitud: undefined,
-			longitud: undefined,
+		espacio: {
+			id: 0,
+			nombre: "",
+			direccion: "",
+			latitud: 0,
+			longitud: 0
 		},
+		subespacio: {
+			id: 0,
+			nombre: "",
+			descripcion: ""
+		},
+		estado: "",
+		motivoCancelacion: "",
+		cupoLleno: false,
 		superevento: undefined,
 		inscripto: false,
 		inscriptos: [],
 		administrador: false,
+    	organizador: false,
         idChat: null
 	} as DTOEvento;
 
@@ -149,6 +159,10 @@
             <h1 class="text-m text-center">
                 {data.nombre}
             </h1>
+
+			{#if data.estado === "Cancelado"}
+				<div class="text-center text-orange">Cancelado</div>
+			{/if}
             
             <p class="text-xs">
                 {data.descripcion}
@@ -157,15 +171,15 @@
             <div class="md:flex justify-start items-center">
                 <span class="text-s">Horario:</span>
                 <div class="ml-4 flex flex-col justify-start items-center md:flex-row md:justify-center md:gap-2">
-                    <div>{formatDateTime(data.fechaDesde)}</div>
+                    <div>{formatDateTime(data.fechaHoraInicio)}</div>
                     <div>a</div>
-                    <div>{formatDateTime(data.fechaHasta)}</div>
+                    <div>{formatDateTime(data.fechaHoraFin)}</div>
                 </div>
             </div>
 
             <div>
                 <span class="text-s">Precio de inscripción:</span>
-                <span class="text-xs">${("" + data.precio.toFixed(2)).replace(".", ",")}</span>
+                <span class="text-xs">${("" + data.precioTotal.toFixed(2)).replace(".", ",")}</span>
             </div>
 
             {#if data.disciplinas.length > 0}
@@ -191,16 +205,16 @@
 
             <div class="flex flex-col gap-2 md:flex-row md:items-baseline">
                 <span class="text-s">Dirección:</span>
-                <span class="text-xs">{data.direccion}</span>
+                <span class="text-xs">{data.espacio.direccion}</span>
             </div>
 
-            {#if listo && data.ubicacion.latitud !== undefined && data.ubicacion.longitud !== undefined}
+            {#if listo && data.espacio.latitud !== undefined && data.espacio.longitud !== undefined}
                 <div class="mb-2 mt-2">
                     <span class="text-s">Ubicación:</span>
                     <MapDisplay 
-                        latitude={data.ubicacion.latitud} 
-                        longitude={data.ubicacion.longitud} 
-                        marked={{x: data.ubicacion.latitud, y: data.ubicacion.longitud}} 
+                        latitude={data.espacio.latitud} 
+                        longitude={data.espacio.longitud} 
+                        marked={{x: data.espacio.latitud, y: data.espacio.longitud}} 
                         zoom={14} 
                         disableMarking
                     />
@@ -211,7 +225,7 @@
                 <div>
                     <div class="flex justify-start items-center gap-2">
                         <span class="text-s">Superevento</span>
-                        <Button action={() => {goto(`/Superevento/${data.superevento?.id}`)}}>Ver Superevento</Button>
+                        <Button action={() => {goto(`/SuperEvento/${data.superevento?.id}`)}}>Ver Superevento</Button>
                     </div>
                     <div class="text-xs">{data.superevento.nombre}</div>
                 </div>
@@ -236,6 +250,19 @@
                     </div>
                 </div>
             {/if}
+
+			{#if data.estado === "Cancelado"}
+                <div>
+                    <div class="flex justify-start items-center gap-2">
+                        <span class="text-s">Motivo de cancelación</span>
+                    </div>
+                    <div class="text-xs">{data.motivoCancelacion}</div>
+                </div>
+            {/if}
+
+			{#if !data.inscripto && data.cupoLleno}
+				<div class="text-orange">No puede inscribirse, dado que se llenó el cupo de participantes</div>
+			{/if}
         {/if}
 	</div>
 
@@ -244,12 +271,13 @@
 		
 		{#if data.inscripto}
 			<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
-			{#if data.fechaDesde <= new Date()}
-		    	<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
-			{/if}
 		{:else}
-			<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
+			{#if !data.cupoLleno}
+				<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
+			{/if}
 		{/if}
+	
+		<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
 		
 		{#if data.administrador}
 			<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
@@ -259,6 +287,11 @@
 
         {#if data.administrador}
 			<Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>
+		{/if}
+
+		<!--TODO: implementar cancelación de evento-->
+		{#if data.estado === "En Revisión" || data.estado == "Aceptado"}
+			<Button>Cancelar evento</Button>
 		{/if}
 	</div>
 </div>

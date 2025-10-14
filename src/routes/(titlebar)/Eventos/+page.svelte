@@ -18,7 +18,6 @@
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import TimeRangePicker, { parseTime } from "$lib/components/TimeRangePicker.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
-	import { ModosDeEventoService } from "$lib/services/ModosDeEventoService";
 	import Warning from "$lib/components/Warning.svelte";
 
     $: errorPermiso = false;
@@ -29,18 +28,16 @@
     $: filtros = {
 		texto: "",
 		ubicacion: undefined,
-		fechaDesde: null,
+		fechaDesde: (new Date()).getTime(),
 		fechaHasta: null,
 		horaDesde: null,
 		horaHasta: null,
 		tiposEspacio: [],
-		espaciosNoRegistrados: false,
 		disciplinas: [],
-		modos: [],
 		precioLimite: undefined,
 		buscarEventos: true,
-		buscarSuperventos: true
-	} as DTOBusquedaEventos;
+		buscarSupereventos: true
+	} as unknown as DTOBusquedaEventos;
 
     $: resultados = [] as DTOResultadoBusquedaEventos[];
 
@@ -52,14 +49,13 @@
 
         filtros.horaDesde = null
         if (horaDesde !== null && horaDesde !== undefined)
-            filtros.horaDesde = parseTime(horaDesde)
+            filtros.horaDesde = parseTime(horaDesde).getTime();
 
         filtros.horaHasta = null
         if (horaHasta !== null && horaHasta !== undefined)
-            filtros.horaHasta = parseTime(horaHasta)
+            filtros.horaHasta = parseTime(horaHasta).getTime();
 
         filtros.tiposEspacio = []
-        filtros.espaciosNoRegistrados = false;
         if (tipoEspacioSeleccionado !== undefined) {
             let aux = idToCombination.get(tipoEspacioSeleccionado);
             if (aux !== undefined)
@@ -69,7 +65,6 @@
 
             if (nr !== -1) {
                 filtros.tiposEspacio.splice(nr, 1)
-                filtros.espaciosNoRegistrados = true;
             }
 
         }
@@ -77,11 +72,6 @@
         filtros.disciplinas = [];
         disciplinas.keys().forEach(d => {
             filtros.disciplinas.push(d);
-        })
-
-        filtros.modos = [];
-        modos.keys().forEach(d => {
-            filtros.modos.push(d);
         })
 
         if (ubicacion !== undefined && buscarPorUbicacion) {
@@ -96,6 +86,8 @@
 
         if (usarPrecioLimite) {
             filtros.precioLimite = parseFloat(precioLimite.replace(',', '.'));
+        } else {
+            filtros.precioLimite = undefined;
         }
 
         if (buscarSoloSupereventos) {
@@ -137,22 +129,6 @@
         return ret;
     }
 
-    $: popupModosVisible = false;
-
-    let modos : Map<number, string> = new Map<number, string>();
-
-    async function buscarModos(val: string) {
-        let response = await ModosDeEventoService.buscar(val);
-
-        let ret : Map<number, string> = new Map();
-
-        response.forEach((val) => {
-            ret.set(val.id, val.nombre);
-        });
-
-        return ret;
-    }
-
     let horaDesde : string | null;
     let horaHasta : string | null;
 
@@ -172,7 +148,7 @@
     $: buscarSoloSupereventos = false;
 
     $: (() => {
-        if (!filtros.buscarSuperventos) {
+        if (!filtros.buscarSupereventos) {
             buscarSoloSupereventos = false;
         }
     })()
@@ -193,11 +169,6 @@
 
         try {
 			let tiposEspacioRaw : {id: number, nombre: string, checked: boolean | undefined}[] = await EspaciosService.obtenerTiposEspacio();
-            tiposEspacioRaw.push({
-                id: -1,
-                nombre: "No Registrado",
-                checked: undefined
-            })
 
             let aux = generateCombinations(
                 tiposEspacioRaw.map(item => ({id: item.id, nombre: item.nombre}))
@@ -270,7 +241,6 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
 </script>
 
 <PopupSeleccion title="Disciplinas" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas}/>
-<PopupSeleccion title="Modos de evento" multiple={true} bind:visible={popupModosVisible} searchFunction={buscarModos} bind:selected={modos}/>
 
 <PopupUbicacion bind:visible={popupUbicacionVisible} max={100000} bind:ubicacion={ubicacion} bind:radius={rango}/>
 
@@ -339,36 +309,20 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
                 {/if}
             </div>
 
-            <div class="md:flex flex-row justify-start items-center gap-4">
-                <div class="flex justify-start gap-2 items-center">
-                    <span>Modos de evento</span>
-                    <Button action={() => {popupModosVisible = !popupModosVisible}}>Seleccionar</Button>
-                </div>
-                {#if modos.size > 0}
-                <div class="commaList">
-                    {#each modos as m}
-                        <span>{m[1]}</span>
-                    {/each}
-                </div>
-                {:else}
-                Cualquiera
-                {/if}
-            </div>
-
             <div>
                 <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Hasta $</span></CheckBox>
+                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Monto límite: $</span></CheckBox>
                     <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full md:w-[500px]"/>
                 </div>
-                <Warning text="El monto superior (“Hasta”) debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
+                <Warning text="El monto límite debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
             </div>
 
             <div class="md:flex flex-row justify-start items-center">
                 <div class="mb-2 md:mb-0">
-                    <CheckBox bind:checked={filtros.buscarSuperventos}>Incluir supereventos</CheckBox>
+                    <CheckBox bind:checked={filtros.buscarSupereventos}>Incluir supereventos</CheckBox>
                 </div>
                 <div class="ml-8">
-                    <CheckBox bind:checked={buscarSoloSupereventos} disabled={!filtros.buscarSuperventos}>Solo supereventos</CheckBox>
+                    <CheckBox bind:checked={buscarSoloSupereventos} disabled={!filtros.buscarSupereventos}>Solo supereventos</CheckBox>
                 </div>
             </div>
             

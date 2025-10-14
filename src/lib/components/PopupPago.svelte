@@ -15,7 +15,7 @@
 	import Button from "./Button.svelte";
 	import type DTOPago from "$lib/dtos/usuarios/DTOPago";
 	import { page } from "$app/state";
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 	import type DTOPreferenciaPago from "$lib/dtos/usuarios/DTOPreferenciaPago";
 	import PopupError from "./PopupError.svelte";
 	import { actionPago, preferences } from "$lib/stores";
@@ -76,7 +76,12 @@
 
     $: (async () => {
         try {
-            for (const p of preferences_local) {
+            if (!Array.isArray(preferences_local)) {
+                preferences_local = [preferences_local];
+            }
+            
+            
+            for (const p of preferences_local) {                
                 
                 if (p.completada) continue;
 
@@ -101,6 +106,8 @@
                 renderWalletBrick(bricksBuilder);
             }
         } catch (e) {
+            console.log(e);
+            
             errorGenericoVisible = true;
             errorGenerico = "No se pudo generar un botón de pago. Cancele el pago e inténtelo nuevamente. Si se hubiera realizado algún pago, este le será devuelto."
         }

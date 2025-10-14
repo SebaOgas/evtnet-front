@@ -43,5 +43,14 @@ export const DisciplinasService = {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
         await request(HttpRequestType.DELETE, "disciplinas/baja", true, args);
-  }
+  },
+  buscarPorSubespacio: async (text: string, subespacioId: number) => {
+        let args = new Map<string, string>();
+        args.set("text", text);
+        args.set("subespacioId", "" + subespacioId);
+
+        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "disciplinas/buscarPorSubespacio", false, args);
+
+        return response;
+  },
 }
