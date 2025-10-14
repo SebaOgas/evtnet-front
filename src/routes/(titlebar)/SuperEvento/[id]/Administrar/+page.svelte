@@ -18,7 +18,6 @@
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import type DTOBusquedaEvento from "$lib/dtos/eventos/DTOBusquedaEvento";
 	import PopupBusquedaEventos from "$lib/components/PopupBusquedaEventos.svelte";
-	import Warning from "$lib/components/Warning.svelte";
 
 	$: errorPermiso = false;
 	$: id = Number(page.params.id);
@@ -177,8 +176,7 @@
 				fechaHasta: eventoSelec.fechaHasta,
 				nombreEspacio: eventoSelec.nombreEspacio,
 				crear: true,
-				eliminar: false,
-				cancelado: false
+				eliminar: false
 			})
         } else {
             //Ya está, se asegura de que no sea eliminado
@@ -216,9 +214,6 @@
                             </div>
                             <span class="text-xs ml-4">{formatDate(new Date(e.fechaDesde), true)} - {formatDate(new Date(e.fechaHasta), true)}</span>
                             <span class="text-xs ml-4">{e.nombreEspacio}</span>
-							<div class="ml-4">
-								<Warning visible={e.cancelado} text="Cancelado"/>
-							</div>
                         </div>
                     {/if}
                 {/each}

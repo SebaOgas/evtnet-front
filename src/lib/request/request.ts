@@ -1,5 +1,4 @@
-import { goto } from "$app/navigation";
-import {loading, permisos, token, username} from "$lib/stores"
+import {loading, token} from "$lib/stores"
 import { get } from "svelte/store";
 
 export enum HttpRequestType {
@@ -44,22 +43,27 @@ export async function request(
     useAuth : boolean = true, //Autenticar al usuario al realizar la solicitud
     baseUrl : string = BASE_URL //Ruta base de la API, es concatenada antes de path
 ) : Promise<any> {
-    let headers : any = {}
-
-    if (typeof body === "string") {
-        headers["Content-Type"] = "application/json";
-    }
+    let headers: any = {};
 
     if (useAuth) {  
-        headers["Authorization"] = "Bearer " +  get(token)
+        headers["Authorization"] = "Bearer " + get(token);
     }
 
-    let data : RequestInit = {
+    let data: RequestInit = {
         method: type,
         headers: headers,
         mode: 'cors',
         credentials: "include"
+    };
+
+    //Si el body es FormData, NO seteamos Content-Type (el navegador lo hace automáticamente)
+    if (body instanceof FormData) {
+        data.body = body;
+    } else if (body !== null) {
+        headers["Content-Type"] = "application/json";
+        data.body = body;
     }
+
 
     let argUrl = "?"
 
@@ -101,11 +105,11 @@ export async function request(
         return code >= 200 && code < 300;
     }
 
-    if (response instanceof Response && !isOk(response.status) && response.status !== 404 && response.status !== 401) {
+    if (response instanceof Response && !isOk(response.status) && response.status !== 404) {
         if (block) loading.set(false);                   
-        let error = await response.json() as HttpError;
-        error = new HttpError(error.code, error.message);
-        throw error;
+            let error = await response.json() as HttpError;
+            error = new HttpError(error.code, error.message);
+            throw error;
     }
 
     if (DEBUG && (!(response instanceof Response) || response.status === 404)) {
@@ -184,13 +188,6 @@ export async function request(
             default:
                 return {content: await response.blob(), contentType: response.headers.get("content-type")};
         }
-    } else if (response.status === 401) {
-        token.set("");
-        permisos.set([]);
-        username.set("");
-        try {
-            goto("/");
-        } catch (e) {}
     }
 
     let res = await response.json()

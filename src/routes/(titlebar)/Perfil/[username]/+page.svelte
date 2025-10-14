@@ -92,7 +92,7 @@
         {/if}
         </h1>
         <div class="flex justify-center items-center">
-            <img src={urlFotoDePerfil} alt="Foto de perfil" class="h-[200px] w-[200px] rounded-full">
+            <img src={urlFotoDePerfil} alt="Foto de perfil" class="h-[200px] w-[200px]">
         </div>
         <div class="text-center flex flex-col">
             <span>{perfil.nombre} {perfil.apellido}</span>

@@ -1,3 +1,5 @@
+import type DTODisciplina from "../disciplinas/DTODisciplina"
+
 export default interface DTOEspacio {
     id: number,
     nombre: string,
@@ -5,10 +7,7 @@ export default interface DTOEspacio {
     direccion: string,
     latitud: number,
     longitud: number,
-    disciplinas: {
-        id: number,
-        nombre: string
-    }[],
+    subEspacios: DTOSubespacioEditar[],
     esAdmin: boolean,
     esPropietario: boolean,
     esPublico: boolean,
@@ -27,6 +26,7 @@ export interface DTOSubespacioEditar{
 }
 
 export interface DTOArchivo{
+    id:number,
     nombreArchivo: string,
     base64: string
 }

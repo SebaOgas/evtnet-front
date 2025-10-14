@@ -2,7 +2,7 @@
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import { token, permisos } from "$lib/stores";
+	import { token, permisos, user } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { EspaciosService } from "$lib/services/EspaciosService";
@@ -15,6 +15,7 @@
 	import { base } from "$app/paths";
 	import Popup from "$lib/components/Popup.svelte";
 	import type { DTOAdministrador } from "$lib/dtos/espacios/DTOAdministradoresEspacio";
+	import type { DTOEncargadoSubespacio } from "$lib/dtos/espacios/DTOEncargadoSubespacio";
     
     let previousPage: string = base;
 
@@ -25,6 +26,7 @@
 
     $:id = Number(page.params.id);
     $: nombreEspacio = "";
+    $: idSubespacio = 0;
 
     $: usuario = null as null | DTOBusquedaUsuario;
 	$: popupBusquedaUsuariosVisible = false;
@@ -38,11 +40,15 @@
     $: popupConfirmEliminarAdministradorVisible = false;
     $: popupAdministradorConfirmacionVisible = false;
     $: popupOrganizadorConfirmacionVisible = false;
+    $: popupEncargadoConfirmacionVisible = false;
     $: administrador = {} as DTOAdministrador;
+    $: encargado={} as DTOEncargadoSubespacio;
 
     $: data = {} as DTOAdministradoresEspacio;
     $: resultados = [] as DTOAdministrador[];
     $: resultadosAnteriores = [] as DTOAdministrador[];
+
+    $: dataSubespacio=[] as DTOEncargadoSubespacio[];
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -58,6 +64,8 @@
         try {
             nombreEspacio = await EspaciosService.obtenerNombreEspacio(id);
             filtrarAdministradores();            
+            obtenerEncargadosSubespacios();
+
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -85,11 +93,37 @@
         }
     }
 
+    async function obtenerEncargadosSubespacios(){
+        try{
+            dataSubespacio = await EspaciosService.obtenerEncargadosSubespacios(id);
+        } catch (e) {
+            if (e instanceof HttpError) {
+                errorGenerico = e.message;
+                errorGenericoVisible = true;
+            }
+        }
+    }
+
     async function agregarAdministrador(){
         try{
             await EspaciosService.agregarAdministradorEspacio(id, usuario ? usuario.username: administrador.username);
             popupExitoNuevoVisible = true;
             await filtrarAdministradores();
+            usuario = null;
+        } catch (e) {
+            if (e instanceof HttpError) {
+                errorGenerico = e.message;
+                errorGenericoVisible = true;
+            }
+        }
+        popupAdministradorConfirmacionVisible = false;
+    }
+
+    async function agregarEncargado(){
+        try{
+            await EspaciosService.agregarEncargadoSubespacio(idSubespacio, usuario ? usuario.username: encargado.username);
+            popupExitoNuevoVisible = true;
+            await obtenerEncargadosSubespacios();
             usuario = null;
         } catch (e) {
             if (e instanceof HttpError) {
@@ -203,6 +237,36 @@
                 </div>
             {/each}
         </div>
+        <h2 class="text-m text-center">
+            SubEspacios
+        </h2>
+        <div class="mb-2 mt-2">
+            <div class="flex flex-col gap-2">
+				{#each dataSubespacio as se}
+					<div>
+						<div class ="flex flex-row flex-wrap gap-2 h-fit p-2 items-center">{se.nombreSubespacio}
+                            {#if se.nombreApellidoEncargado!=null}
+                                <Button action={() => {popupBusquedaUsuariosVisible = true; idSubespacio = se.idSubespacio}}>Cambiar encargado</Button>
+                            {:else}
+                                <Button action={() => {popupBusquedaUsuariosVisible = true; idSubespacio = se.idSubespacio}}>Agregar encargado</Button>
+                            {/if}
+                            </div>
+                            <div class="flex flex-row items-center justify-between w-full gap-2">
+                                {#if se.nombreApellidoEncargado!=null}
+                                    <div class="flex flex-row items-center gap-2">
+                                        <img src={se.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + se.username)} class="w-12 h-12 rounded-full"/>
+                                        <span class="text-s">{se.nombreApellidoEncargado}</span>
+                                    </div>
+                                {:else}
+                                    <div class="flex flex-row items-center gap-2">
+                                        Sin encargado
+                                    </div>
+                                {/if}
+                            </div>
+					</div>
+				{/each}
+            </div>           
+        </div>
 	</div>
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
         <Button action={()=>{goto(`/Espacio/${id}/Administrar`)}}>Atrás</Button>
@@ -229,6 +293,17 @@
 	<div class="flex gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => {popupAdministradorConfirmacionVisible = false}}>Cancelar</Button>
 		<Button action={() => agregarAdministrador()}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup title="Confirmar" bind:visible={popupEncargadoConfirmacionVisible} fitW fitH>
+	<div class="grow overflow-y-auto">
+		<p>¿Está seguro de designar a este usuario como encargado?</p>
+        {#if usuario}<p>{usuario?.nombre}, {usuario?.apellido} ({usuario?.username})</p>{/if}
+	</div>
+	<div class="flex gap-2 h-fit p-2 justify-center items-center">
+		<Button action={() => {popupEncargadoConfirmacionVisible = false}}>Cancelar</Button>
+		<Button action={() => agregarEncargado()}>Confirmar</Button>
 	</div>
 </Popup>
 
