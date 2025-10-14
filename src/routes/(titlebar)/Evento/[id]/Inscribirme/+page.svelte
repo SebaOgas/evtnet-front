@@ -21,7 +21,6 @@
 	$: errorPermiso = false;
 	$: errorGenerico = "";
 	$: errorGenericoVisible = false;
-	$: popupPagoVisible = false;
 	$: popupExitoVisible = false;
 
 	$: id = Number(page.params.id);
@@ -128,10 +127,13 @@
 				errorGenericoVisible = true;
 				return;
 			}
-						
-			startPopupPago(procesarPago, response.preferencias);
 
-			popupPagoVisible = true;
+			if (response.preferencias.length === 0) {
+				procesarPago([]);
+			} else {		
+				startPopupPago(procesarPago, response.preferencias);
+			}
+
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -160,8 +162,6 @@
 				errorGenericoVisible = true;
 			}
 		}
-
-		popupPagoVisible = false;
 	}
 
 	onMount(async () => {

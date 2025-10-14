@@ -117,7 +117,7 @@
 			<Button icon="/icons/search.svg" action={buscarInscriptos} classes="h-fit"></Button>
 		</div>
 
-		<div class="flex flex-col gap-8">
+		<div class="flex flex-col gap-16">
 			{#each data.inscripciones as inscripcion}
 				<div class="flex flex-col">
 					<div class="flex flex-row justify-between">
@@ -125,7 +125,7 @@
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 							<img use:loadFotoDePerfil={inscripcion.usuario.username} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer hidden" on:click={() => {goto(`/Perfil/${inscripcion.usuario.username}`)}}>
-							<div>{inscripcion.usuario.nombre} {inscripcion.usuario.apellido}</div>
+							<div>{inscripcion.usuario.nombre} {inscripcion.usuario.apellido} (DNI N.°: {inscripcion.usuario.dni})</div>
 						</div>
 						{#if inscripcion.fechaCancelacionInscripcion === null}
 							<Button action={() => {mostrarPopupCancelarInscripcion(inscripcion)}}>Cancelar</Button>
@@ -187,7 +187,7 @@
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => goto(`/Evento/${id}`)}>Atrás</Button>
-		<Button action={() => goto(`/Evento/${id}/InscribirAdmin`)}>Inscribir a alguien</Button>
+		<Button>Exportar</Button>
 	</div>
 </div>
 {/if}

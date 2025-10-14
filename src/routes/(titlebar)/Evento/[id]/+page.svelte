@@ -285,12 +285,12 @@
 
         <Button icon="/icons/share.svg"></Button>
 
-        {#if data.administrador}
+        {#if data.administrador || data.inscripto}
 			<Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>
 		{/if}
 
 		<!--TODO: implementar cancelación de evento-->
-		{#if data.estado === "En Revisión" || data.estado == "Aceptado"}
+		{#if data.organizador && (data.estado === "En Revisión" || data.estado == "Aceptado")}
 			<Button>Cancelar evento</Button>
 		{/if}
 	</div>

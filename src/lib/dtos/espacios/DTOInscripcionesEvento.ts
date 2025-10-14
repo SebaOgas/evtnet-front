@@ -9,7 +9,8 @@ export default interface DTOInscripcionesEvento {
         usuario: {
             nombre: string,
             apellido: string,
-            username: string
+            username: string,
+            dni: string
         },
         fechaInscripcion: Date,
         fechaCancelacionInscripcion: Date | null,

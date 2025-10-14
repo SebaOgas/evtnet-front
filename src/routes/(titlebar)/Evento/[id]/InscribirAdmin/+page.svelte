@@ -28,6 +28,8 @@
 	$: evento = null as DTODatosParaInscripcion | null;
 
 	onMount(async () => {
+
+		goto(`./`);
 		
 		
 		if (get(token) === "") {
@@ -154,7 +156,7 @@
 			username: usuario.username,
 			invitados: invitados,
 			precioInscripcion: 0,
-			datosPago: undefined
+			datosPago: []
 		};
 
 		try {
