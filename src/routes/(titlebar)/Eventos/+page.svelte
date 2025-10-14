@@ -28,7 +28,7 @@
     $: filtros = {
 		texto: "",
 		ubicacion: undefined,
-		fechaDesde: new Date(),
+		fechaDesde: (new Date()).getTime(),
 		fechaHasta: null,
 		horaDesde: null,
 		horaHasta: null,
@@ -36,8 +36,8 @@
 		disciplinas: [],
 		precioLimite: undefined,
 		buscarEventos: true,
-		buscarSuperventos: true
-	} as DTOBusquedaEventos;
+		buscarSupereventos: true
+	} as unknown as DTOBusquedaEventos;
 
     $: resultados = [] as DTOResultadoBusquedaEventos[];
 
@@ -49,11 +49,11 @@
 
         filtros.horaDesde = null
         if (horaDesde !== null && horaDesde !== undefined)
-            filtros.horaDesde = parseTime(horaDesde)
+            filtros.horaDesde = parseTime(horaDesde).getTime();
 
         filtros.horaHasta = null
         if (horaHasta !== null && horaHasta !== undefined)
-            filtros.horaHasta = parseTime(horaHasta)
+            filtros.horaHasta = parseTime(horaHasta).getTime();
 
         filtros.tiposEspacio = []
         if (tipoEspacioSeleccionado !== undefined) {
@@ -86,6 +86,8 @@
 
         if (usarPrecioLimite) {
             filtros.precioLimite = parseFloat(precioLimite.replace(',', '.'));
+        } else {
+            filtros.precioLimite = undefined;
         }
 
         if (buscarSoloSupereventos) {
@@ -146,7 +148,7 @@
     $: buscarSoloSupereventos = false;
 
     $: (() => {
-        if (!filtros.buscarSuperventos) {
+        if (!filtros.buscarSupereventos) {
             buscarSoloSupereventos = false;
         }
     })()
@@ -309,18 +311,18 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
 
             <div>
                 <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Hasta $</span></CheckBox>
+                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Monto límite: $</span></CheckBox>
                     <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full md:w-[500px]"/>
                 </div>
-                <Warning text="El monto superior (“Hasta”) debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
+                <Warning text="El monto límite debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
             </div>
 
             <div class="md:flex flex-row justify-start items-center">
                 <div class="mb-2 md:mb-0">
-                    <CheckBox bind:checked={filtros.buscarSuperventos}>Incluir supereventos</CheckBox>
+                    <CheckBox bind:checked={filtros.buscarSupereventos}>Incluir supereventos</CheckBox>
                 </div>
                 <div class="ml-8">
-                    <CheckBox bind:checked={buscarSoloSupereventos} disabled={!filtros.buscarSuperventos}>Solo supereventos</CheckBox>
+                    <CheckBox bind:checked={buscarSoloSupereventos} disabled={!filtros.buscarSupereventos}>Solo supereventos</CheckBox>
                 </div>
             </div>
             

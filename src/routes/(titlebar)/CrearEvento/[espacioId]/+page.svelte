@@ -12,6 +12,7 @@
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOCrearEvento from "$lib/dtos/eventos/DTOCrearEvento";
 	import type DTODatosCreacionEvento from "$lib/dtos/eventos/DTODatosCreacionEvento";
+	import type DTOPago from "$lib/dtos/usuarios/DTOPago";
 	import { HttpError } from "$lib/request/request";
 	import { CronogramaService } from "$lib/services/CronogramaService";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
@@ -43,22 +44,8 @@
 			datosCreacion.subespacios.forEach(s => {
 				subespaciosOpciones.set(s.id, s.nombre);
 			})
-            
-            // Cargar periodos libres, para cuando se organiza de forma libre
-            if (datosCreacion.administrador) {
-                let periodosLibresTmp = await CronogramaService.obtenerPeriodosLibres(espacioId);
-                let ix = 0;
-                periodosLibresTmp.forEach((item) => {
-                    let formatted = formatDate(item.fechaHoraDesde, true) + " - " + formatDate(item.fechaHoraHasta, true);
-                    periodosLibres.cb.set(ix, formatted);
-                    periodosLibres.map.set(ix, {
-                        desde: item.fechaHoraDesde,
-                        hasta: item.fechaHoraHasta
-                    })
-                    ix++;
-                });
-                periodosLibres = {...periodosLibres}
-            }
+
+			if (datosCreacion.espacioPublico) data.usarCronograma = false;
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -77,19 +64,53 @@
 		horarioId: -1,
 		disciplinas: [],
 		precio: 0,
-		maxParticipantes: 2
+		maxParticipantes: 2,
+		pago: null
 	};
 
-	$: (() => {
-		data.idSubespacio;
+
+
+	$: (async () => {	
+		if (data.idSubespacio === null || data.idSubespacio === undefined) return;
 		if (datosCreacion == null) return;
 
 		datosCreacion.subespacios.forEach(s => {
-			if (s.id === data.idSubespacio) {
-				fechaMaxBusquedaHorarios.setDate(fechaMaxBusquedaHorarios.getDate() + s.diasHaciaAdelante - 1)
+			if (s.id === data.idSubespacio) {			
+				if (s.diasHaciaAdelante === 0 && !datosCreacion?.espacioPublico) {
+					warningSinCronogramaVisible = true;
+				} else {
+					warningSinCronogramaVisible = false;
+				}
+				fechaMaxBusquedaHorarios.setDate((new Date()).getDate() + s.diasHaciaAdelante - 1)
 			}
 		})
 
+		
+
+	})()
+
+	let prevSubespacio : number | null = null;
+	$: (async () => {
+		if (data.idSubespacio === null || data.idSubespacio === undefined) return;
+		if (datosCreacion == null) return;
+
+		if (data.idSubespacio === prevSubespacio) return;
+		prevSubespacio = data.idSubespacio;
+		
+		if (datosCreacion.administrador) {
+			let periodosLibresTmp = await CronogramaService.obtenerPeriodosLibres(data.idSubespacio);
+			let ix = 0;
+			periodosLibresTmp.forEach((item) => {
+				let formatted = formatDate(item.fechaHoraDesde, true) + " - " + formatDate(item.fechaHoraHasta, true);
+				periodosLibres.cb.set(ix, formatted);
+				periodosLibres.map.set(ix, {
+					desde: item.fechaHoraDesde,
+					hasta: item.fechaHoraHasta
+				})
+				ix++;
+			});
+			periodosLibres = {...periodosLibres}
+		}
 	})()
 
 	// Validation states
@@ -98,6 +119,8 @@
 	$: warningMaxParticipantesVisible = false;
 	$: warningHorarioVisible = false;
 	$: warningFechaHoraVisible = false;
+	$: warningSubespacioVisible = false;
+	$: warningSinCronogramaVisible = false;
 
 	// Error handling
 	$: error = "";
@@ -117,7 +140,7 @@
 	async function buscarDisciplinas(val: string) {
 		let ret: Map<number, string> = new Map();
 
-		if (data.idSubespacio === null) return ret;
+		if (data.idSubespacio === null || data.idSubespacio === undefined) return ret;
 
 		let response;
 
@@ -217,12 +240,18 @@
 		warningMaxParticipantesVisible = false;
 		warningHorarioVisible = false;
         warningFechaHoraVisible = false;
+		warningSubespacioVisible = false;
 
 		let hasErrors = false;
 
 		// Validate required fields
 		if (data.nombre.trim() === "") {
 			warningNombreVisible = true;
+			hasErrors = true;
+		}
+
+		if (data.idSubespacio === null || data.idSubespacio === undefined) {
+			warningSubespacioVisible = true;
 			hasErrors = true;
 		}
 
@@ -256,6 +285,8 @@
 
 		// Set selected disciplines and modes
 		data.disciplinas = Array.from(disciplinasSeleccionadas.keys());
+		
+		data.horarioId = selectedHorarioId !== null ? selectedHorarioId : -1;
 
 		try {
 			let preferencias = await EventosService.pagarCreacionEvento(data);
@@ -268,13 +299,18 @@
 		}
 	}
 
-	async function crearEvento() {
+	async function crearEvento(datosPago: DTOPago[]) {
 		if (await validatePreCrear()) {           
 			return;
 		}
 
 		// Set selected disciplines and modes
 		data.disciplinas = Array.from(disciplinasSeleccionadas.keys());
+
+		data.horarioId = selectedHorarioId !== null ? selectedHorarioId : -1;
+
+		if (datosPago.length > 0 )
+			data.pago = datosPago[0];
 
 		try {
 			eventoId = await EventosService.crearEvento(data);
@@ -310,10 +346,10 @@
     $: fechaBusquedaHorarios = new Date();
     let fechaMaxBusquedaHorarios = new Date();
 
-    $: horarios = [] as {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[];
+    $: horarios = [] as {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number, adicionalPorInscripcion: number}[];
 
     async function buscarHorarios() {
-		if (data.idSubespacio === null) return;
+		if (data.idSubespacio === null || data.idSubespacio === undefined) return;
         try {
             horarios = await CronogramaService.buscarHorariosDisponibles(data.idSubespacio, fechaBusquedaHorarios);
             selectedHorarioId = null;
@@ -355,8 +391,7 @@
                     data.fechaHoraInicio =  h.fechaHoraDesde
                     data.fechaHoraFin =  h.fechaHoraHasta
                     precioOrganizacion = h.precioOrganizacion;
-					//TODO: 
-					//adicionalInscripcion = h.adicionalInscripcion;
+					adicionalInscripcion = h.adicionalPorInscripcion;
                 }
             })
         }
@@ -383,7 +418,7 @@
 
     $: (async () => {
         try {
-            if (data.fechaHoraInicio !== null && data.fechaHoraFin !== null && datosCreacion?.espacioPublico && espacioId === -1) {
+            if (data.fechaHoraInicio !== null && data.fechaHoraFin !== null && datosCreacion?.espacioPublico) {
                 eventosSuperpuestos = await EventosService.obtenerCantidadEventosSuperpuestos(espacioId, data.fechaHoraInicio, data.fechaHoraFin);
             }
         } catch (e) {
@@ -469,14 +504,16 @@
 		</div>
 
 		<div class="flex flex-col md:flex-row justify-start md:items-center gap-2">
-			<span class="flex flex-row items-baseline">
+			<span class="flex flex-row items-baseline gap-2">
 				<span>Subespacio</span>
-				<Button classes="text-xs info_subespacio">i</Button> 
+				<Button classes="text-xs info_subespacio min-w-[30px] font	-bold">i</Button> 
 			</span>
 			<ComboBox classes="!md:w-[50%]" options={subespaciosOpciones} bind:selected={data.idSubespacio} placeholder="Subespacio" maxHeight={8}/>
+			<Warning text="Seleccione un subespacio" visible={warningSubespacioVisible}/>
+			<Warning text="Este subespacio no tiene horarios disponibles" visible={warningSinCronogramaVisible}/>
 		</div>
 
-		{#if data.idSubespacio !== null}
+		{#if data.idSubespacio !== null && data.idSubespacio !== undefined && !warningSinCronogramaVisible}
 			{#if datosCreacion?.administrador}
 			<div class="mb-2 md:flex justify-start items-center gap-2">
 				<span>Organizar evento:</span>
@@ -515,8 +552,8 @@
 							<div>{formatDate(data.fechaHoraFin, true)}</div>
 						</div>
 						{#if !datosCreacion?.administrador}
-							<span>Cuota por organización: {precioOrganizacion}</span>
-							<span>Adicional por inscripción: {adicionalInscripcion}</span>
+							<div>Cuota por organización: {precioOrganizacion.toFixed(2).replaceAll(".",",")}</div>
+							<div>Adicional por inscripción: {adicionalInscripcion.toFixed(2).replaceAll(".",",")}</div>
 						{/if}
 					{/if}
 				</div>
@@ -570,7 +607,12 @@
 					/>
 				</div>
 				<div class="text-xs">
-					Precio más comisión: ${(data.precio * (1 + (datosCreacion?.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+					{#if !datosCreacion.administrador && !datosCreacion.espacioPublico}
+						Precio más adicional y comisión: ${((data.precio + adicionalInscripcion) * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+
+					{:else}
+						Precio más comisión: ${(data.precio * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+					{/if}
 				</div>
 			</div>
 			
@@ -590,7 +632,7 @@
 
 	<div class="flex gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => goto("/")}>Cancelar</Button>
-		<Button action={pagarCreacionEvento}>Aceptar</Button>
+		<Button action={datosCreacion.administrador || !data.usarCronograma ? () => crearEvento([]) : pagarCreacionEvento}>Aceptar</Button>
 	</div>
 </div>
 {/if}

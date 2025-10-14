@@ -225,7 +225,7 @@
                 <div>
                     <div class="flex justify-start items-center gap-2">
                         <span class="text-s">Superevento</span>
-                        <Button action={() => {goto(`/Superevento/${data.superevento?.id}`)}}>Ver Superevento</Button>
+                        <Button action={() => {goto(`/SuperEvento/${data.superevento?.id}`)}}>Ver Superevento</Button>
                     </div>
                     <div class="text-xs">{data.superevento.nombre}</div>
                 </div>

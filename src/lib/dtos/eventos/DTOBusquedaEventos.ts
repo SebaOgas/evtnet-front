@@ -7,11 +7,11 @@ export default interface DTOBusquedaEventos {
     } | undefined,
     fechaDesde: Date | null,
     fechaHasta: Date | null,
-    horaDesde: Date | null,
-    horaHasta: Date | null,
+    horaDesde: Date | null | number,
+    horaHasta: Date | null | number,
     tiposEspacio: number[],
     disciplinas: number[], // Si está vacío, es "Cualquiera" (no importan las disciplinas)
     precioLimite: number | undefined,
     buscarEventos: boolean,
-    buscarSuperventos: boolean
+    buscarSupereventos: boolean
 }

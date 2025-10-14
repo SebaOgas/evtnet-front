@@ -148,18 +148,18 @@ export const CronogramaService = {
 
         await request(HttpRequestType.POST, "cronogramas/crearExcepcion", true, null, JSON.stringify(data));
     },
-    buscarHorariosDisponibles: async (idEspacio: number, dia: Date) => {
+    buscarHorariosDisponibles: async (idSubEspacio: number, dia: Date) => {
         let args = new Map<string, string>();
-        args.set("idEspacio", `${idEspacio}`);
+        args.set("idEspacio", `${idSubEspacio}`);
         args.set("dia", `${"" + (new Date(dia)).getTime()}`);
 
-        let response : {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number}[] = await request(HttpRequestType.GET, "cronogramas/buscarHorariosDisponibles", true, args);
+        let response : {id: number, fechaHoraDesde: Date, fechaHoraHasta: Date, precioOrganizacion: number, adicionalPorInscripcion: number}[] = await request(HttpRequestType.GET, "cronogramas/buscarHorariosDisponibles", true, args);
 
         return response;
     },
-    obtenerPeriodosLibres: async (idEspacio: number) => {
+    obtenerPeriodosLibres: async (idSubEspacio: number) => {
         let args = new Map<string, string>();
-        args.set("idEspacio", `${idEspacio}`);
+        args.set("idEspacio", `${idSubEspacio}`);
 
         let response : {fechaHoraDesde: Date, fechaHoraHasta: Date | null}[] = await request(HttpRequestType.GET, "cronogramas/obtenerPeriodosLibres", true, args);
 
