@@ -3,8 +3,12 @@ export default interface DTOModificarEvento {
     nombre: string,
     descripcion: string,
 
-    idEspacio: number | null, //null => espacio no registrado
-    nombreEspacio: string | null, //string => nombre de espacio, null => espacio no registrado
+    idEspacio: number,
+    nombreEspacio: string,
+
+    idSubespacio: number,
+    nombreSubespacio: string,
+
     usarCronograma: boolean, //false solo posible si el usuario es administrador del espacio
 
     //Todos los espacios

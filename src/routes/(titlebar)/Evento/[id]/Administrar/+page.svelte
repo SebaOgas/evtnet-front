@@ -97,8 +97,10 @@
 		id: 0,
 		nombre: "",
 		descripcion: "",
-		idEspacio: null,
-		nombreEspacio: null,
+		idEspacio: -1,
+		nombreEspacio: "",
+		idSubespacio: -1,
+		nombreSubespacio: "",
 		usarCronograma: true,
 		fechaDesde: new Date(),
 		fechaHasta: new Date(),
@@ -129,8 +131,6 @@
 	// Form state
 	let ubicacionMarcada: {x: number, y: number} | undefined = undefined;
 	let disciplinasSeleccionadas: Map<number, string> = new Map();
-	let modosSeleccionados: Map<number, string> = new Map();
-	let tipoInscripcionSeleccionado: number | undefined = undefined;
 
 	// Validation states
 	$: warningNombreVisible = false;
@@ -604,7 +604,12 @@
 
 		<div class="mb-2 flex flex-col gap-2 md:flex-row">
 			<span>Espacio:</span>
-			<span>{data.nombreEspacio || "Espacio no registrado"}</span>
+			<span>{data.nombreEspacio}</span>
+		</div>
+
+		<div class="mb-2 flex flex-col gap-2 md:flex-row">
+			<span>Subespacio:</span>
+			<span>{data.nombreSubespacio}</span>
 		</div>
 
 		{#if data.nombreEspacio && data.administradorEspacio && !data.espacioPublico}

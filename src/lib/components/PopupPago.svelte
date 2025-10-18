@@ -39,6 +39,11 @@
         let action = get(actionPago);
         if (action === null) return;
 
+        preferences_local = $preferences;
+
+        if (!Array.isArray(preferences_local)) {
+            preferences_local = [preferences_local];
+        }
 
         let searchParams = page.url.searchParams;
         
@@ -131,6 +136,7 @@
         preferences_local = [];
         /*TO-DO: Endpoint que cancele todas las transferencias en curso*/
         preferences.set(preferences_local);
+        actionPago.set(null);
         await goto("?");
     }
     

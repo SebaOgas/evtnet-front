@@ -68,19 +68,40 @@
 		pago: null
 	};
 
-
+	$: permitirSeleccionarModoOrganizacion = true;
 
 	$: (async () => {	
 		if (data.idSubespacio === null || data.idSubespacio === undefined) return;
-		if (datosCreacion == null) return;
+		if (datosCreacion === null) return;
 
 		datosCreacion.subespacios.forEach(s => {
-			if (s.id === data.idSubespacio) {			
-				if (s.diasHaciaAdelante === 0 && !datosCreacion?.espacioPublico) {
+			if (s.id === data.idSubespacio) {	
+				if (datosCreacion?.espacioPublico) return;
+
+				if (datosCreacion?.administrador) {
+					if (s.diasHaciaAdelante === 0) {
+						permitirSeleccionarModoOrganizacion = false;
+						data.usarCronograma = false;
+					} else {
+						permitirSeleccionarModoOrganizacion = true;
+					}
+				} else {
+					permitirSeleccionarModoOrganizacion = false;
+					data.usarCronograma = true;
+					if (s.diasHaciaAdelante === 0) {
+						warningSinCronogramaVisible = true;
+					} else {
+						warningSinCronogramaVisible = false;
+					}
+				}
+
+
+
+				if (!datosCreacion?.espacioPublico && s.diasHaciaAdelante === 0 && !datosCreacion?.administrador) {
 					warningSinCronogramaVisible = true;
 				} else {
 					warningSinCronogramaVisible = false;
-				}
+				}				
 				fechaMaxBusquedaHorarios.setDate((new Date()).getDate() + s.diasHaciaAdelante - 1)
 			}
 		})
@@ -514,7 +535,7 @@
 		</div>
 
 		{#if data.idSubespacio !== null && data.idSubespacio !== undefined && !warningSinCronogramaVisible}
-			{#if datosCreacion?.administrador}
+			{#if permitirSeleccionarModoOrganizacion}
 			<div class="mb-2 md:flex justify-start items-center gap-2">
 				<span>Organizar evento:</span>
 					<div class="flex gap-2 mt-1 border rounded-lg p-1 w-full">
