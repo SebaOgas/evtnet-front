@@ -59,4 +59,9 @@
         background-color: var(--color-dark);
         color: var(--color-white);
     }
+
+    /*EXPO*/
+    button {
+        font-weight: bold;
+    }
 </style>
