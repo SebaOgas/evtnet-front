@@ -4,8 +4,8 @@
 </script>
 
 
-
+<TitleBar/>
 
 <slot/>
 
-<TitleBar/>
+
