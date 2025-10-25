@@ -186,7 +186,7 @@
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
-		<Button action={() => goto(`/Evento/${id}`)}>Atrás</Button>
+		<Button action={() => goto(`/Evento/${id}/Administrar`)}>Atrás</Button>
 		<Button>Exportar</Button>
 	</div>
 </div>

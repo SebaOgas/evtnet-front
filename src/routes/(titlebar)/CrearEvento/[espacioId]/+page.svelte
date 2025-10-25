@@ -574,8 +574,8 @@
 						</div>
 						{#if !datosCreacion?.administrador}
 							<div>Cuota por organización: {precioOrganizacion.toFixed(2).replaceAll(".",",")}</div>
-							<div>Adicional por inscripción: {adicionalInscripcion.toFixed(2).replaceAll(".",",")}</div>
 						{/if}
+						<div>Adicional por inscripción: {adicionalInscripcion.toFixed(2).replaceAll(".",",")}</div>
 					{/if}
 				</div>
 				<Warning visible={warningHorarioVisible} text="Es obligatorio seleccionar el horario"/>
@@ -628,9 +628,8 @@
 					/>
 				</div>
 				<div class="text-xs">
-					{#if !datosCreacion.administrador && !datosCreacion.espacioPublico}
+					{#if data.usarCronograma && !datosCreacion.espacioPublico}
 						Precio más adicional y comisión: ${((data.precio + adicionalInscripcion) * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
-
 					{:else}
 						Precio más comisión: ${(data.precio * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
 					{/if}
