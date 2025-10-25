@@ -23,6 +23,7 @@ import type DTODatosParaCambioEstadoDenuncia from "$lib/dtos/eventos/DTODatosPar
 import type DTOCambioEstadoDenuncia from "$lib/dtos/eventos/DTOCambioEstadoDenuncia";
 import type DTOPreferenciaPago from "$lib/dtos/usuarios/DTOPreferenciaPago";
 import { preferences } from "$lib/stores";
+import type DTODatosModificarEvento from "$lib/dtos/eventos/DTODatosModificarEvento";
 
 export const EventosService = {
     buscar: async (data: DTOBusquedaEventos) => {
@@ -111,7 +112,7 @@ export const EventosService = {
         let args = new Map<string, string>();
         args.set("id", `${id}`);
 
-        let response : DTOModificarEvento = await request(HttpRequestType.GET, "eventos/obtenerDatosModificacionEvento", true, args);
+        let response : DTODatosModificarEvento = await request(HttpRequestType.GET, "eventos/obtenerDatosModificacionEvento", true, args);
 
         return response;
     },

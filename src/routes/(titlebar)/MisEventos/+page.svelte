@@ -142,11 +142,9 @@
 
 <Popup bind:visible={popupCrearEventoVisible} title="Organizar evento" fitH fitW>
     <p class="mb-2">Para organizar un evento, primero debe establecer el espacio en que será realizado.</p>
-    <p class="mb-2">Puede optar por buscar un espacio o, en caso de que no lo encuentre, organizar su evento en un espacio no registrado.</p>
     <div class="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
-        <Button action={() => popupCrearEventoVisible = false}>Atrás</Button>
+        <Button action={() => popupCrearEventoVisible = false}>Cancelar</Button>
         <Button action={() => goto(`/Espacios`)}>Buscar espacios</Button>
-        <Button action={() => goto(`/CrearEvento`)}>Espacio no registrado</Button>
     </div>
 </Popup>
 

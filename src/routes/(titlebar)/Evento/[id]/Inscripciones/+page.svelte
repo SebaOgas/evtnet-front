@@ -102,17 +102,17 @@
 {#if data !== null}
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-s text-center">
+		<h1 class="text-s text-center print:hidden">
 			Evento
 		</h1>
 		<h1 class="text-m text-center">
-			{data.nombreEvento}
+			<span class="hidden print:inline">Inscripciones a </span> <span>{data.nombreEvento}</span>
 		</h1>
-		<h1 class="text-m text-center">
+		<h1 class="text-m text-center print:hidden">
 			Administrar inscripciones
 		</h1>
 
-		<div class="flex w-full gap-2 items-center">
+		<div class="flex w-full gap-2 items-center print:hidden">
 			<TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={busqueda} action={buscarInscriptos}/>
 			<Button icon="/icons/search.svg" action={buscarInscriptos} classes="h-fit"></Button>
 		</div>
@@ -128,7 +128,7 @@
 							<div>{inscripcion.usuario.nombre} {inscripcion.usuario.apellido} (DNI N.°: {inscripcion.usuario.dni})</div>
 						</div>
 						{#if inscripcion.fechaCancelacionInscripcion === null}
-							<Button action={() => {mostrarPopupCancelarInscripcion(inscripcion)}}>Cancelar</Button>
+							<Button classes="h-fit print:hidden" action={() => {mostrarPopupCancelarInscripcion(inscripcion)}}>Cancelar</Button>
 						{/if}
 					</div>
 					<div class="flex flex-col gap-2 ml-4">
@@ -185,9 +185,9 @@
 
 	</div>
 
-	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
-		<Button action={() => goto(`/Evento/${id}`)}>Atrás</Button>
-		<Button>Exportar</Button>
+	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center print:hidden">
+		<Button action={() => goto(`/Evento/${id}/Administrar`)}>Atrás</Button>
+		<Button action={window.print}>Exportar</Button>
 	</div>
 </div>
 {/if}

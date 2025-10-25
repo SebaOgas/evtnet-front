@@ -52,6 +52,17 @@
 	padding-bottom: var(--safe-area-inset-bottom);
 }
 
+@media print {
+	#content {
+		position: static;
+		top: auto;
+		left: auto;
+		width: 100%;
+		height: auto;
+		overflow-y: visible;
+	}
+}
+
 body {
   padding-top: var(--safe-area-inset-top);
   padding-bottom: var(--safe-area-inset-bottom);

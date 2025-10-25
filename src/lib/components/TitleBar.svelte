@@ -53,13 +53,13 @@
 
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div id="titlebar" class="flex items-center justify-between p-none bg-light">
+<div id="titlebar" class="flex items-center justify-between p-none bg-light print:bg-transparent">
     <div class="flex items-baseline h-full p-1">
         <img src="/logo.png" alt="Logo" class="object-contain"/>
-        <a href="/" class="text-xl font-bold text-white">evtnet</a>
+        <a href="/" class="text-xl font-bold text-white print:!text-light">evtnet</a>
     </div>
 
-    <div class="flex items-center">
+    <div class="flex items-center print:hidden">
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <img src={urlFotoDePerfil} alt="" class="userpic lg:hidden h-[38px] w-[38px] rounded-full cursor-pointer" on:click={toggleUserMenu}>
 
@@ -68,7 +68,7 @@
     </div>
 
     
-    <menu bind:this={menu} class="bg-light flex items-end lg:items-center lg:gap-2 text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit">		
+    <menu bind:this={menu} class="bg-light flex items-end lg:items-center lg:gap-2 text-s text-white font-bold p-s flex-col w-full lg:flex-row lg:justify-end lg:w-fit print:hidden">		
         
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -180,11 +180,11 @@
 
     
     
-    <menu bind:this={userMenu} class="userMenu hidden bg-light items-end gap-2 text-s text-white font-bold p-s flex-col w-full">
+    <menu bind:this={userMenu} class="userMenu hidden bg-light items-end gap-2 text-s text-white font-bold p-s flex-col w-full print:hidden">
         <div class="flex flex-col gap-0 items-end leading-none">
             <span>{get(user)?.nombre} {get(user)?.apellido}</span>
             <span class="text-xs">@{get(username)}</span>
-            <span class="commaList text-xs">
+            <span class="commaList text-xs text-end">
                 {#each get(user)?.roles as r}
                     <span>{r}</span>
                 {/each}

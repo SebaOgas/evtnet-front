@@ -272,13 +272,15 @@
 		{#if data.inscripto}
 			<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
 		{:else}
-			{#if !data.cupoLleno}
+			{#if !data.cupoLleno && new Date(data.fechaHoraInicio) >  new Date()}
 				<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
 			{/if}
 		{/if}
 	
-		<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
-		
+		{#if data.inscripto}
+			<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
+		{/if}
+
 		{#if data.administrador}
 			<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
         {/if}
