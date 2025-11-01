@@ -112,6 +112,7 @@
 	// Popup states
 	$: popupDisciplinasVisible = false;
 	$: popupSupereventosVisible = false;
+	$: popupCancelarEventoVisible = false;
 
 	function formatTime(time: Date) {
 		time = new Date(time);
@@ -166,6 +167,13 @@
 	function validateDescripcion(val: string) {
 		if (val.length > 500) {
 			return { valid: false, reason: "La descripción no puede tener más de 500 caracteres" };
+		}
+		return { valid: true, reason: undefined };
+	}
+
+	function validateMotivoCancelacion(val: string) {
+		if (val.length > 500) {
+			return { valid: false, reason: "El motivo de cancelación no puede tener más de 500 caracteres" };
 		}
 		return { valid: true, reason: undefined };
 	}
@@ -378,13 +386,36 @@
 	}
 
 	async function dejarDeSerAdministrador() {
-		// TODO: Renunciar a ser administrador
+		try {
+			await EventosService.dejarDeAdministrar(id);
+			goto(`/Evento/${id}`);
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
 		popupDejarAdminVisible = false;
-		goto(`/Evento/${id}`);
+	}
+
+	$: motivoCancelacionEvento = "";
+
+	async function cancelarEvento() {
+		try {
+			await EventosService.cancelarEvento(id, motivoCancelacionEvento);
+			popupExitoVisible = true;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
+		popupCancelarEventoVisible = false;
 	}
 
 	// Check if user can edit refund ranges (is organizer)
 	$: puedeEditarRangos = datosOriginales !== null && datosOriginales.organizadorEvento === true;
+	$: puedeCancelarEvento = datosOriginales !== null && datosOriginales.organizadorEvento === true;
 	// Check if user can leave admin (is not organizer)
 	$: puedeDejarAdmin = datosOriginales !== null && datosOriginales.organizadorEvento !== true && datosOriginales.administradorEvento === true;
 </script>
@@ -589,7 +620,7 @@
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
-		<Button action={() => goto(`/Evento/${id}`)}>Cancelar</Button>
+		<Button action={() => goto(`/Evento/${id}`)}>Atrás</Button>
 		<Button action={guardarEvento}>Guardar</Button>
 		<Button action={() => goto(`/Evento/${id}/Inscripciones`)}>Administrar inscripciones</Button>
 		{#if puedeEditarRangos}
@@ -597,6 +628,9 @@
 		{/if}
 		{#if puedeDejarAdmin}
 			<Button action={() => {popupDejarAdminVisible = true}}>Dejar de ser administrador</Button>
+		{/if}
+		{#if puedeCancelarEvento}
+			<Button action={() => {popupCancelarEventoVisible = true}}>Cancelar evento</Button>
 		{/if}
 	</div>
 </div>
@@ -647,10 +681,27 @@
 </Popup>
 
 <Popup bind:visible={popupDejarAdminVisible} fitH fitW>
-	¿Está seguro que desea dejar de ser administrador del evento?
+	¿Está seguro de que desea dejar de ser administrador del evento?
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {popupDejarAdminVisible = false}}>Cancelar</Button>
 		<Button action={dejarDeSerAdministrador}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupCancelarEventoVisible} fitH fitW title="Cancelar evento">
+	<p>¿Está seguro de que desea cancelar el evento?</p>
+	<p>Se devolverá el monto pagado a los inscriptos, pero no recuperará lo pagado al espacio. Esta acción es irreversible.</p>
+	<TextField 
+			label="Motivo" 
+			multiline 
+			bind:value={motivoCancelacionEvento} 
+			validate={validateMotivoCancelacion}
+			rows={6}
+			max={500}
+		/>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupCancelarEventoVisible = false}}>Cancelar</Button>
+		<Button action={cancelarEvento}>Confirmar</Button>
 	</div>
 </Popup>
 

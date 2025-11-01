@@ -15,6 +15,7 @@
 	import type DTOEvento from "$lib/dtos/eventos/DTOEvento";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupCalificarUsuario from "$lib/components/PopupCalificarUsuario.svelte";
+	import TextField from "$lib/components/TextField.svelte";
 
 	let previousPage: string = base;
 
@@ -64,9 +65,12 @@
 
 	$: inscriptosConFoto = [] as {username: string, nombre: string, apellido: string, fotoUrl: string}[]
 
+	$: permisoCancelacionAdmin = false;
+
 	let mount = async () => {
 		cancelarInscripcionPopupVisible = false;
 		desinscripcionExitosa = false;
+		cancelacionExitosa = false;
 		listo = false;
 		inscriptosConFoto = [];
 		
@@ -77,6 +81,10 @@
 		if(!get(permisos).includes("VisionEventos")) {
 			errorPermiso = true;
 			return;
+		}
+
+		if (get(permisos).includes("CancelacionEventosAdmin")) {
+			permisoCancelacionAdmin = true;
 		}
 
 		try {
@@ -144,6 +152,32 @@
 				errorDesinscripcionVisible = true;
 			}    
 		}
+	}
+
+	$: popupCancelarEventoVisible = false;
+	$: motivoCancelacionEvento = "";
+	$: errorCancelacion = ""
+	$: errorCancelacionVisible = false
+	$: cancelacionExitosa = false;
+
+	function validateMotivoCancelacion(val: string) {
+		if (val.length > 500) {
+			return { valid: false, reason: "El motivo de cancelación no puede tener más de 500 caracteres" };
+		}
+		return { valid: true, reason: undefined };
+	}
+
+	async function cancelarEvento() {
+		try {
+			await EventosService.cancelarEvento(id, motivoCancelacionEvento);
+			cancelacionExitosa = true;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorCancelacion = e.message;
+				errorCancelacionVisible = true;
+			}
+		}
+		popupCancelarEventoVisible = false;
 	}
 
 	let popupCalificarVisible = false;
@@ -269,11 +303,13 @@
 	<div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => {goto(previousPage)}}>Atrás</Button>
 		
-		{#if data.inscripto}
-			<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
-		{:else}
-			{#if !data.cupoLleno && new Date(data.fechaHoraInicio) >  new Date()}
-				<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
+		{#if data.estado === "Aceptado"}
+			{#if data.inscripto}
+				<Button action={showPopupCancelarInscripcion}>Cancelar inscripción</Button>
+			{:else}
+				{#if !data.cupoLleno && new Date(data.fechaHoraInicio) >  new Date()}
+					<Button action={() => {goto(`${page.url.pathname}/Inscribirme`)}}>Inscribirme</Button>
+				{/if}
 			{/if}
 		{/if}
 	
@@ -281,9 +317,11 @@
 			<Button action={() => {goto(`${page.url.pathname}/Denunciar`)}}>Denunciar evento</Button>
 		{/if}
 
-		{#if data.administrador}
-			<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
-        {/if}
+		{#if data.estado === "Aceptado"}
+			{#if data.administrador}
+				<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
+			{/if}
+		{/if}
 
         <Button icon="/icons/share.svg"></Button>
 
@@ -291,9 +329,8 @@
 			<Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>
 		{/if}
 
-		<!--TODO: implementar cancelación de evento-->
-		{#if data.organizador && (data.estado === "En Revisión" || data.estado == "Aceptado")}
-			<Button>Cancelar evento</Button>
+		{#if (data.organizador || permisoCancelacionAdmin) && (data.estado === "En Revisión" || data.estado === "Aceptado")}
+			<Button action={() => {popupCancelarEventoVisible = true}}>Cancelar evento</Button>
 		{/if}
 	</div>
 </div>
@@ -308,7 +345,9 @@
 
 <Popup bind:visible={cancelarInscripcionPopupVisible} fitW fitH title={"Cancelar inscripción"}>
 	<p>¿Está seguro de que desea cancelar su inscripción?</p>
-	<p>Se le devolverá ${montoDevolucion.toFixed(2).replaceAll(".", ",")}</p>
+	{#if montoDevolucion !== 0}
+		<p>Se le devolverá ${montoDevolucion.toFixed(2).replaceAll(".", ",")}</p>
+	{/if}
 	<div class="flex flex-row justify-center gap-2">
 		<Button action={() => {cancelarInscripcionPopupVisible = false;}}>Cancelar</Button>
 		<Button action={desincribirse}>Confirmar</Button>
@@ -326,5 +365,32 @@
 	</div>
 </Popup>
 
+<Popup bind:visible={popupCancelarEventoVisible} fitH fitW title="Cancelar evento">
+	<p>¿Está seguro de que desea cancelar el evento?</p>
+	<p>Se devolverá el monto pagado a los inscriptos, pero no recuperará lo pagado al espacio. Esta acción es irreversible.</p>
+	<TextField 
+			label="Motivo" 
+			multiline 
+			bind:value={motivoCancelacionEvento} 
+			validate={validateMotivoCancelacion}
+			rows={6}
+			max={500}
+		/>
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupCancelarEventoVisible = false}}>Cancelar</Button>
+		<Button action={cancelarEvento}>Confirmar</Button>
+	</div>
+</Popup>
+
+<PopupError bind:visible={errorCancelacionVisible}>
+	{errorCancelacion}
+</PopupError>
+
+<Popup bind:visible={cancelacionExitosa} title={"Éxito"} fitW fitH>
+	<p>El evento fue cancelado exitosamente</p>
+	<div class="flex flex-row justify-center gap-2">
+		<Button action={mount}>Aceptar</Button>
+	</div>
+</Popup>
 
 <PopupCalificarUsuario bind:visible={popupCalificarVisible} bind:username={usernameCalificar}/>

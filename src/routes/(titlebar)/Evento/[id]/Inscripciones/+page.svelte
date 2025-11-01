@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import { base } from "$app/paths";
 	import { page } from "$app/state";
 	import Button from "$lib/components/Button.svelte";
@@ -17,6 +17,10 @@
 	import { get } from "svelte/store";
 
     let previousPage: string = base;
+
+	afterNavigate(({from}) => {
+		previousPage = from?.url.pathname || previousPage
+	});
 
 	$: id = Number(page.params.id);
 	$: data = null as DTOInscripcionesEvento | null;
@@ -50,7 +54,7 @@
 		try {
 			data = await EventosService.obtenerInscripciones(id,  busqueda);
 
-			if (!data.esAdministrador && !data.esOrganizador) {
+			if (!data.esAdministrador && !data.esOrganizador && !data.esEncargado) {
                 errorPermiso = true;
                 return;
             }
@@ -119,65 +123,69 @@
 
 		<div class="flex flex-col gap-16">
 			{#each data.inscripciones as inscripcion}
-				<div class="flex flex-col">
-					<div class="flex flex-row justify-between">
-						<div class="flex items-center gap-2">
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-							<img use:loadFotoDePerfil={inscripcion.usuario.username} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer hidden" on:click={() => {goto(`/Perfil/${inscripcion.usuario.username}`)}}>
-							<div>{inscripcion.usuario.nombre} {inscripcion.usuario.apellido} (DNI N.°: {inscripcion.usuario.dni})</div>
-						</div>
-						{#if inscripcion.fechaCancelacionInscripcion === null}
-							<Button classes="h-fit print:hidden" action={() => {mostrarPopupCancelarInscripcion(inscripcion)}}>Cancelar</Button>
-						{/if}
-					</div>
-					<div class="flex flex-col gap-2 ml-4">
-						<div class="flex flex-col justify-start items-end">
-							<div>
-								Inscripto en {formatDate(inscripcion.fechaInscripcion, true)}
+				{#if inscripcion.fechaCancelacionInscripcion === null || (data.esAdministrador || data.esOrganizador)}
+					<div class="flex flex-col">
+						<div class="flex flex-row justify-between">
+							<div class="flex items-center gap-2">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+								<img use:loadFotoDePerfil={inscripcion.usuario.username} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer hidden" on:click={() => {goto(`/Perfil/${inscripcion.usuario.username}`)}}>
+								<div>{inscripcion.usuario.nombre} {inscripcion.usuario.apellido} (DNI N.°: {inscripcion.usuario.dni})</div>
 							</div>
-							{#if inscripcion.fechaCancelacionInscripcion !== null}
+							{#if inscripcion.fechaCancelacionInscripcion === null && (data.esAdministrador || data.esOrganizador)}
+								<Button classes="h-fit print:hidden" action={() => {mostrarPopupCancelarInscripcion(inscripcion)}}>Cancelar</Button>
+							{/if}
+						</div>
+						<div class="flex flex-col gap-2 ml-4">
+							<div class="flex flex-col justify-start items-end">
 								<div>
-									Cancelado en {formatDate(inscripcion.fechaCancelacionInscripcion, true)}
+									Inscripto en {formatDate(inscripcion.fechaInscripcion, true)}
+								</div>
+								{#if inscripcion.fechaCancelacionInscripcion !== null}
+									<div>
+										Cancelado en {formatDate(inscripcion.fechaCancelacionInscripcion, true)}
+									</div>
+								{/if}
+							</div>
+							{#if inscripcion.transferencias.length > 0}
+							<div class="flex flex-col gap-2">
+								<div>Transferencias:</div>
+								<div class="flex flex-col ml-4 gap-2">
+									{#each inscripcion.transferencias as t}
+										<div class="flex justify-between items-center">
+											<div>{t.monto >= 0 ? "Pagó:" : "Devuelto:"}</div>
+											<div class="flex gap-2 items-center">
+												<div>
+													${t.monto.toFixed(2).replaceAll(".", ",")}
+												</div>
+												<Button icon="/icons/documento.svg" action={() => {numeroComprobanteAbierto = Number.parseInt(t.numero)}}></Button>
+											</div>
+										</div>
+									{/each}
+									<div class="flex justify-between items-center">
+										<div>Total:</div>
+										<div class="flex gap-2 items-center">
+											<div>
+												${inscripcion.transferencias.reduce((acc, v) => acc + v.monto, 0).toFixed(2).replaceAll(".", ",")}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							{/if}
+							{#if inscripcion.invitados.length > 0}
+								<div class="flex flex-col gap-2">
+									<div>Invitados:</div>
+									<div class="flex flex-col gap-2 md:flex-row md:flex-wrap">
+										{#each inscripcion.invitados as inv}
+											<div class="ml-4">{inv.apellido}, {inv.nombre} (DNI N.°: {inv.dni})</div>
+										{/each}
+									</div>
 								</div>
 							{/if}
 						</div>
-						<div class="flex flex-col gap-2">
-							<div>Transferencias:</div>
-							<div class="flex flex-col ml-4 gap-2">
-								{#each inscripcion.transferencias as t}
-									<div class="flex justify-between items-center">
-										<div>{t.monto >= 0 ? "Pagó:" : "Devuelto:"}</div>
-										<div class="flex gap-2 items-center">
-											<div>
-												${t.monto.toFixed(2).replaceAll(".", ",")}
-											</div>
-											<Button icon="/icons/documento.svg" action={() => {numeroComprobanteAbierto = t.numero}}></Button>
-										</div>
-									</div>
-								{/each}
-								<div class="flex justify-between items-center">
-									<div>Total:</div>
-									<div class="flex gap-2 items-center">
-										<div>
-											${inscripcion.transferencias.reduce((acc, v) => acc + v.monto, 0).toFixed(2).replaceAll(".", ",")}
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						{#if inscripcion.invitados.length > 0}
-							<div class="flex flex-col gap-2">
-								<div>Invitados:</div>
-								<div class="flex flex-col gap-2 md:flex-row md:flex-wrap">
-									{#each inscripcion.invitados as inv}
-										<div class="ml-4">{inv.apellido}, {inv.nombre} (DNI N.°: {inv.dni})</div>
-									{/each}
-								</div>
-							</div>
-						{/if}
 					</div>
-				</div>
+				{/if}
 			{/each}
 		</div>
 
@@ -186,7 +194,7 @@
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center print:hidden">
-		<Button action={() => goto(`/Evento/${id}/Administrar`)}>Atrás</Button>
+		<Button action={() => goto(previousPage)}>Atrás</Button>
 		<Button action={window.print}>Exportar</Button>
 	</div>
 </div>
