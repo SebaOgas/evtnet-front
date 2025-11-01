@@ -183,12 +183,26 @@
                                 {/if}
                             </div>
                         </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <span>Administrador entre:</span>
-                            {#each admin.historico as fechas}
-                                <span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
-                            {/each}
-                        </div>
+                        {#if admin.historico.filter(h => h.organizador).length > 0}
+							<div class="flex flex-col items-center gap-2 w-full">
+								<span>Organizador entre:</span>
+								{#each admin.historico as fechas}
+									{#if fechas.organizador}
+										<span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
+									{/if}
+								{/each}
+							</div>
+						{/if}
+						{#if admin.historico.filter(h => !h.organizador).length > 0}
+							<div class="flex flex-col items-center gap-2 w-full">
+								<span>Administrador entre:</span>
+								{#each admin.historico as fechas}
+									{#if !fechas.organizador}
+										<span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
+									{/if}
+								{/each}
+							</div>
+						{/if}
                     </div>
                 {/if}
             {/each}
@@ -211,12 +225,26 @@
                                 {/if}
                             </div>
                         </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <span>Administrador entre:</span>
-                            {#each admin.historico as fechas}
-                                <span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
-                            {/each}
-                        </div>
+                        {#if admin.historico.filter(h => h.organizador).length > 0}
+							<div class="flex flex-col items-center gap-2 w-full">
+								<span>Organizador entre:</span>
+								{#each admin.historico as fechas}
+									{#if fechas.organizador}
+										<span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
+									{/if}
+								{/each}
+							</div>
+						{/if}
+						{#if admin.historico.filter(h => !h.organizador).length > 0}
+							<div class="flex flex-col items-center gap-2 w-full">
+								<span>Administrador entre:</span>
+								{#each admin.historico as fechas}
+									{#if !fechas.organizador}
+										<span>{formatDate(fechas.fechaDesde, true)} - {fechas.fechaHasta !== null ? formatDate(fechas.fechaHasta, true) : "actualidad"}</span>
+									{/if}
+								{/each}
+							</div>
+						{/if}
                     </div>
                 {/if}
             {/each}
@@ -283,7 +311,7 @@
 <Popup bind:visible={popupOrganizadorExitoVisible} fitH fitW>
 	Usuario designado como organizador exitosamente.
 	<div class="flex justify-center items-center w-full">
-		<Button action={cargarDatos}>Aceptar</Button>
+		<Button action={() => goto("./")}>Aceptar</Button>
 	</div>
 </Popup>
 

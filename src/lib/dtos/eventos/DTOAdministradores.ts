@@ -12,7 +12,8 @@ export default interface DTOAdministradores {
 
         historico: {
             fechaDesde: Date,
-            fechaHasta: Date | null
+            fechaHasta: Date | null,
+            organizador: boolean
         }[]
     }[]
 }

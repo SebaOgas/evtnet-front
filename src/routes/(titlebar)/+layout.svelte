@@ -4,8 +4,12 @@
 </script>
 
 
-<TitleBar/>
+<div class="hidden print:block">
+	<TitleBar/>
+</div>
 
 <slot/>
 
-
+<div class="print:hidden">
+	<TitleBar/>
+</div>

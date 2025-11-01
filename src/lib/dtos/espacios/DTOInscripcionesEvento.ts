@@ -3,6 +3,7 @@ export default interface DTOInscripcionesEvento {
 
     esAdministrador: boolean,
     esOrganizador: boolean,
+    esEncargado: boolean,
 
     inscripciones: {
         id: number,
@@ -15,7 +16,7 @@ export default interface DTOInscripcionesEvento {
         fechaInscripcion: Date,
         fechaCancelacionInscripcion: Date | null,
         transferencias: {
-            numero: number,
+            numero: string,
             monto: number
         }[],
         invitados: {

@@ -158,6 +158,13 @@ export const EventosService = {
         return response;
     },
 
+    dejarDeAdministrar: async (eventoId: number) => {
+        let args = new Map<string, string>();
+        args.set("eventoId", `${eventoId}`);
+
+        await request(HttpRequestType.DELETE, "eventos/dejarDeAdministrar", true, args);
+    },
+
     obtenerAdministradores: async (idEvento: number) => {
         let args = new Map<string, string>();
         args.set("idEvento", `${idEvento}`);
@@ -194,6 +201,13 @@ export const EventosService = {
         // Sin fecha de nacimiento, dni y mail
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "eventos/buscarUsuariosNoAdministradores", false, args);
         return response;
+    },
+    cancelarEvento: async (idEvento: number, motivo: string) => {
+        let args = new Map<string, string>();
+        args.set("idEvento", `${idEvento}`);
+        args.set("motivo", `${motivo}`);
+
+        await request(HttpRequestType.PUT, "eventos/cancelarEvento", true, args);
     },
 
     getDatosParaDenunciar: async (idEvento: number) => {

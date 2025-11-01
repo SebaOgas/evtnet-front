@@ -102,6 +102,7 @@
 				} else {
 					warningSinCronogramaVisible = false;
 				}				
+				fechaMaxBusquedaHorarios = new Date();
 				fechaMaxBusquedaHorarios.setDate((new Date()).getDate() + s.diasHaciaAdelante - 1)
 			}
 		})
@@ -314,8 +315,12 @@
 			startPopupPago(crearEvento, preferencias);
 		} catch (e) {
 			if (e instanceof HttpError) {
-				error = e.message;
-				errorVisible = true;
+				if (e.code === 900) {
+					crearEvento([]);
+				} else {
+					error = e.message;
+					errorVisible = true;
+				}
 			}
 		}
 	}
@@ -573,9 +578,9 @@
 							<div>{formatDate(data.fechaHoraFin, true)}</div>
 						</div>
 						{#if !datosCreacion?.administrador}
-							<div>Cuota por organización: {precioOrganizacion.toFixed(2).replaceAll(".",",")}</div>
+							<div>Cuota por organización: ${precioOrganizacion.toFixed(2).replaceAll(".",",")}</div>
 						{/if}
-						<div>Adicional por inscripción: {adicionalInscripcion.toFixed(2).replaceAll(".",",")}</div>
+						<div>Adicional por inscripción: ${adicionalInscripcion.toFixed(2).replaceAll(".",",")}</div>
 					{/if}
 				</div>
 				<Warning visible={warningHorarioVisible} text="Es obligatorio seleccionar el horario"/>
