@@ -285,7 +285,7 @@
 			// Si el estado fue cambiado, asignar el nuevo estado
 			if (data.estado?.id !== estadoEspacioSeleccionado) {
 				// Buscar el objeto estado en data.estadosEspacio
-				const nuevoEstado = data.estadosEspacio.find(e => e.id === estadoEspacioSeleccionado);
+				const nuevoEstado = data.estadosEspacio!.find(e => e.id === estadoEspacioSeleccionado);
 				if (nuevoEstado) {
 					data.estado = nuevoEstado;
 				}

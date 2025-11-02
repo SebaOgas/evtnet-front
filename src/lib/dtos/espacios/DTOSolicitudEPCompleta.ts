@@ -17,7 +17,7 @@ export default interface DTOSolicitudEPCompleta{
         contentType?: string
     },
 
-    SEPEstado:{
+    SEPEstados:{
         id: number,
         nombre: string,
         descripcion: string,

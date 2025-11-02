@@ -6,7 +6,7 @@
 	import { token, permisos } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
-	import { EspaciosService } from "$lib/services/EspaciosService";
+	import { SolicitudEspacioService } from "$lib/services/SolicitudEspacioService";
 	import { HttpError } from "$lib/request/request";
 	import type DTOBusquedaSEP from "$lib/dtos/espacios/DTOBusquedaSEP";
 	import type DTOResultadoBusquedaSEP from "$lib/dtos/espacios/DTOResultadoBusquedaSEP";
@@ -102,7 +102,7 @@
 		}
 
         try {
-			estados = await EspaciosService.obtenerEstadosSEP();
+			estados = await SolicitudEspacioService.obtenerEstadosSEP();
             estados.forEach((e, i, arr) => {
                 arr[i].checked = true;
                 estadosOption.set(e.id, e.nombre);
@@ -148,7 +148,7 @@
         }
 
         try {
-			resultados = await EspaciosService.buscarSolicitudesEspaciosPublicos(filtros);
+			resultados = await SolicitudEspacioService.buscarSolicitudesEspaciosPublicos(filtros);
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -174,12 +174,12 @@
                 email: "",
                 urlFotoPerfil: null
             },
-            SEPEstado: []
+            SEPEstados: []
         }
 
         popupDetalleVisible = true;
         try {
-            solicitud = await EspaciosService.obtenerDetalleSolicitudEP(solicitudSimple.idSEP);
+            solicitud = await SolicitudEspacioService.obtenerDetalleSolicitudEP(solicitudSimple.idSEP);
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -189,7 +189,7 @@
     }
 
     async function buscarEspacios() {
-        let response = await EspaciosService.obtenerEspaciosParaSolicitud();
+        let response = await SolicitudEspacioService.obtenerEspaciosParaSolicitud();
         let ret : Map<number, string> = new Map();
 
         response.forEach((val) => {
@@ -228,7 +228,7 @@
         if ((estadoSeleccionado && estadoSeleccionado === 0) || (!solicitud || solicitud.descripcion === "" || solicitud.descripcion.trim().length < 50)) {return}
 
         try {
-            await EspaciosService.cambiarEstadoSEP(solicitud!.idSEP, estadoSeleccionado);
+            await SolicitudEspacioService.cambiarEstadoSEP(solicitud!.idSEP, estadoSeleccionado);
             popupExitoVisible=true;
             buscar();
         } catch (e) {
@@ -247,7 +247,7 @@
         let idEspacio = Array.from(espacio.keys())[0];
         try {
             if (solicitud) {
-                await EspaciosService.vincularEspacioASolicitud(solicitud.idSEP, idEspacio);
+                await SolicitudEspacioService.vincularEspacioASolicitud(solicitud.idSEP, idEspacio);
                 solicitud.nombreEspacio = Array.from(espacio.values())[0];
                 popupExitoVisible = true;
                 buscar();
@@ -365,7 +365,7 @@
             <div class="flex flex-col gap-2 flex-1">
                 <span>Histórico de estados:</span>
                 <div class="ml-1 flex flex-col gap-2">
-                    {#each solicitud.SEPEstado as estado}
+                    {#each solicitud.SEPEstados as estado}
                         <div>
                             <span>{estado.nombre}</span>                            
                             <span>Fecha: {formatDate(estado.fechaHoraDesde, true)}</span>

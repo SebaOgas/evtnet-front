@@ -7,7 +7,7 @@
 	import TextField from "$lib/components/TextField.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import { HttpError } from "$lib/request/request";
-	import { EspaciosService } from "$lib/services/EspaciosService";
+	import { SolicitudEspacioService } from "$lib/services/SolicitudEspacioService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
@@ -19,7 +19,7 @@
             goto("/");
         }
 
-        if(!get(permisos).includes("CreacionEspaciosPublicos")) {
+        if(!get(permisos).includes("SolicitudEspaciosPublicos")) {
             goto("/Espacios")
         }
     });
@@ -152,7 +152,7 @@
         data.longitud = ubicacion.y;
 
         try {
-            espacioId = await EspaciosService.crearSolicitudEspacio(data);
+            espacioId = await SolicitudEspacioService.crearSolicitudEspacio(data);
             popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {

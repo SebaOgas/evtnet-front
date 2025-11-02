@@ -72,7 +72,7 @@
     <div class="flex flex-row flex-wrap gap-2 items-center my-2">
       {#each resenas.puntuaciones as r}
         <div class="flex items-center gap-1">
-          <span style="color:{referencias.filter(ref => ref.estrellas === r.puntuacion)[0].color}">●</span> {r.cantidad} estrellas <span class="text-cyan-500">✔</span>
+          <span style="color:{referencias.filter(ref => ref.estrellas === r.puntuacion)[0].color}">●</span> {r.puntuacion} estrellas <span class="text-cyan-500">✔</span>
         </div>
       {/each}
     </div>
