@@ -293,7 +293,11 @@
 
 	<div class="flex gap-2 h-fit p-2 justify-center items-center">
 		<Button action={() => goto(`/Evento/${id}`)}>Cancelar</Button>
-		<Button action={realizarPago} disabled={!evento || !validarFormulario()}>Realizar pago</Button>
+		{#if evento !== null}
+			<Button action={realizarPago} disabled={!evento || !validarFormulario()}>
+				{evento.precioPorAsistente * (1 + invitados.length) === 0 ? "Inscribirme" : "Realizar pago"}
+			</Button>
+		{/if}
 	</div>
 </div>
 
