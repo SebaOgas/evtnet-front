@@ -144,8 +144,14 @@
         };
     }
 
-    function calcularPrecioConComision(precioBase: number): number {
-        return precioBase * (1 + data.comision);
+    async function calcularPrecioConComision(precioBase: number): number {
+        const comision = await CronogramaService.obtenerComisionOrganizacion(precioBase);
+        return precioBase * (1 + comision);
+    }
+
+    async function calcularAdicionalInscripcion(precioBase: number): number {
+        const comision = await CronogramaService.obtenerComisionInscripcion(precioBase);
+        return precioBase * (1 + comision);
     }
 
     function formatearPrecio(precio: number): string {
@@ -282,11 +288,11 @@
                     forceValidate={forceValidatePrecio}
                 />
             </div>
-            <!-- {#if precioTexto && validatePrecio(precioTexto).valid}
+            {#if precioTexto && validatePrecio(precioTexto).valid}
                 <p class="text-xs mt-1">
                     Precio más comisión: {formatearPrecio(calcularPrecioConComision(parseFloat(precioTexto.replace(',', '.'))))}
                 </p>
-            {/if} -->
+            {/if}
         </div>
         <div>
             <span class="text-xs">Precio adicional por inscripción:</span>
@@ -301,6 +307,11 @@
                     forceValidate={forceValidatePrecio}
                 />
             </div>
+            {#if precioTexto && validatePrecio(precioTexto).valid}
+                <p class="text-xs mt-1">
+                    Precio más comisión: {formatearPrecio(calcularAdicionalInscripcion(parseFloat(precioTexto.replace(',', '.'))))}
+                </p>
+            {/if}
         </div>
     </div>
 
@@ -312,7 +323,8 @@
     </div>
 </div>
 
-<Popup title="Horario creado exitosamente" bind:visible={popupExitoVisible} fitH fitW>
+<Popup bind:visible={popupExitoVisible} fitH fitW>
+    Horario creado exitosamente
     <div class="flex justify-center items-center w-full">
         <Button action={() => goto(`/Espacio/${espacioId}/AdministrarCronograma/${cronogramaId}?idSubEspacio=${idSubEspacio}`)}>
             Aceptar

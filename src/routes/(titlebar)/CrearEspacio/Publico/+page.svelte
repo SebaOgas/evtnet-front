@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import Popup from "$lib/components/Popup.svelte";
@@ -11,17 +11,24 @@
 	import { HttpError } from "$lib/request/request";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EspaciosService } from "$lib/services/EspaciosService";
-	import { permisos, token } from "$lib/stores";
+	import { permisos, token, username } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { page } from "$app/state";
+	import type { DTOSubespacio } from "$lib/dtos/espacios/DTOCrearEspacio";
+	import { base } from "$app/paths";
+
+    let previousPage: string = base;
+    afterNavigate(({from}) => {
+            previousPage = from?.url.pathname || previousPage
+    });
 
     onMount(async () => {     
         if (get(token) === "") {
             goto("/");
         }
 
-        if(!get(permisos).includes("CreacionEspaciosPublicos")) {
+        if(!get(permisos).includes("AdministracionEspaciosPublicos")) {
             goto("/Espacios")
         }
     });
@@ -34,16 +41,80 @@
 		direccion: searchParams.get("direccion") ?? "",
 		latitud: Number(searchParams.get("latitud")) ?? undefined,
 		longitud: Number(searchParams.get("longitud")) ?? undefined,
-		disciplinas: [],
-        publico: true,
-        sepId: Number(searchParams.get("sep"))
+        esPublico: false,
+        subEspacios: [],
+        username: "",
+        requiereAprobarEventos: false,
+        sepId: Number(searchParams.get("sepId"))
 	}
 
-    let ubicacion : {x: number, y: number} | undefined = undefined
+    let subespacio : DTOSubespacio = {
+        nombre: "",
+        descripcion: "",
+        capacidadMaxima: 1,
+        disciplinas: []
+    }
+
+     let indiceSubespacio : number = -1;
+
+    let ubicacion : {x: number, y: number} | undefined = {x: data.latitud, y: data.longitud};
 
     $: popupDisciplinasVisible = false;
+    $: popupSubespacioVisible = false;
+    $: confirmarVisible = false;
+    $: warningNombreSubespacioVisible = false;
+    $: warningCapacidadMaximaVisible = false;
+    let title = "Nuevo subespacio";
 
     let disciplinas : Map<number, string> = new Map<number, string>();
+
+    let disciplinasSeleccionadas : Map<number, string> = new Map<number, string>();
+    
+    function cerrar() {
+        console.log(disciplinas)
+        disciplinasSeleccionadas = disciplinas;
+        popupSubespacioVisible = false;
+        subespacio = {
+            nombre: "",
+            descripcion: "",
+            capacidadMaxima: 1,
+            disciplinas: []
+        }
+        warningNombreVisible = false;
+        warningCapacidadMaximaVisible = false;
+        confirmarVisible = false;
+    }
+    function confirmar() {
+        if (subespacio.nombre === "") {
+            warningNombreSubespacioVisible = true;
+        } else {
+            warningNombreSubespacioVisible = false;
+        }
+        if (subespacio.capacidadMaxima === null || subespacio.capacidadMaxima === undefined || subespacio.capacidadMaxima < 1) {
+            warningCapacidadMaximaVisible = true;
+        } else {
+            warningCapacidadMaximaVisible = false;
+        }
+        if (subespacio.nombre !== "" && subespacio.capacidadMaxima !== null && subespacio.capacidadMaxima !== undefined && subespacio.capacidadMaxima >= 1) {
+            // Recolectar los ids de las disciplinas seleccionadas
+            const disciplinasIds: number[] = [];
+            disciplinas.forEach((_, key) => disciplinasIds.push(key));
+            // Asignar el array de ids al subespacio (reemplaza cualquier valor previo)
+            subespacio.disciplinas = [...disciplinasIds];
+            if (indiceSubespacio !== -1 && indiceSubespacio >= 0 && indiceSubespacio < data.subEspacios.length) {
+                // Actualizar subespacio existente
+                data.subEspacios[indiceSubespacio] = { ...subespacio };
+            } else {
+                // Agregar nuevo subespacio
+                data.subEspacios.push({ ...subespacio });
+            }
+            // Forzar reactividad
+            data.subEspacios = [...data.subEspacios];
+            // Limpiar estado del popup
+            cerrar();
+            indiceSubespacio = -1;
+        }
+    }
 
     async function buscarDisciplinas(val: string) {
         let response = await DisciplinasService.buscar(val);
@@ -79,6 +150,25 @@
             }
         }
 
+        return {
+            valid: true,
+            reason: undefined
+        }
+    }
+
+    function validateCapacidadMaxima(val: string | number | null) {
+        if (val === null || val === undefined) {
+            return {
+                valid: false,
+                reason: "La capacidad máxima es obligatoria"
+            }
+        }
+        if (Number(val) < 1) {
+            return {
+                valid: false,
+                reason: "La capacidad máxima debe ser un número mayor a 0"
+            }
+        }
         return {
             valid: true,
             reason: undefined
@@ -122,13 +212,11 @@
 
         data.latitud = ubicacion.x;
         data.longitud = ubicacion.y;
-
-        disciplinas.forEach((value, key) => {
-            data.disciplinas.push(key);
-        })
+        data.username = get(username);
+        
 
         try {
-            espacioId = await EspaciosService.crearEspacio(data);
+            espacioId = await EspaciosService.crearEspacioPublico(data);
             popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
@@ -143,7 +231,6 @@
 </script>
 
 
-<PopupSeleccion title="Selección múltiple" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas}/>
             
 
 <div id="content">
@@ -159,11 +246,39 @@
         <TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible}/>
         <div class="mb-2 mt-2">
             Ubicación
-            <MapDisplay latitude={-32.89084} longitude={-68.82717} bind:marked={ubicacion} zoom={12}/>
+            {#if data.latitud && data.longitud}
+                <MapDisplay latitude={data.latitud} longitude={data.longitud} bind:marked={ubicacion} zoom={12}/>
+            {:else}
+                <MapDisplay latitude={-32.89084} longitude={-68.82717} bind:marked={ubicacion} zoom={12}/>
+            {/if}
             <Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
         </div>
 
+        <h2 class="text-m text-center">
+            SubEspacios
+        </h2>
         <div class="mb-2 mt-2">
+            <div class="flex flex-col gap-2">
+                {#each data.subEspacios as se,i}
+                    <div>
+                        <div>{se.nombre}</div>
+                        <div>Capacidad máxima: {se.capacidadMaxima}</div>
+                        <div>Disciplinas: {
+                            se.disciplinas
+                                .map((d) => {
+                                    const nombre = disciplinas.get(d);
+                                    return nombre ? nombre : d;
+                                })
+                                .filter(Boolean)
+                                .join(", ")
+                        }</div>
+                        <Button icon="/icons/edit.svg" classes="ml-1" action={() => {popupSubespacioVisible = true; indiceSubespacio=i; subespacio={...se}}}></Button>
+                    </div>
+                {/each}
+            </div>          
+        </div>
+
+        <!-- <div class="mb-2 mt-2">
             <div class="flex justify-start gap-2">
                 <span>Disciplinas</span>
                 <Button action={() => {popupDisciplinasVisible = !popupDisciplinasVisible}}>Seleccionar</Button>
@@ -173,17 +288,44 @@
                     <span>{d[1]}</span>
                 {/each}
             </div>
-        </div>
+        </div> -->
         
 
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
-        <Button classes="text-m">Cancelar</Button>
-        <Button classes="text-m" action={crearEspacio}>Aceptar</Button>
+        <Button classes="text-s" action={() => { popupSubespacioVisible = true; }}>Agregar Subespacio</Button>
+    </div>
+    <div class="flex gap-2 h-fit p-2 justify-center items-center">
+        <Button classes="text-s" action={() => {goto(previousPage)}}>Cancelar</Button>
+        <Button classes="text-s" disabled={data.subEspacios.length === 0} action={crearEspacio}>Aceptar</Button>
     </div>
 
 </div>
+
+<Popup bind:title={title} bind:visible={popupSubespacioVisible} classes="z-40" fitH fitW>
+    <div class="h-full grow">
+        <TextField label="Nombre del subespacio" bind:value={subespacio.nombre} validate={validateNombre} forceValidate={warningNombreSubespacioVisible}/>
+        <TextField label="Descripción del subespacio" multiline bind:value={subespacio.descripcion} rows={6}/>
+        <TextField label="Capacidad máxima" min={1} bind:value={subespacio.capacidadMaxima} validate={validateCapacidadMaxima} forceValidate={warningCapacidadMaximaVisible}/>
+        <div class="flex justify-start gap-2">
+            <span>Disciplinas</span>
+            <Button action={() => {popupDisciplinasVisible = !popupDisciplinasVisible}}>Seleccionar</Button>
+        </div>
+        <div class="commaList">
+            {#each disciplinas as d}
+                <span>{d[1]}</span>
+            {/each}
+        </div>
+    </div>
+    
+    
+    <div class="flex justify-center items-center w-full gap-2 mt-8">
+        <Button action={cerrar}>Cancelar</Button>
+        <Button action={confirmar} disabled={subespacio.nombre === "" || subespacio.capacidadMaxima === 0}>Confirmar</Button>
+    </div>
+</Popup>
+<PopupSeleccion title="Selección múltiple" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas} classes="z-40"/>
 
 <PopupError bind:visible={errorVisible}>
     {error}
@@ -192,7 +334,7 @@
 <Popup bind:visible={popupExitoVisible} fitH fitW>
     Espacio registrado exitosamente
     <div class="flex justify-center items-center w-full">
-        <Button action={() => {goto(`/Espacio/${espacioId}`)}}>Aceptar</Button>
+        <Button action={() => {goto(`/SolicitudesEspaciosPublicos`)}}>Aceptar</Button>
     </div>
 </Popup>
 

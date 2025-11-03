@@ -122,7 +122,9 @@
                         <div class="hidden md:flex justify-start gap-4 [&>div]:min-w-[30%] w-full">
                             <div class="text-s">{diasSemana[horario.diaSemana]}</div>
                             <div class="text-xs">{formatTime(horario.horaDesde)} - {formatTime(horario.horaHasta)}</div>
-                            <div class="text-xs">{formatPrice(horario.precioOrganizacion)}</div>
+                        </div>
+                        <div class="hidden md:flex justify-start gap-4 [&>div]:min-w-[30%] w-full">
+                            <div class="text-xs">Precio por organización: {formatPrice(horario.precioOrganizacion)}</div>
                         </div>
                         <Button icon="/icons/cross.svg" action={() => eliminarHorario(horario.id)}></Button>
                     </div>
@@ -130,8 +132,15 @@
                         <div class="text-xs">
                             {formatTime(horario.horaDesde)} - {formatTime(horario.horaHasta)}
                         </div>
+                    </div>
+                    <div class="flex w-full justify-between items-start ps-4 md:hidden">
                         <div class="text-xs">
-                            {formatPrice(horario.precioOrganizacion)}
+                            Precio por organización: {formatPrice(horario.precioOrganizacion)}
+                        </div>
+                    </div>
+                    <div class="flex w-full justify-between items-start ps-4 md:hidden">
+                        <div class="text-xs">
+                            Adicional por inscripción: {formatPrice(horario.adicionalPorInscripcion)}
                         </div>
                     </div>
                 </div>

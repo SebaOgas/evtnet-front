@@ -7,6 +7,7 @@ export default interface DTODetalleCronograma {
         diaSemana: number, //0: lunes, 1: martes, 2: miércoles...
         horaDesde: Date,
         horaHasta: Date,
-        precioOrganizacion: number
+        precioOrganizacion: number,
+        adicionalPorInscripcion: number
     }[]
 }

@@ -17,11 +17,11 @@
 	import Table from "$lib/components/Table.svelte";
 	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
-	import type DTOSolicitudEPCompleta from "$lib/dtos/espacios/DTOSolicitudEPCompleta";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOCambioEstadoSEP from "$lib/dtos/espacios/DTOCambioEstadoSEP";
+	import type DTOEspacioPrivadoCompleto from "$lib/dtos/espacios/DTOEspacioPrivadoCompleto";
 
     $: errorPermiso = false;
 
@@ -65,7 +65,7 @@
     let fechaCambioEstadoDesde: Date | null = filtros.fechaUltimoCambioEstadoDesde;
     let fechaCambioEstadoHasta: Date | null = filtros.fechaUltimoCambioEstadoHasta;
 
-    let solicitud : DTOSolicitudEPCompleta | null = null;
+    let solicitud : DTOEspacioPrivadoCompleto | null = null;
     $: idsolicitud = 0;
 
     $: popupDetalleVisible = false;
@@ -76,20 +76,17 @@
     let ubicacion : {x: number, y: number} | undefined;
     let rango : number;
 
-    $: buscarPorEspacio = false;
-
-    $: popupEspaciosVisible = false;
-
     let espacios : Map<number, string> = new Map<number, string>();
 
     let estadosOption : Map<number, string> = new Map<number, string>();
+    
+    let estadosPosiblesOption : Map<number, string> = new Map<number, string>();
 
     $: warningDescripcionVisible = false;
     $: warningEstadoVisible = false;
-    $: popupEspacioAVincularVisible = false;
-    let espacio : Map<number, string> = new Map<number, string>();
-    $: if (!popupEspacioAVincularVisible && espacio && idsolicitud>0) {
-        vincularEspacioSeleccionado();
+
+    $: if (popupCambiarEstadoVisible && idsolicitud>0) {
+        setearEstadosPosibles();
     }
 
     onMount(async () => {
@@ -98,13 +95,13 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionEspaciosPublicos")) {
+		if (!userPermisos.includes("AdministracionEspaciosPrivados")) {
 			errorPermiso = true;
 			return;
 		}
 
         try {
-			estados = await SolicitudEspacioService.obtenerEstadosSEP();
+			estados = await SolicitudEspacioService.obtenerEstadosSEPrivados();
             estados.forEach((e, i, arr) => {
                 arr[i].checked = true;
                 estadosOption.set(e.id, e.nombre);
@@ -150,7 +147,7 @@
         }
 
         try {
-			resultados = await SolicitudEspacioService.buscarSolicitudesEspaciosPublicos(filtros);
+			resultados = await SolicitudEspacioService.buscarSolicitudesEspaciosPrivados(filtros);
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -161,7 +158,6 @@
 
     async function mostrarSolicitud(solicitudSimple:DTOResultadoBusquedaSEP){
         solicitud={
-            idSEP: solicitudSimple.idSEP,
             nombreEspacio: solicitudSimple.nombreEspacio,
             fechaIngreso: solicitudSimple.fechaIngreso,
             descripcion: "",
@@ -181,7 +177,7 @@
         }
 
         try {
-            solicitud = await SolicitudEspacioService.obtenerDetalleSolicitudEP(solicitudSimple.idSEP);
+            solicitud = await SolicitudEspacioService.obtenerDetalleSolicitudEPrivado(solicitudSimple.idSEP);
             popupDetalleVisible = true;
             
         } catch (e) {
@@ -193,15 +189,21 @@
         }
     }
 
-    async function buscarEspacios() {
-        let response = await SolicitudEspacioService.obtenerEspaciosParaSolicitud();
-        let ret : Map<number, string> = new Map();
+    async function setearEstadosPosibles() {
+        if (!solicitud) return;
 
-        response.forEach((val) => {
-            ret.set(val.id, val.nombre);
-        });
-
-        return ret;
+        try {
+            estadosOption = new Map<number, string>();
+            solicitud.estadosPosibles.forEach(e => {
+                estadosPosiblesOption.set(e.id, e.nombre);
+            });
+            //estadosPosiblesOption.set(solicitud.espacioEstados[solicitud.espacioEstados.length-1].idEstado, solicitud.espacioEstados[solicitud.espacioEstados.length-1].nombre);
+        } catch (e) {
+            if (e instanceof HttpError) {
+                errorGenerico = e.message;
+                errorGenericoVisible = true;
+            }   
+        }
     }
 
     function validateDescripcion(val: string) {
@@ -220,7 +222,7 @@
 
     async function cambiarEstadoSEP() {
 
-        if (!solicitud || solicitud.descripcion === "" || solicitud.descripcion.length < 50) {
+        if (!solicitud || descripcionCambioEstado === "" || descripcionCambioEstado.length < 50) {
             warningDescripcionVisible = true;
         } else {
             warningDescripcionVisible = false;
@@ -230,17 +232,17 @@
         } else {
             warningEstadoVisible = false;
         }
-        if ((estadoSeleccionado && estadoSeleccionado === 0) || (!solicitud || solicitud.descripcion === "" || solicitud.descripcion.length < 50)) {return}
+        if ((estadoSeleccionado && estadoSeleccionado === 0) || (!solicitud || descripcionCambioEstado === "" || descripcionCambioEstado.length < 50)) {return}
 
         
 
         try {
             let cambioEstado: DTOCambioEstadoSEP = {
-                idSEP: solicitud!.idSEP,
+                idSEP: solicitud!.idEspacio,
                 idEstado: estadoSeleccionado,
                 descripcion: descripcionCambioEstado
             }
-            await SolicitudEspacioService.cambiarEstadoSEP(cambioEstado);
+            await SolicitudEspacioService.cambiarEstadoSEPrivado(cambioEstado);
             popupExitoVisible=true;
             buscar();
         } catch (e) {
@@ -253,39 +255,25 @@
         popupDetalleVisible = false;
     }
 
-    async function vincularEspacioSeleccionado() {
-        if (!espacio) return;
-
-        let idEspacio = Array.from(espacio.keys())[0];
+    async function descargarDocumentacionEP(idEspacio:number){
         try {
-            if (idsolicitud>0) {
-                await SolicitudEspacioService.vincularEspacioASolicitud(idsolicitud, idEspacio);
-                //solicitud.nombreEspacio = Array.from(espacio.values())[0];
-                popupExitoVisible = true;
-                if(popupEspacioAVincularVisible) mostrarSolicitud(solicitud!);
-                else buscar();
-            }
+            await SolicitudEspacioService.descargarDocumentacionEP(idEspacio);
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
                 errorGenericoVisible = true;
             }   
         }
-        espacio.clear();
     }
     
 </script>
 
-
-
-<PopupSeleccion title="Espacio" multiple={true} bind:visible={popupEspaciosVisible} searchFunction={buscarEspacios} bind:selected={espacios}/>
 <PopupUbicacion bind:visible={popupUbicacionVisible} max={100000} bind:ubicacion={ubicacion} bind:radius={rango}/>
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
 		<h1 class="text-m text-center flex justify-between items-center gap-2">
-            <span>Solicitudes de Espacio Público</span>
-            <Button action={() => {goto("/CrearEspacio/Publico")}} classes="shrink-0">Nuevo Espacio Público</Button>
+            <span>Solicitudes de Espacio Privado</span>
         </h1>
 
         {#if listo}
@@ -298,21 +286,6 @@
                 <CheckBox bind:checked={buscarPorUbicacion}>Buscar por ubicación</CheckBox>
                 <Button disabled={!buscarPorUbicacion} action={() => {popupUbicacionVisible = true;}}>{#if ubicacion === undefined}Seleccionar{:else}Cambiar{/if}</Button>
             </div>
-
-            <div class="flex flex-col gap-1">
-                <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={buscarPorEspacio}>Filtrar por espacio</CheckBox>
-                    <Button disabled={!buscarPorEspacio} action={() => {popupEspaciosVisible = true;}}>{#if espacios.size === 0}Seleccionar{:else}Cambiar{/if}</Button>
-                </div>
-                {#if buscarPorEspacio && espacios.size > 0}
-                    <div class="flex flex-wrap gap-2 mt-1">
-                        {#each Array.from(espacios.entries()) as [id, nombre]}
-                            <span class="px-2 py-1 bg-gray-100 rounded text-xs">{nombre}</span>
-                        {/each}
-                    </div>
-                {/if}
-            </div>
-
             <div>
                 <span>Estados:</span>
                 <div class="flex flex-col justify-start items-start pl-2 gap-2">
@@ -336,7 +309,6 @@
                         <td>
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/edit.svg" action={() => mostrarSolicitud(d)}></Button>
-                                {#if d.idEspacio==null}<Button icon="/icons/change_state.svg" action={() => {idsolicitud=d.idSEP;popupEspacioAVincularVisible=true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>
@@ -350,14 +322,10 @@
     </div>
 </div>
 
-    <Popup bind:visible={popupDetalleVisible} title="Solicitud de Espacio Público" fitH fitW>
+    <Popup bind:visible={popupDetalleVisible} title="Solicitud de Espacio Privado" fitH fitW>
         {#if solicitud}
         <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
-            <div class="flex flex-col gap-2 flex-1">
-                <div class="flex justify-between items-start">
-                    <span class="text-justify">Espacio vinculado: {#if solicitud.idEspacio!=null}{solicitud.nombreEspacio}{:else}Ninguno{/if}</span>
-                    {#if solicitud.idEspacio==null}<Button classes="whitespace-nowrap" action={() => {popupEspacioAVincularVisible = true; idsolicitud=solicitud.idSEP}}>Seleccionar</Button>{/if}
-                </div>              
+            <div class="flex flex-col gap-2 flex-1">            
                 <div class="flex justify items-start">
                     <span>Solicitante:</span>
                     <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
@@ -368,35 +336,39 @@
                 <span class="text-justify">Fecha de ingreso: {formatDate(solicitud.fechaIngreso, true)}</span>
                     
                 <span>Descripción: {solicitud.descripcion}</span>
-                <span>Justificación: {solicitud.justificacion}</span>
                 <span>Dirección: {solicitud.direccion}</span>
                 <div class="mb-2 mt-2">
                     <span class="text-s">Ubicación del espacio</span>
                     <MapDisplay latitude={solicitud.latitud} longitude={solicitud.longitud} marked={{x: solicitud.latitud, y: solicitud.longitud}} zoom={14} disableMarking/>
                 </div>
+                <div class="flex flex-col gap-2 flex-1">
+                    <span>Documentación:</span>
+                    <div class="ml-1 flex flex-col gap-2">
+                        {#each solicitud.documentacion as documento}
+                            <div>
+                                <span>{documento.nombreArchivo}</span>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
             </div>
             <div class="flex flex-col gap-2 flex-1">
                 <span>Histórico de estados:</span>
                 <div class="ml-1 flex flex-col gap-2">
-                    {#each solicitud.sepEstados as estado}
+                    {#each solicitud.espacioEstados as estado}
                         <div>
                             <span>{estado.nombre}</span>                            
                             <span>Fecha: {formatDate(estado.fechaHoraDesde, true)}</span>
-                            <div class="flex justify items-start">
-                                <span>Responsable: </span>
-                                <img src={estado.responsable.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + estado.responsable.username)} class="w-12 h-12 rounded-full"/>
-                                <span>{estado.responsable.nombre} {estado.responsable.apellido} (@{estado.responsable.username})</span>
-                            </div>
                             <span>{estado.descripcion}</span>
                         </div>
                     {/each}
                 </div>
-                <div><Button classes="whitespace-nowrap" action={() => {popupCambiarEstadoVisible = true; estadoSeleccionado=solicitud?.sepEstados[solicitud.sepEstados.length-1].idEstado}}>Realizar cambio de estado</Button></div>
+                <div><Button classes="whitespace-nowrap" action={() => {popupCambiarEstadoVisible = true; estadoSeleccionado=solicitud?.espacioEstados[solicitud.espacioEstados.length-1].id; idsolicitud=solicitud.idEspacio}}>Realizar cambio de estado</Button></div>
             </div>
         </div>
         <div class="w-full flex justify-center items-center gap-2 mt-4">
             <Button action={() => popupDetalleVisible = false}>Cerrar</Button>
-            <Button action={() => goto(`/CrearEspacio/Publico?nombre=${solicitud?.nombreEspacio}&descripcion=${solicitud?.descripcion}&direccion=${solicitud?.direccion}&latitud=${solicitud?.latitud}&longitud=${solicitud?.longitud}&sepId=${solicitud?.idSEP}`)}>Generar Espacio a partir de la Solicitud</Button>
+            <Button action={() => descargarDocumentacionEP(solicitud.idEspacio)}>Descargar documentación</Button>
         </div>
         {:else}
             <div class="p-4 text-center">Cargando solicitud...</div>
@@ -406,17 +378,15 @@
     <Popup bind:visible={popupCambiarEstadoVisible} title="Cambiar de estado solicitud de espacio público" fitH fitW>
         {#if solicitud}
         <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
-            <div class="flex flex-col gap-2 flex-1">
-                <span>Espacio vinculado: {#if solicitud.idEspacio!=null}{solicitud.nombreEspacio}{:else}Ninguno{/if}</span>
-                
+            <div class="flex flex-col gap-2 flex-1">                
                 <span>Solicitante: <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
                     {solicitud.solicitante.nombre} {solicitud.solicitante.apellido} (@{solicitud.solicitante.username})
                 </span>
                 <span>Nombre propuesto: {solicitud.nombreEspacio}</span>
-                <span>Nuevo estado: <ComboBox classes="!md:w-[50%]" options={estadosOption} bind:selected={estadoSeleccionado} placeholder="Seleccionar.." maxHeight={5}/>
+                <span>Nuevo estado: <ComboBox classes="!md:w-[50%]" options={estadosPosiblesOption} bind:selected={estadoSeleccionado} placeholder="Seleccionar.." maxHeight={5}/>
                                     <Warning text="Debe seleccionar el nuevo estado en el que estará la solicitud" visible={warningEstadoVisible}/>
                 </span>
-                <span>Descripción del cambio <TextField label="" multiline bind:value={descripcionCambioEstado} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible}/></span>
+                <span>Descripción del cambio <TextField label="" multiline bind:value={descripcionCambioEstado} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible} max={100}/></span>
             </div>
             
         </div>
@@ -429,8 +399,6 @@
         {/if}
     </Popup>
 
-<PopupSeleccion title="Espacio" multiple={false} bind:visible={popupEspacioAVincularVisible} searchFunction={buscarEspacios} bind:selected={espacio} fitH fitW/>
-
 <PopupError bind:visible={errorPermiso}>
 	No tiene permiso para ver espacios.
 </PopupError>
@@ -440,7 +408,7 @@
 </PopupError>
 
 <Popup bind:visible={popupExitoVisible} fitH fitW>
-    Estado de solicitud actualizado exitosamente
+    Estado de espacio actualizado exitosamente
     <div class="flex justify-center items-center w-full">
         <Button action={() => {popupExitoVisible=false}}>Aceptar</Button>
     </div>

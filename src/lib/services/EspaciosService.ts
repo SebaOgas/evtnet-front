@@ -22,12 +22,12 @@ import type { DTOEncargadoSubespacio } from "$lib/dtos/espacios/DTOEncargadoSube
 
 
 export const EspaciosService = {
-    /* crearEspacio: async (data: DTOCrearEspacio) => {
+    crearEspacioPublico: async (data: DTOCrearEspacio) => {
 
-        let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, JSON.stringify(data));
+        let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacioPublico", true, null, JSON.stringify(data));
 
         return response.id;
-    }, */
+    },
     crearEspacio: async (data: DTOCrearEspacio, basesYCondiciones: File, documentacion: File[] = []) => {
         const formData = new FormData();
 
@@ -122,7 +122,7 @@ export const EspaciosService = {
         let args = new Map<string, string>();
         args.set("eventoId", `${eventoId}`);
         args.set("espacioId", `${espacioId}`);
-        await request(HttpRequestType.DELETE, "espacios/cancelarEvento", true, args);
+        await request(HttpRequestType.DELETE, "eventos/cancelarEvento", true, args);
     },
     actualizarCaracteristicasEspacio: async(idEspacio:number, caracteristicas:DTOCaracteristica[]) => {
         const payload = {
@@ -217,5 +217,11 @@ export const EspaciosService = {
         args.set("isSubEspacio", `${isSubespacio}`);
         args.set("username", `${username}`);
         await request(HttpRequestType.POST, "espacios/agregarEncargadoSubespacio", true, args);
+    },
+    aprobarRechazarEvento: async (eventoId: number, estado: string) => {
+        let args = new Map<string, string>();
+        args.set("eventoId", `${eventoId}`);
+        args.set("estado", `${estado}`);
+        await request(HttpRequestType.PUT, "eventos/aprobarRechazarEvento", true, args);
     },
 }
