@@ -26,7 +26,7 @@ export const IconosCaracteristicasService = {
 
         return url;
     },
-    obtenerCaracteristicasEspacio: async (idSubEspacio: number) => {
+    obtenerCaracteristicasSubEspacio: async (idSubEspacio: number) => {
         let args = new Map<string, string>();
         args.set("idSubEspacio", `${idSubEspacio}`);
         let response : DTOCaracteristica[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerCaracteristicasSubEspacio", true, args);

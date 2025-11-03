@@ -124,12 +124,12 @@ export const EspaciosService = {
         args.set("espacioId", `${espacioId}`);
         await request(HttpRequestType.DELETE, "eventos/cancelarEvento", true, args);
     },
-    actualizarCaracteristicasEspacio: async(idEspacio:number, caracteristicas:DTOCaracteristica[]) => {
+    actualizarCaracteristicasSubEspacio: async(idSubEspacio:number, caracteristicas:DTOCaracteristica[]) => {
         const payload = {
-            idEspacio,
+            idSubEspacio,
             caracteristicas
         };
-        await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasEspacio", true, null, JSON.stringify(payload));
+        await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasSubEspacio", true, null, JSON.stringify(payload));
     },
     obtenerAdministradoresEspacio: async (idEspacio: number) => {
         let args = new Map<string, string>();
