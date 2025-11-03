@@ -37,7 +37,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionIconosCaracteristicas")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}

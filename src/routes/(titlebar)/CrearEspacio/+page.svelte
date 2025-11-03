@@ -55,6 +55,8 @@
         disciplinas: []
     }
 
+    let indiceSubespacio : number = -1;
+
     let ubicacion : {x: number, y: number} | undefined = undefined
 
     $: popupDisciplinasVisible = false;
@@ -100,12 +102,27 @@
         }
 
         if (subespacio.nombre !== "" && subespacio.capacidadMaxima !== null && subespacio.capacidadMaxima !== undefined && subespacio.capacidadMaxima >= 1) {
-            disciplinas.forEach((value, key) => {
-                subespacio.disciplinas.push(key);
-            })
-            data.subEspacios.push(subespacio);
+            // Recolectar los ids de las disciplinas seleccionadas
+            const disciplinasIds: number[] = [];
+            disciplinas.forEach((_, key) => disciplinasIds.push(key));
+
+            // Asignar el array de ids al subespacio (reemplaza cualquier valor previo)
+            subespacio.disciplinas = [...disciplinasIds];
+
+            if (indiceSubespacio !== -1 && indiceSubespacio >= 0 && indiceSubespacio < data.subEspacios.length) {
+                // Actualizar subespacio existente
+                data.subEspacios[indiceSubespacio] = { ...subespacio };
+            } else {
+                // Agregar nuevo subespacio
+                data.subEspacios.push({ ...subespacio });
+            }
+
+            // Forzar reactividad
             data.subEspacios = [...data.subEspacios];
+
+            // Limpiar estado del popup
             cerrar();
+            indiceSubespacio = -1;
         }
     }
 
@@ -173,6 +190,7 @@
     $: warningNombreVisible = false;
     $: warningDireccionVisible = false;
     $: warningUbicacionVisible = false;
+    $: warningDocumentacionVisible = false;
 
     $: error = ""
     $: errorVisible = false
@@ -199,10 +217,17 @@
             warningUbicacionVisible = false;
         }
 
+        if(documentacionFiles.length === 0) {
+            warningDocumentacionVisible = true;
+        } else {
+            warningDocumentacionVisible = false;
+        }
+
         if (
             data.nombre === ""
             || data.direccion === ""
             || ubicacion === undefined
+            || documentacionFiles.length === 0
         ) {return}
 
         data.latitud = ubicacion.x;
@@ -250,7 +275,7 @@
             <div class="flex gap-2 relative md:flex-row">
                 <span class="md:items-center gap-2  mt-3 mb-2">Documentación</span>
                 <FilePicker bind:files={documentacionFiles} multiple label="" />
-                
+                <Warning text="La documentación es obligatoria" visible={warningDocumentacionVisible}/>
                 <!-- <Button classes="px-4 h-10 text-xs" action={() => tooltipVisible = !tooltipVisible}> i </Button>
                 {#if tooltipVisible}
                 <div class="absolute left-12 top-10 bg-gray-800 text-white text-xs rounded px-2 py-1 shadow z-50">
@@ -271,7 +296,7 @@
         </h2>
         <div class="mb-2 mt-2">
             <div class="flex flex-col gap-2">
-                {#each data.subEspacios as se}
+                {#each data.subEspacios as se,i}
                     <div>
                         <div>{se.nombre}</div>
                         <div>Capacidad máxima: {se.capacidadMaxima}</div>
@@ -284,7 +309,7 @@
                                 .filter(Boolean)
                                 .join(", ")
                         }</div>
-                        <Button icon="/icons/edit.svg" classes="ml-1" action={() => {popupSubespacioVisible = true; subespacio={...se}}}></Button>
+                        <Button icon="/icons/edit.svg" classes="ml-1" action={() => {popupSubespacioVisible = true; indiceSubespacio=i; subespacio={...se}}}></Button>
                     </div>
                 {/each}
             </div>           

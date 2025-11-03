@@ -8,10 +8,12 @@
 	import { HttpError } from "$lib/request/request";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import PopupError from "$lib/components/PopupError.svelte";
+	import Popup from "$lib/components/Popup.svelte";
 
     $: id = Number(page.params.id);
     $: nombreEspacio = ""
 
+    $: popupExitoVisible = false;
     $: warningPuntuacionVisible = false;
     $: warningTituloVisible = false;
     $: warningComentarioVisible = false;
@@ -96,6 +98,7 @@
         try {
             data.idEspacio = id;
             await EspaciosService.crearResenaEspacio(data);
+            popupExitoVisible = true;
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -145,6 +148,12 @@
 <PopupError bind:visible={errorGenericoVisible}>
     {errorGenerico}
 </PopupError>
+<Popup bind:visible={popupExitoVisible} fitH fitW>
+    Reseña guardada exitosamente
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {goto(`/Espacio/${id}/Resenas`)}}>Aceptar</Button>
+    </div>
+</Popup>
 
 <style>
 .text-2xl { font-size: 4rem; }

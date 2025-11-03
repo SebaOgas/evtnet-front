@@ -5,7 +5,7 @@
 	import Warning from "$lib/components/Warning.svelte";
 	import { HttpError } from "$lib/request/request";
 	import { UsuariosService } from "$lib/services/UsuariosService";
-	import { token } from "$lib/stores";
+	import { token, user } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
@@ -45,7 +45,11 @@
     async function iniciarSesion() {
         try {
             await UsuariosService.iniciarSesion(mail, password);
-            goto("/Eventos")
+            if(get(user)?.roles.includes("GestorEspacios")){
+                goto("/Espacios")
+            }else{
+                goto("/Eventos")
+            }
         } catch(e) {
             if (e instanceof HttpError) {
                 inicioSesionError = e.message

@@ -83,6 +83,7 @@
             }
             resultadosAnteriores = data.dtoAdministradores.filter(r => !r.fechasAdministracion.some(f => f.fechaHasta == null));
             resultados = data.dtoAdministradores.filter(r => r.fechasAdministracion.some(f => f.fechaHasta == null));
+            resultados.sort((a,b) => b.fechasAdministracion[0].fechaDesde.getTime() - a.fechasAdministracion[0].fechaDesde.getTime());
             resultados = [...resultados];
             resultadosAnteriores = [...resultadosAnteriores];
         }catch(e){

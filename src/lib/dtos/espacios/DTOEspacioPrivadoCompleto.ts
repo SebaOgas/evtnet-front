@@ -1,5 +1,7 @@
-export default interface DTOSolicitudEPCompleta{
-    idSEP: number,
+import type { DTOArchivo, DTOEstadoEspacio } from "./DTOEspacioEditar"
+
+export default interface DTOEspacioPrivadoCompleto {
+    idEspacio: number,
     nombreEspacio: string,
     descripcion: string,
     direccion: string,
@@ -7,7 +9,8 @@ export default interface DTOSolicitudEPCompleta{
     longitud: number,
     justificacion: string,
     fechaIngreso: Date,
-    idEspacio: number | null,
+    estadosPosibles: DTOEstadoEspacio[],
+    documentacion: DTOArchivo[] | null,
 
     solicitante:{
         nombre: string,
@@ -18,19 +21,11 @@ export default interface DTOSolicitudEPCompleta{
         contentType?: string
     },
 
-    sepEstados:{
+    espacioEstados:{
         id: number,
         nombre: string,
         descripcion: string,
         fechaHoraDesde: Date,
-        idEstado: number,
-        responsable: {
-            nombre: string,
-            apellido: string,
-            username: string,
-            email: string,
-            urlFotoPerfil: string | null,
-            contentType?: string
-        }
+        idEstado: number
     }[],
 }

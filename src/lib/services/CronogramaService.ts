@@ -164,5 +164,21 @@ export const CronogramaService = {
         let response : {fechaHoraDesde: Date, fechaHoraHasta: Date | null}[] = await request(HttpRequestType.GET, "cronogramas/obtenerPeriodosLibres", true, args);
 
         return response;
-    }
+    },
+    obtenerComisionOrganizacion: async (valor: number) => {
+        let args = new Map<string, string>();
+        args.set("valor", `${valor}`);
+
+        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionOrganizacion", true, args);
+
+        return response;
+    },
+    obtenerComisionInscripcion: async (valor: number) => {
+        let args = new Map<string, string>();
+        args.set("valor", `${valor}`);
+
+        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionInscripcion", true, args);
+
+        return response;
+    },
 }

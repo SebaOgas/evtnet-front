@@ -26,10 +26,10 @@ export const IconosCaracteristicasService = {
 
         return url;
     },
-    obtenerCaracteristicasEspacio: async (idEspacio: number) => {
+    obtenerCaracteristicasSubEspacio: async (idSubEspacio: number) => {
         let args = new Map<string, string>();
-        args.set("idEspacio", `${idEspacio}`);
-        let response : DTOCaracteristica[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerCaracteristicasEspacio", true, args);
+        args.set("idSubEspacio", `${idSubEspacio}`);
+        let response : DTOCaracteristica[] = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerCaracteristicasSubEspacio", true, args);
         return response.map(iconoObj => {
             const byteCharacters = atob(iconoObj.urlIcono);
             const byteNumbers = new Array(byteCharacters.length);

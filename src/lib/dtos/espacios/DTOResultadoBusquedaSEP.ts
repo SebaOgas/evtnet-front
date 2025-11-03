@@ -4,4 +4,5 @@ export default interface DTOResultadoBusquedaSEP{
     estado: string,
     fechaIngreso: Date,
     fechaUltimoCambioEstado: Date,
+    idEspacio:number | null
 }

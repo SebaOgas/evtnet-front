@@ -22,12 +22,12 @@ import type { DTOEncargadoSubespacio } from "$lib/dtos/espacios/DTOEncargadoSube
 
 
 export const EspaciosService = {
-    /* crearEspacio: async (data: DTOCrearEspacio) => {
+    crearEspacioPublico: async (data: DTOCrearEspacio) => {
 
-        let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacio", true, null, JSON.stringify(data));
+        let response : {id: number} = await request(HttpRequestType.POST, "espacios/crearEspacioPublico", true, null, JSON.stringify(data));
 
         return response.id;
-    }, */
+    },
     crearEspacio: async (data: DTOCrearEspacio, basesYCondiciones: File, documentacion: File[] = []) => {
         const formData = new FormData();
 
@@ -122,14 +122,14 @@ export const EspaciosService = {
         let args = new Map<string, string>();
         args.set("eventoId", `${eventoId}`);
         args.set("espacioId", `${espacioId}`);
-        await request(HttpRequestType.DELETE, "espacios/cancelarEvento", true, args);
+        await request(HttpRequestType.DELETE, "eventos/cancelarEvento", true, args);
     },
-    actualizarCaracteristicasEspacio: async(idEspacio:number, caracteristicas:DTOCaracteristica[]) => {
+    actualizarCaracteristicasSubEspacio: async(idSubEspacio:number, caracteristicas:DTOCaracteristica[]) => {
         const payload = {
-            idEspacio,
+            idSubEspacio,
             caracteristicas
         };
-        await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasEspacio", true, null, JSON.stringify(payload));
+        await request(HttpRequestType.POST, "espacios/actualizarCaracteristicasSubEspacio", true, null, JSON.stringify(payload));
     },
     obtenerAdministradoresEspacio: async (idEspacio: number) => {
         let args = new Map<string, string>();
@@ -187,68 +187,6 @@ export const EspaciosService = {
     crearResenaEspacio: async (resena:DTOCrearResenaEspacio) => {
         await request(HttpRequestType.POST, "espacios/crearResenaEspacio", true, null, JSON.stringify(resena));
     },    
-    crearSolicitudEspacio: async (data: DTOCrearSolicitudEspacio) => {
-
-        let response = await request(HttpRequestType.POST, "espacios/crearSolicitudEspacio", true, null, JSON.stringify(data));
-
-        return response;
-    },
-    buscarSolicitudesEspaciosPublicos: async (data: DTOBusquedaSEP) => {
-        let response : DTOResultadoBusquedaSEP[] = await request(HttpRequestType.PUT, "espacios/buscarSolicitudesEspaciosPublicos", false, null, JSON.stringify(data));
-        return response;
-    },
-    obtenerEstadosSEP: async () => {
-        let response : {id: number, nombre: string, checked: boolean}[] = await request(HttpRequestType.GET, "espacios/obtenerEstadosSEP", true);
-        return response;
-    },
-    obtenerDetalleSolicitudEP: async (idSEP: number) => {
-        let args = new Map<string, string>();
-        args.set("idSEP", `${idSEP}`);
-        let response : DTOSolicitudEPCompleta = await request(HttpRequestType.GET, "espacios/obtenerDetalleSolicitudEP", true, args);
-        const byteCharacters = atob(response.solicitante.urlFotoPerfil || "");
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob= new Blob([byteArray], { type: response.solicitante.contentType ?? 'image/png' });
-        let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(blob);
-        response.solicitante.urlFotoPerfil = url;
-
-        response.SEPEstado = response.SEPEstado.map(estado => {
-            const byteCharacters = atob(estado.responsable.urlFotoPerfil || "");
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob= new Blob([byteArray], { type: estado.responsable.contentType ?? 'image/png' });
-            let urlCreator = window.URL || window.webkitURL;
-            let url = urlCreator.createObjectURL(blob);
-            estado.responsable.urlFotoPerfil = url;
-            return estado;
-        });
-
-        return response;
-    },
-    cambiarEstadoSEP: async (idSEP: number, idEstado: number) => {
-        let args = new Map<string, string>();
-        args.set("idSEP", `${idSEP}`);
-        args.set("idEstado", `${idEstado}`);
-        await request(HttpRequestType.PUT, "espacios/cambiarEstadoSEP", true, args);
-    },
-    obtenerEspaciosParaSolicitud: async () => {
-        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "espacios/obtenerEspaciosParaSolicitud", true);
-        return response;
-    },
-    vincularEspacioASolicitud: async (idSEP: number, idEspacio: number) => {
-        let args = new Map<string, string>();
-        args.set("idSEP", `${idSEP}`);
-        args.set("idEspacio", `${idEspacio}`);
-        await request(HttpRequestType.PUT, "espacios/vincularEspacioASolicitud", true, args);
-    },
-
     buscarEspaciosPropios: async () => {
         let response : DTOBusquedaEspacio[] = await request(HttpRequestType.GET, "espacios/buscarEspaciosPropios", false);
         return response;
@@ -279,5 +217,11 @@ export const EspaciosService = {
         args.set("isSubEspacio", `${isSubespacio}`);
         args.set("username", `${username}`);
         await request(HttpRequestType.POST, "espacios/agregarEncargadoSubespacio", true, args);
+    },
+    aprobarRechazarEvento: async (eventoId: number, estado: string) => {
+        let args = new Map<string, string>();
+        args.set("eventoId", `${eventoId}`);
+        args.set("estado", `${estado}`);
+        await request(HttpRequestType.PUT, "eventos/aprobarRechazarEvento", true, args);
     },
 }

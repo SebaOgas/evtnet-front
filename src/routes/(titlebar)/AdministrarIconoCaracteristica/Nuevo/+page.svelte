@@ -33,7 +33,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionIconosCaracteristicas")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}
@@ -59,12 +59,12 @@
 
                 let dims = await getImageFileDimensions(file);               
 
-                if (dims.h !== dims.w) {
+                /* if (dims.h !== dims.w) {
                     errorTamanoImagenIconoVisible = true;
                     errorTamanoImagenIcono = "La foto del ícono debe ser cuadrada"
 					completado=false;
                     return
-                }
+                } */
 
                 if (dims.h < 10) {
                     errorTamanoImagenIconoVisible = true;

@@ -145,7 +145,10 @@
 
     async function cancelarEvento() {
 		try {
-			await EspaciosService.cancelarEvento(idEvento, id);
+            const evento=resultados.find(e => e.id===idEvento);
+            if(evento?.estado!=="En Revisión" && evento?.estado!=="En_Revisión")
+                await EspaciosService.cancelarEvento(idEvento, id);
+            else await EspaciosService.aprobarRechazarEvento(idEvento, "Rechazado");
             buscar();
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -155,6 +158,18 @@
 		}
 		popupConfirmCancelarVisible = false;
 	}
+
+    async function aprobarEvento(idEventoAprobar: number) {
+        try {
+            await EspaciosService.aprobarRechazarEvento(idEventoAprobar, "Aprobado");
+            buscar();
+        } catch (e) {
+            if (e instanceof HttpError) {
+                errorGenerico = e.message;
+                errorGenericoVisible = true;
+            }
+        }
+    }
     
 </script>
 
@@ -236,6 +251,9 @@
                             <div class="flex gap-2 shrink-0">
                                 <Button icon="/icons/cross.svg" action={() => {popupConfirmCancelarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
                                 <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Evento/${r.id}`)}} classes="shrink-0"></Button>
+                                {#if r.estado === "En Revisión"}
+                                    <Button icon="/icons/check.svg" action={() => {aprobarEvento(r.id)}} classes="shrink-0"></Button>
+                                {/if}
                             </div>
                         </div>
                         <div class="flex justify-between items-center ml-4">

@@ -32,6 +32,7 @@
     $: id = Number(page.params.id);
     $: idCaracteristica = 0;
     $: idIconoSeleccionado = 0;
+    $: idSubespacio = Number(page.url.searchParams.get("idSubEspacio")) || 0;
 
     $: caracteristicaEspacio = {
         id: 0,
@@ -68,7 +69,7 @@
 			return;
 		}
         nombreEspacio = await EspaciosService.obtenerNombreEspacio(id);
-        resultados = await IconosCaracteristicasService.obtenerCaracteristicasEspacio(id);
+        resultados = await IconosCaracteristicasService.obtenerCaracteristicasSubEspacio(idSubespacio);
         iconos = await IconosCaracteristicasService.obtenerListaIconos();
 
 	});
@@ -110,7 +111,7 @@
         }        
         try {
             warningIconoNombreVisible = false;
-            await EspaciosService.actualizarCaracteristicasEspacio(id, resultados);
+            await EspaciosService.actualizarCaracteristicasSubEspacio(idSubespacio, resultados);
             popupExitoVisible = true;
         } catch (e) {
             if (e instanceof Error) {

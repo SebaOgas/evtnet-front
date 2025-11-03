@@ -4,4 +4,5 @@ export default interface DTOResultadoBusquedaEventosPorEspacio {
     fechaHoraInicio: Date | undefined,
     precio: number | undefined,
     disciplinas: string[] | undefined,
+    estado: string | null
 }

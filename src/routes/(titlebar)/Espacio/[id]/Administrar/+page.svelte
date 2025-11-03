@@ -120,9 +120,13 @@
     let requiereAprobacionEventos = false;
 	let popupSubEspaciosVisible=false;
 	let subEspacioSeleccionado : Map<number, string> = new Map<number, string>();
+	let esCronograma = false;
 
 	$: if (!popupSubEspaciosVisible && subEspacioSeleccionado.size > 0 ) {
-        goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${Array.from(subEspacioSeleccionado.keys())[0]}`);
+		if(esCronograma)
+        	goto(`/Espacio/${id}/AdministrarCronograma?idSubEspacio=${Array.from(subEspacioSeleccionado.keys())[0]}`);
+		else
+        	goto(`/Espacio/${id}/AdministrarCaracteristicas?idSubEspacio=${Array.from(subEspacioSeleccionado.keys())[0]}`);
     }
 
 	function cerrar() {
@@ -285,7 +289,7 @@
 			// Si el estado fue cambiado, asignar el nuevo estado
 			if (data.estado?.id !== estadoEspacioSeleccionado) {
 				// Buscar el objeto estado en data.estadosEspacio
-				const nuevoEstado = data.estadosEspacio.find(e => e.id === estadoEspacioSeleccionado);
+				const nuevoEstado = data.estadosEspacio!.find(e => e.id === estadoEspacioSeleccionado);
 				if (nuevoEstado) {
 					data.estado = nuevoEstado;
 				}
@@ -428,11 +432,11 @@
 		<Button action={cancelar}>Cancelar</Button>
 		<Button action={guardarEspacio}>Guardar</Button>
 		{#if !data.esPublico}
-			<Button action={() => {popupSubEspaciosVisible = true}}>Administrar cronograma</Button>
+			<Button action={() => {popupSubEspaciosVisible = true; esCronograma = true}}>Administrar cronograma</Button>
 		{/if}
 		<Button action={() => {goto(`/Espacio/${id}/Eventos`)}}>Ver eventos</Button>
 		<Button action={() => {goto(`/Espacio/${id}/AdministrarImagenes`)}}>Administrar imágenes</Button>
-		<Button action={() => {goto(`/Espacio/${id}/AdministrarCaracteristicas`)}}>Administrar características</Button>
+		<Button action={() => {popupSubEspaciosVisible = true; esCronograma = false}}>Administrar características</Button>
 		{#if !data.esPublico}
 			<Button action={() => {goto(`/Espacio/${id}/GestionarAdministradores`)}}>Gestionar administradores</Button>
 			<Button action={() => {popupConfirmDejarVisible = true}}>Dejar de ser administrador</Button>
