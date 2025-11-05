@@ -340,19 +340,19 @@
 		{/if}		
 		
 		 {#if data.estado!.id==4 || data.estado!.id==5 || data.estado!.id==6}
-			<TextField label="Descripción del estado" multiline bind:value={data.estado!.descripcion} rows={6}/>
+			<TextField label="Descripción del estado" multiline bind:value={data.estado!.descripcion} rows={6} disabled={true}/>
 		{/if}
 		
 		<TextField label="Nombre del espacio" bind:value={data.nombre} validate={validateNombre} forceValidate={warningNombreVisible}/>
 
 		<TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6}/>
 
-		<TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible}/>
+		<TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible} disabled={data.estado!.id === 2 || data.estado!.id === 3}/>
 
 		{#if dataLoaded}
 		<div class="mb-2 mt-2">
 			Ubicación
-			<MapDisplay latitude={data.latitud} longitude={data.longitud} bind:marked={ubicacion} zoom={12}/>
+			<MapDisplay latitude={data.latitud} longitude={data.longitud} bind:marked={ubicacion} zoom={12} disableMarking={data.estado!.id === 2 || data.estado!.id === 3}/>
 			<Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
 		</div>
 		{/if}
@@ -431,18 +431,20 @@
 	<div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
 		<Button action={cancelar}>Cancelar</Button>
 		<Button action={guardarEspacio}>Guardar</Button>
-		{#if !data.esPublico}
-			<Button action={() => {popupSubEspaciosVisible = true; esCronograma = true}}>Administrar cronograma</Button>
-		{/if}
-		<Button action={() => {goto(`/Espacio/${id}/Eventos`)}}>Ver eventos</Button>
-		<Button action={() => {goto(`/Espacio/${id}/AdministrarImagenes`)}}>Administrar imágenes</Button>
-		<Button action={() => {popupSubEspaciosVisible = true; esCronograma = false}}>Administrar características</Button>
-		{#if !data.esPublico}
-			<Button action={() => {goto(`/Espacio/${id}/GestionarAdministradores`)}}>Gestionar administradores</Button>
-			<Button action={() => {popupConfirmDejarVisible = true}}>Dejar de ser administrador</Button>
-		{/if}
-		{#if data.esPublico}
-			<Button action={() => {goto(`/SEP/?espacio=${id}`)}}>Ver solicitudes relacionadas</Button>
+		{#if data.estado!.id==2 || data.estado!.id==3}
+			{#if !data.esPublico}
+				<Button action={() => {popupSubEspaciosVisible = true; esCronograma = true}}>Administrar cronograma</Button>
+			{/if}
+			<Button action={() => {goto(`/Espacio/${id}/Eventos`)}}>Ver eventos</Button>
+			<Button action={() => {goto(`/Espacio/${id}/AdministrarImagenes`)}}>Administrar imágenes</Button>
+			<Button action={() => {popupSubEspaciosVisible = true; esCronograma = false}}>Administrar características</Button>
+			{#if !data.esPublico}
+				<Button action={() => {goto(`/Espacio/${id}/GestionarAdministradores`)}}>Gestionar administradores</Button>
+				<Button action={() => {popupConfirmDejarVisible = true}}>Dejar de ser administrador</Button>
+			{/if}
+			{#if data.esPublico}
+				<Button action={() => {goto(`/SEP/?espacio=${id}`)}}>Ver solicitudes relacionadas</Button>
+			{/if}
 		{/if}
 	</div>
 </div>
