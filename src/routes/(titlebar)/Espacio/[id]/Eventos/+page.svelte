@@ -81,6 +81,9 @@
     $: filtrosVisibles = false;
     $: popupDisciplinasVisible = false;
     $: popupConfirmCancelarVisible = false;
+    $: popupConfirmAceptarVisible = false;
+    $: popupExitoVisible = false;
+    $: popupCancelacionVisible = false;
 
     let disciplinas : Map<number, string> = new Map<number, string>();
 
@@ -146,10 +149,11 @@
     async function cancelarEvento() {
 		try {
             const evento=resultados.find(e => e.id===idEvento);
-            if(evento?.estado!=="En Revisión" && evento?.estado!=="En_Revisión")
+            if(evento?.estado!=="En revisión")
                 await EspaciosService.cancelarEvento(idEvento, id);
             else await EspaciosService.aprobarRechazarEvento(idEvento, "Rechazado");
-            buscar();
+            popupCancelacionVisible = true;
+            //buscar();
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -159,10 +163,11 @@
 		popupConfirmCancelarVisible = false;
 	}
 
-    async function aprobarEvento(idEventoAprobar: number) {
+    async function aprobarEvento() {
         try {
-            await EspaciosService.aprobarRechazarEvento(idEventoAprobar, "Aprobado");
-            buscar();
+            await EspaciosService.aprobarRechazarEvento(idEvento, "Aceptado");
+            popupExitoVisible = true;
+            //buscar();
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -244,15 +249,16 @@
         
         <div class="flex flex-col w-full gap-2 md:flex-row md:flex-wrap justify-between">
             {#each resultados as r}
-                <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
+                {#if r.estado==="En revisión" || r.estado==="Aceptado"}
+                    <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     {#if  r.fechaHoraInicio !== undefined && r.precio !== undefined && r.disciplinas !== undefined}
                         <div class="flex justify-between items-center">
                             <span class="text-s">{r.nombre}</span>
                             <div class="flex gap-2 shrink-0">
                                 <Button icon="/icons/cross.svg" action={() => {popupConfirmCancelarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
                                 <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Evento/${r.id}`)}} classes="shrink-0"></Button>
-                                {#if r.estado === "En Revisión"}
-                                    <Button icon="/icons/check.svg" action={() => {aprobarEvento(r.id)}} classes="shrink-0"></Button>
+                                {#if r.estado === "En revisión" || r.requiereAprobacion}
+                                    <Button icon="/icons/check.png" action={() => {popupConfirmAceptarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
                                 {/if}
                             </div>
                         </div>
@@ -268,6 +274,7 @@
                     {/if}
 
                 </div>
+                {/if}
             {/each}
         </div>
         
@@ -276,11 +283,33 @@
 
 </div>
 
+<Popup bind:visible={popupExitoVisible} fitH fitW>
+	Evento aprobado exitosamente
+	<div class="flex justify-center items-center w-full">
+		<Button action={() => {buscar; popupExitoVisible = false}}>Aceptar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupCancelacionVisible} fitH fitW>
+	Evento cancelado exitosamente
+	<div class="flex justify-center items-center w-full">
+		<Button action={() => {buscar; popupCancelacionVisible = false}}>Aceptar</Button>
+	</div>
+</Popup>
+
 <Popup bind:visible={popupConfirmCancelarVisible} fitH fitW>
-	¿Está seguro que desea eliminar el evento?
+	¿Está seguro que desea eliminar/rechazar el evento?
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {popupConfirmCancelarVisible = false}}>Cancelar</Button>
 		<Button action={cancelarEvento}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupConfirmAceptarVisible} fitH fitW>
+	¿Está seguro que desea aceptar el evento?
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupConfirmAceptarVisible = false}}>Cancelar</Button>
+		<Button action={aprobarEvento}>Confirmar</Button>
 	</div>
 </Popup>
 

@@ -120,9 +120,9 @@ export const EspaciosService = {
     },
     cancelarEvento: async (eventoId: number, espacioId: number) => {
         let args = new Map<string, string>();
-        args.set("eventoId", `${eventoId}`);
+        args.set("idEvento", `${eventoId}`);
         args.set("espacioId", `${espacioId}`);
-        await request(HttpRequestType.DELETE, "eventos/cancelarEvento", true, args);
+        await request(HttpRequestType.DELETE, "eventos/cancelarEventoEspacio", true, args);
     },
     actualizarCaracteristicasSubEspacio: async(idSubEspacio:number, caracteristicas:DTOCaracteristica[]) => {
         const payload = {
@@ -220,7 +220,7 @@ export const EspaciosService = {
     },
     aprobarRechazarEvento: async (eventoId: number, estado: string) => {
         let args = new Map<string, string>();
-        args.set("eventoId", `${eventoId}`);
+        args.set("idEvento", `${eventoId}`);
         args.set("estado", `${estado}`);
         await request(HttpRequestType.PUT, "eventos/aprobarRechazarEvento", true, args);
     },

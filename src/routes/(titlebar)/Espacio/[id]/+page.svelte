@@ -198,6 +198,8 @@
                 <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>           
                 <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
             {/if}
+        {:else if data.estado!.id==4 && data.esAdmin }
+            <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
         {/if}
     </div>
 </div>  
