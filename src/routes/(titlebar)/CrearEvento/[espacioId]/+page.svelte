@@ -2,6 +2,7 @@
 	import { goto } from "$app/navigation";
 	import { page } from "$app/stores";
 	import Button from "$lib/components/Button.svelte";
+	import CheckBox from "$lib/components/CheckBox.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import Popup from "$lib/components/Popup.svelte";
@@ -16,6 +17,7 @@
 	import { HttpError } from "$lib/request/request";
 	import { CronogramaService } from "$lib/services/CronogramaService";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
+	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { EventosService } from "$lib/services/EventosService";
 	import { permisos, token } from "$lib/stores";
 	import { onMount } from "svelte";
@@ -143,6 +145,7 @@
 	$: warningFechaHoraVisible = false;
 	$: warningSubespacioVisible = false;
 	$: warningSinCronogramaVisible = false;
+	$: warningBasesVisible = false;
 
 	// Error handling
 	$: error = "";
@@ -263,6 +266,7 @@
 		warningHorarioVisible = false;
         warningFechaHoraVisible = false;
 		warningSubespacioVisible = false;
+		warningBasesVisible = false;
 
 		let hasErrors = false;
 
@@ -296,6 +300,11 @@
             warningFechaHoraVisible = true;
             hasErrors = true;
         }
+
+		if (!datosCreacion?.espacioPublico && datosCreacion?.tieneBasesYCondiciones && !checkedBases) {
+			warningBasesVisible = true;
+			hasErrors = true;
+		}
 
 		return hasErrors;
 	}
@@ -454,6 +463,23 @@
 			}
         }
     })()
+
+	$: popupBasesVisible = false;
+	$: urlBases = '';
+
+	async function mostrarBasesYCondiciones() {
+		try {
+			urlBases = await EspaciosService.obtenerBasesYCondiciones(espacioId) + "#toolbar=0&navpanes=0";
+			popupBasesVisible = true;
+		} catch (e) {
+            if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+        }
+	}
+
+	$: checkedBases = false;
 </script>
 
 <Popup
@@ -500,6 +526,15 @@
 	searchFunction={buscarDisciplinas} 
 	bind:selected={disciplinasSeleccionadas}
 />
+
+<Popup title="Bases y Condiciones" bind:visible={popupBasesVisible}>
+	<div class="grow overflow-y-auto">
+		<iframe src={urlBases} title="Bases y Condiciones" class="w-full h-full"></iframe>
+	</div>
+    <div class="flex gap-2 h-fit p-2 justify-center items-center">
+        <Button action={() => {popupBasesVisible = false}}>Cerrar</Button>
+    </div>
+</Popup>
 
 
 {#if datosCreacion}
@@ -648,6 +683,17 @@
 				validate={validateMaxParticipantes} 
 				forceValidate={warningMaxParticipantesVisible}
 			/>
+
+
+			{#if !datosCreacion?.espacioPublico && datosCreacion.tieneBasesYCondiciones}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<div class="flex flex-row items-start gap-2">
+					<CheckBox bind:checked={checkedBases}/>
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<span>He leído y acepto las <span class="text-dark font-bold cursor-pointer" on:click={mostrarBasesYCondiciones}>bases y condiciones</span> del espacio</span>
+				</div>
+				<Warning text="Debe aceptar las bases y condiciones para poder organizar el evento" visible={warningBasesVisible}/>
+			{/if}
 		{/if}
 
 		

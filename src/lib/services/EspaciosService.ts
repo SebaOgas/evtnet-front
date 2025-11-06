@@ -224,4 +224,15 @@ export const EspaciosService = {
         args.set("estado", `${estado}`);
         await request(HttpRequestType.PUT, "eventos/aprobarRechazarEvento", true, args);
     },
+    obtenerBasesYCondiciones: async(idEspacio: number) => {
+        let args = new Map<string, string>();
+        args.set("idEspacio", `${idEspacio}`);
+
+        let response = await request(HttpRequestType.GET, "espacios/obtenerBasesYCondiciones", true, args);
+
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(response.content);
+
+        return url;
+    }
 }
