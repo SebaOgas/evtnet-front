@@ -347,7 +347,7 @@
 
 		<TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6}/>
 
-		<TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible} disabled={data.estado!.id === 2 || data.estado!.id === 3}/>
+		<TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible} disabled={data.estado!.id === 2 || data.estado!.id === 3} max={150}/>
 
 		{#if dataLoaded}
 		<div class="mb-2 mt-2">

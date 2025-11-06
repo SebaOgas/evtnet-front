@@ -75,7 +75,7 @@
 	});
 
     function agregarNuevaCaracteristica() {
-        resultados.push(caracteristicaEspacio);
+        resultados.push({...caracteristicaEspacio});
         resultados = [...resultados];
         idIconoSeleccionado = 0;
         cambiosPendientes = true;

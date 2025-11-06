@@ -169,7 +169,7 @@ export const CronogramaService = {
         let args = new Map<string, string>();
         args.set("valor", `${valor}`);
 
-        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionOrganizacion", true, args);
+        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionOrganizacion", false, args);
 
         return response;
     },
@@ -177,7 +177,7 @@ export const CronogramaService = {
         let args = new Map<string, string>();
         args.set("valor", `${valor}`);
 
-        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionInscripcion", true, args);
+        let response : number = await request(HttpRequestType.GET, "cronogramas/comisionInscripcion", false, args);
 
         return response;
     },

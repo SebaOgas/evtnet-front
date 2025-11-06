@@ -556,6 +556,7 @@
 			multiline 
 			bind:value={data.descripcion} 
 			rows={6}
+			max={500}
 		/>
 
 		<div class="mb-2 md:flex justify-start items-center gap-1">

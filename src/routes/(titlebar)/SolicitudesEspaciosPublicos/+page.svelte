@@ -283,7 +283,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center flex justify-between items-center gap-2">
+		<h1 class="text-m text-center flex flex-col md:flex-row justify-between items-center gap-2">
             <span>Solicitudes de Espacio Público</span>
             <Button action={() => {goto("/CrearEspacio/Publico")}} classes="shrink-0">Nuevo Espacio Público</Button>
         </h1>
@@ -358,9 +358,11 @@
                     <span class="text-justify">Espacio vinculado: {#if solicitud.idEspacio!=null}{solicitud.nombreEspacio}{:else}Ninguno{/if}</span>
                     {#if solicitud.idEspacio==null}<Button classes="whitespace-nowrap" action={() => {popupEspacioAVincularVisible = true; idsolicitud=solicitud.idSEP}}>Seleccionar</Button>{/if}
                 </div>              
-                <div class="flex justify items-start">
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <div class="flex justify-start items-center">
                     <span>Solicitante:</span>
-                    <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full cursor-pointer"/>
                     <span>{solicitud.solicitante.nombre} {solicitud.solicitante.apellido} (@{solicitud.solicitante.username})</span>
                 </div>
                 
@@ -382,8 +384,10 @@
                         <div>
                             <span>{estado.nombre}</span>                            
                             <span>Fecha: {formatDate(estado.fechaHoraDesde, true)}</span>
-                            <div class="flex justify items-start">
-                                <span>Responsable: </span>
+                            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                            <div class="flex justify-start items-center">
+                                <span>Responsable:</span>
+                                <!-- svelte-ignore a11y_click_events_have_key_events -->
                                 <img src={estado.responsable.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + estado.responsable.username)} class="w-12 h-12 rounded-full"/>
                                 <span>{estado.responsable.nombre} {estado.responsable.apellido} (@{estado.responsable.username})</span>
                             </div>
@@ -406,9 +410,12 @@
     <Popup bind:visible={popupCambiarEstadoVisible} title="Cambiar de estado solicitud de espacio público" fitH fitW>
         {#if solicitud}
         <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <div class="flex flex-col gap-2 flex-1">
                 <span>Espacio vinculado: {#if solicitud.idEspacio!=null}{solicitud.nombreEspacio}{:else}Ninguno{/if}</span>
                 
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <span>Solicitante: <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
                     {solicitud.solicitante.nombre} {solicitud.solicitante.apellido} (@{solicitud.solicitante.username})
                 </span>
@@ -416,7 +423,7 @@
                 <span>Nuevo estado: <ComboBox classes="!md:w-[50%]" options={estadosOption} bind:selected={estadoSeleccionado} placeholder="Seleccionar.." maxHeight={5}/>
                                     <Warning text="Debe seleccionar el nuevo estado en el que estará la solicitud" visible={warningEstadoVisible}/>
                 </span>
-                <span>Descripción del cambio <TextField label="" multiline bind:value={descripcionCambioEstado} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible}/></span>
+                <span>Descripción del cambio <TextField label="" multiline bind:value={descripcionCambioEstado} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible} max={500}/></span>
             </div>
             
         </div>
