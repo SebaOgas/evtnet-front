@@ -123,7 +123,7 @@
         
         <!--Carrusel-->
 
-        {#if listo}
+        {#if listo && imagenes.length > 0}
             <Carousel slides={imagenes}/>
         {/if}
 

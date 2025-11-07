@@ -197,6 +197,10 @@
 			{#if data.estado === "Cancelado"}
 				<div class="text-center text-orange">Cancelado</div>
 			{/if}
+
+			{#if data.estado === "En Revisión"}
+				<div class="text-center text-orange">En Revisión</div>
+			{/if}
             
             <p class="text-xs">
                 {data.descripcion}

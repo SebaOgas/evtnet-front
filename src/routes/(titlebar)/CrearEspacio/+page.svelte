@@ -262,9 +262,9 @@
 
         <TextField label="Nombre del espacio" bind:value={data.nombre} validate={validateNombre} forceValidate={warningNombreVisible}/>
 
-        <TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6}/>
+        <TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6} max={500}/>
 
-        <TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible}/>
+        <TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible} max={150}/>
         <div class="mb-2 mt-2">
             Ubicación
             <MapDisplay latitude={-32.89084} longitude={-68.82717} bind:marked={ubicacion} zoom={12}/>
@@ -272,7 +272,7 @@
         </div>
 
         <div class="mb-2 mt-2">
-            <div class="flex gap-2 relative md:flex-row">
+            <div class="flex gap-2 relative md:flex-row items-center">
                 <span class="md:items-center gap-2  mt-3 mb-2">Documentación</span>
                 <FilePicker bind:files={documentacionFiles} multiple label="" />
                 <Warning text="La documentación es obligatoria" visible={warningDocumentacionVisible}/>
@@ -283,7 +283,7 @@
                 </div>
                 {/if} -->
             </div>          
-            <div class="flex gap-2 relative md:flex-row">                
+            <div class="flex gap-2 relative md:flex-row items-center">                
                 <span class="md:items-center gap-2  mt-3 mb-2">Bases y Condiciones</span>
                 <FilePicker bind:file={basesYCondicionesFile} label="" placeholder=""/>
             </div> 
@@ -332,7 +332,7 @@
 
     <div class="h-full grow">
         <TextField label="Nombre del subespacio" bind:value={subespacio.nombre} validate={validateNombre} forceValidate={warningNombreSubespacioVisible}/>
-        <TextField label="Descripción del subespacio" multiline bind:value={subespacio.descripcion} rows={6}/>
+        <TextField label="Descripción del subespacio" multiline bind:value={subespacio.descripcion} rows={6} max={500}/>
         <TextField label="Capacidad máxima" min={1} bind:value={subespacio.capacidadMaxima} validate={validateCapacidadMaxima} forceValidate={warningCapacidadMaximaVisible}/>
         <div class="flex justify-start gap-2">
             <span>Disciplinas</span>

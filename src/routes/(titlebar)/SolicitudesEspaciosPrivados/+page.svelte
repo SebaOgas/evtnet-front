@@ -272,7 +272,7 @@
 
 <div id="content">
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center flex justify-between items-center gap-2">
+		<h1 class="w-full text-m flex justify-center md:justify-start items-center gap-2">
             <span>Solicitudes de Espacio Privado</span>
         </h1>
 
@@ -326,9 +326,11 @@
         {#if solicitud}
         <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
             <div class="flex flex-col gap-2 flex-1">            
-                <div class="flex justify items-start">
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <div class="flex justify-start items-center">
                     <span>Solicitante:</span>
-                    <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full cursor-pointer"/>
                     <span>{solicitud.solicitante.nombre} {solicitud.solicitante.apellido} (@{solicitud.solicitante.username})</span>
                 </div>
                 
@@ -375,10 +377,12 @@
         {/if}
     </Popup>
 
-    <Popup bind:visible={popupCambiarEstadoVisible} title="Cambiar de estado solicitud de espacio público" fitH fitW>
+    <Popup bind:visible={popupCambiarEstadoVisible} title="Cambiar de estado solicitud de espacio privado" fitH fitW>
         {#if solicitud}
         <div class="flex flex-col md:flex-row gap-8 md:gap-4 items-start w-full h-fit mb-4">
-            <div class="flex flex-col gap-2 flex-1">                
+            <div class="flex flex-col gap-2 flex-1 w-full">                
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <span>Solicitante: <img src={solicitud.solicitante.urlFotoPerfil} alt="Foto de perfil" on:click={() => goto('/Perfil/' + solicitud?.solicitante.username)} class="w-12 h-12 rounded-full"/>
                     {solicitud.solicitante.nombre} {solicitud.solicitante.apellido} (@{solicitud.solicitante.username})
                 </span>

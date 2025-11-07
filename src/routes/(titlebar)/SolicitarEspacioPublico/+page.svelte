@@ -178,7 +178,7 @@
 
         <TextField label="Nombre del espacio" bind:value={data.nombre} validate={validateNombre} forceValidate={warningNombreVisible}/>
 
-        <TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible}/>
+        <TextField label="Descripción del espacio" multiline bind:value={data.descripcion} rows={6} validate={validateDescripcion} forceValidate={warningDescripcionVisible} max={500}/>
 
         <TextField label="Dirección" bind:value={data.direccion} validate={validateDireccion} forceValidate={warningDireccionVisible}/>
         <div class="mb-2 mt-2">
@@ -187,7 +187,7 @@
             <Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
         </div>
 
-        <TextField label="Justificación" multiline bind:value={data.justificacion} rows={6} validate={validateJustificacion} forceValidate={warningJustificacionVisible}/>
+        <TextField label="Justificación" multiline bind:value={data.justificacion} rows={6} validate={validateJustificacion} forceValidate={warningJustificacionVisible} max={500}/>
 
     </div>
 

@@ -144,14 +144,16 @@
         };
     }
 
-    async function calcularPrecioConComision(precioBase: number): number {
+    async function calcularPrecioConComision(precioBase: number): Promise<number> {
         const comision = await CronogramaService.obtenerComisionOrganizacion(precioBase);
-        return precioBase * (1 + comision);
+        
+        
+        return precioBase + comision;
     }
 
-    async function calcularAdicionalInscripcion(precioBase: number): number {
+    async function calcularAdicionalInscripcion(precioBase: number): Promise<number> {
         const comision = await CronogramaService.obtenerComisionInscripcion(precioBase);
-        return precioBase * (1 + comision);
+        return precioBase + comision;
     }
 
     function formatearPrecio(precio: number): string {
@@ -289,9 +291,11 @@
                 />
             </div>
             {#if precioTexto && validatePrecio(precioTexto).valid}
-                <p class="text-xs mt-1">
-                    Precio más comisión: {formatearPrecio(calcularPrecioConComision(parseFloat(precioTexto.replace(',', '.'))))}
-                </p>
+                {#await calcularPrecioConComision(parseFloat(precioTexto.replace(',', '.'))) then comision}
+                    <p class="text-xs mt-1">
+                        Precio más comisión: {formatearPrecio(comision)}
+                    </p>
+                {/await}
             {/if}
         </div>
         <div>
@@ -307,10 +311,12 @@
                     forceValidate={forceValidatePrecio}
                 />
             </div>
-            {#if precioTexto && validatePrecio(precioTexto).valid}
-                <p class="text-xs mt-1">
-                    Precio más comisión: {formatearPrecio(calcularAdicionalInscripcion(parseFloat(precioTexto.replace(',', '.'))))}
-                </p>
+            {#if precioAdicionalTexto && validatePrecio(precioAdicionalTexto).valid}
+                {#await calcularAdicionalInscripcion(parseFloat(precioAdicionalTexto.replace(',', '.'))) then comision}
+                    <p class="text-xs mt-1">
+                        Precio más comisión: {formatearPrecio(comision)}
+                    </p>
+                {/await}
             {/if}
         </div>
     </div>

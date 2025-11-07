@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --host",
 		"android": "vite build && npx cap sync && npx cap run android",
 		"build": "vite build",
 		"preview": "vite preview",

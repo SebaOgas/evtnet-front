@@ -153,7 +153,7 @@
                 await EspaciosService.cancelarEvento(idEvento, id);
             else await EspaciosService.aprobarRechazarEvento(idEvento, "Rechazado");
             popupCancelacionVisible = true;
-            //buscar();
+            buscar();
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -164,10 +164,11 @@
 	}
 
     async function aprobarEvento() {
+        popupConfirmAceptarVisible = false;
         try {
             await EspaciosService.aprobarRechazarEvento(idEvento, "Aceptado");
             popupExitoVisible = true;
-            //buscar();
+            buscar();
         } catch (e) {
             if (e instanceof HttpError) {
                 errorGenerico = e.message;
@@ -249,7 +250,7 @@
         
         <div class="flex flex-col w-full gap-2 md:flex-row md:flex-wrap justify-between">
             {#each resultados as r}
-                {#if r.estado==="En revisión" || r.estado==="Aceptado"}
+                {#if r.estado==="En Revisión" || r.estado==="Aceptado"}
                     <div class="flex flex-col gap-2 pb-4 w-full md:w-[30%]">
                     {#if  r.fechaHoraInicio !== undefined && r.precio !== undefined && r.disciplinas !== undefined}
                         <div class="flex justify-between items-center">
@@ -257,7 +258,7 @@
                             <div class="flex gap-2 shrink-0">
                                 <Button icon="/icons/cross.svg" action={() => {popupConfirmCancelarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
                                 <Button icon="/icons/arrow-right.svg" action={() => {goto(`/Evento/${r.id}`)}} classes="shrink-0"></Button>
-                                {#if r.estado === "En revisión" || r.requiereAprobacion}
+                                {#if r.estado === "En Revisión" && r.requiereAprobacion}
                                     <Button icon="/icons/check.png" action={() => {popupConfirmAceptarVisible = true; idEvento=r.id}} classes="shrink-0"></Button>
                                 {/if}
                             </div>
@@ -266,6 +267,8 @@
                             <span class="text-s">{formatDate(new Date(r.fechaHoraInicio), true)}</span>
                             <span class="text-s">${("" + r.precio.toFixed(2)).replace(".", ",")}</span>
                         </div>
+                        <span class="text-xs ml-4">{r.subespacio}</span>
+                        <span class="text-xs ml-4">{r.estado}</span>
                         <div class="commaList text-xs ml-4">
                             {#each r.disciplinas as d}
                                 <span>{d}</span>

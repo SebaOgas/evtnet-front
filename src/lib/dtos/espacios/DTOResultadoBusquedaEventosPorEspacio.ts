@@ -5,5 +5,6 @@ export default interface DTOResultadoBusquedaEventosPorEspacio {
     precio: number | undefined,
     disciplinas: string[] | undefined,
     estado: string | null,
-    requiereAprobacion: boolean
+    requiereAprobacion: boolean,
+    subespacio: string
 }
