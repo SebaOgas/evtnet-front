@@ -670,9 +670,9 @@
 				</div>
 				<div class="text-xs">
 					{#if data.usarCronograma && !datosCreacion.espacioPublico}
-						Precio más adicional y comisión: ${((data.precio + adicionalInscripcion) * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+						Precio más adicional y comisión: ${((data.precio + adicionalInscripcion) * (1 + (datosCreacion.comisionInscripcion.filter(c => c.montoLimite <= data.precio + adicionalInscripcion).reduce((prev, curr) => prev.montoLimite > curr.montoLimite ? prev : curr, {montoLimite: 0, porcentaje: 0}) || 0).porcentaje)).toFixed(2).replace(".", ",")}
 					{:else}
-						Precio más comisión: ${(data.precio * (1 + (datosCreacion.comisionInscripcion || 0))).toFixed(2).replace(".", ",")}
+						Precio más comisión: ${(data.precio * (1 + (datosCreacion.comisionInscripcion.filter(c => c.montoLimite <= data.precio + adicionalInscripcion).reduce((prev, curr) => prev.montoLimite > curr.montoLimite ? prev : curr, {montoLimite: 0, porcentaje: 0}) || 0).porcentaje)).toFixed(2).replace(".", ",")}
 					{/if}
 				</div>
 			</div>

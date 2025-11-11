@@ -104,6 +104,7 @@
     let minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 2);
 
     let fechaIngresoDesde: Date | null = filtros.fechaIngresoDesde;
     let fechaIngresoHasta: Date | null = filtros.fechaIngresoHasta;
@@ -113,10 +114,10 @@
 
     let ordenOpciones : Map<string, string> = new Map<string, string>();
 
-    ordenOpciones.set("FECHA_DENUNCIA_ASC", "Fecha de denuncia (ascendente)");
-    ordenOpciones.set("FECHA_DENUNCIA_DESC", "Fecha de denuncia (descendente)");
-    ordenOpciones.set("FECHA_CAMBIO_ESTADO_ASC", "Fecha de cambio de estado (ascendente)");
-    ordenOpciones.set("FECHA_CAMBIO_ESTADO_DESC", "Fecha de cambio de estado (descendente)");
+    ordenOpciones.set("FECHA_DENUNCIA_ASC", "Fecha de ingreso (ascendente)");
+    ordenOpciones.set("FECHA_DENUNCIA_DESC", "Fecha de ingreso (descendente)");
+    ordenOpciones.set("FECHA_CAMBIO_ESTADO_DESC", "Último cambio de estado (ascendente)");
+    ordenOpciones.set("FECHA_CAMBIO_ESTADO_ASC", "Último cambio de estado (descendente)");
 
     function timeSince(date: Date | number) {
         const now = new Date();
@@ -144,42 +145,9 @@
 
 
     async function mostrarDenuncia(denunciaSimple: DTODenunciaEventoSimple) {
-        denuncia = {
-			id: denunciaSimple.idDenuncia,
-			titulo: denunciaSimple.titulo,
-			descripcion: "",
-			denunciante: {
-				nombre: "",
-				apellido: "",
-				username: denunciaSimple.usernameDenunciante,
-				mail: ""
-			},
-			historico: [],
-			evento: {
-				id: 0,
-				nombre: denunciaSimple.nombreEvento,
-				descripcion: "",
-				espacio: {
-					nombre: null,
-					direccion: ""
-				},
-				fechaHoraInicio: null,
-				fechaHoraFin: null,
-				participantes: 0,
-				organizador: {
-					nombre: "",
-					apellido: "",
-					username: "",
-					mail: ""
-				},
-				administradores: []
-			}
-		};
-
-        popupDetalleVisible = true;
-
         try {
 			denuncia = await EventosService.obtenerDenuncia(denunciaSimple.idDenuncia);
+            popupDetalleVisible = true;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -246,7 +214,7 @@
                 <ComboBox classes="!md:w-[50%]" options={ordenOpciones} bind:selected={filtros.orden} placeholder="a" maxHeight={5}/>
             </div>
 
-            <Table cols={["Título", "Denunciante", "Evento", "Organizador", "Estado", "Último cambio hace", "Ingresado", "Acciones"]}>
+            <Table cols={["Título", "Denunciante", "Evento", "Organizador", "Estado", "Último cambio hace", "Ingresado", "Acciones"]} classes="[&_tr_td]:md:text-ellipsis [&_tr_td]:md:max-w-[300px] [&_tr_td]:md:overflow-hidden">
                 {#each resultados as d}
                     <tr>
                         <td>{d.titulo}</td>

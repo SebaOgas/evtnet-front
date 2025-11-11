@@ -96,7 +96,7 @@
         if (val.trim() === "") {
             return {
                 valid: false,
-                reason: "El título es obligatorio"
+                reason: "Debe ingresar el título"
             }
         }
 
@@ -110,7 +110,7 @@
         if (val.trim() === "") {
             return {
                 valid: false,
-                reason: "La descripción es obligatoria"
+                reason: "Debe ingresar la descripción"
             }
         }
 
@@ -133,7 +133,7 @@
 
             <TextField label="Título" bind:value={data.titulo} validate={validateTitulo} forceValidate={warningTituloVisible} min={1} max={50}/>
 
-            <TextField label="Descripción" multiline bind:value={data.descripcion} validate={validateDescripcion} forceValidate={warningDescripcionVisible} rows={6} min={1} max={1000}/>
+            <TextField label="Descripción" multiline bind:value={data.descripcion} validate={validateDescripcion} forceValidate={warningDescripcionVisible} rows={10} min={1} max={1000}/>
             
         {/if}
     </div>
