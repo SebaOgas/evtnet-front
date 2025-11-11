@@ -40,6 +40,7 @@
         if (get(token) === "") {
             goto("/");
         }
+        
 
         if (get(username) === requestedUsername) {
             isLoggedInUser = true;
@@ -48,7 +49,7 @@
                 return;
             }
         } else {
-            if(!get(permisos).includes("VisionPerfilTercero")) {
+            if(!get(permisos).includes("VisionPerfilTercero") && !get(permisos).includes("VisionPerfilTerceroCompleta")) {
                 errorPermiso = true;
                 return;
             }
