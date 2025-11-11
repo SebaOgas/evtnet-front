@@ -104,6 +104,7 @@
     let minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 2);
 
     let fechaIngresoDesde: Date | null = filtros.fechaIngresoDesde;
     let fechaIngresoHasta: Date | null = filtros.fechaIngresoHasta;
@@ -113,10 +114,10 @@
 
     let ordenOpciones : Map<string, string> = new Map<string, string>();
 
-    ordenOpciones.set("FECHA_DENUNCIA_ASC", "Fecha de denuncia (ascendente)");
-    ordenOpciones.set("FECHA_DENUNCIA_DESC", "Fecha de denuncia (descendente)");
-    ordenOpciones.set("FECHA_CAMBIO_ESTADO_ASC", "Fecha de cambio de estado (ascendente)");
-    ordenOpciones.set("FECHA_CAMBIO_ESTADO_DESC", "Fecha de cambio de estado (descendente)");
+    ordenOpciones.set("FECHA_DENUNCIA_ASC", "Fecha de ingreso (ascendente)");
+    ordenOpciones.set("FECHA_DENUNCIA_DESC", "Fecha de ingreso (descendente)");
+    ordenOpciones.set("FECHA_CAMBIO_ESTADO_DESC", "Último cambio de estado (ascendente)");
+    ordenOpciones.set("FECHA_CAMBIO_ESTADO_ASC", "Último cambio de estado (descendente)");
 
     function timeSince(date: Date | number) {
         const now = new Date();
