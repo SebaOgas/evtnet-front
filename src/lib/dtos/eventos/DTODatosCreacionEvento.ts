@@ -9,7 +9,7 @@ export default interface DTODatosCreacionEvento {
 
     requiereAprobarEventos: boolean,
 
-    comisionInscripcion: number,
+    comisionInscripcion: {montoLimite: number, porcentaje: number}[],
 
     espacioPublico: boolean | null, //Solo usado para espacios registrados
     administrador: boolean | null, //Solo usado para espacios privados. true si es admin o propietario del espacio

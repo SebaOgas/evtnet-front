@@ -249,7 +249,7 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
 		<h1 class="text-m text-center">Eventos</h1>
 
         <div class="flex w-full gap-2 items-center">
-            <TextField label={null} placeholder="Buscar..." classes="w-full" bind:value={filtros.texto} action={buscar}></TextField>
+            <TextField label={null} placeholder="Buscar..." classes="w-full min-w-[150px]" bind:value={filtros.texto} action={buscar}></TextField>
             <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>
             <Button icon="/icons/filter.svg" classes="h-fit" toggable bind:active={filtrosVisibles}></Button>
         </div>
@@ -309,13 +309,12 @@ function generateCombinations(items: {id: number, nombre: string}[]): {
                 {/if}
             </div>
 
-            <div>
-                <div class="flex justify-start items-center gap-2">
-                    <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Monto límite: $</span></CheckBox>
-                    <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full md:w-[500px]"/>
-                </div>
-                <Warning text="El monto límite debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
+    
+            <div class="flex flex-col sm:flex-row justify-start sm:items-center items-start sm:gap-2 gap-0 w-full">
+                <CheckBox bind:checked={usarPrecioLimite}><span class="whitespace-nowrap">Monto límite: $</span></CheckBox>
+                <TextField bind:value={precioLimite} label={null} disabled={!usarPrecioLimite} classes="w-full [&_input]:w-full [&_input]:min-w-[100px] md:w-[500px]"/>
             </div>
+            <Warning text="El monto límite debe ser un número no negativo" visible={warningPrecioLimiteVisible}/>
 
             <div class="md:flex flex-row justify-start items-center">
                 <div class="mb-2 md:mb-0">
