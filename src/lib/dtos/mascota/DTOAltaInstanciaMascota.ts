@@ -1,8 +1,8 @@
 export default interface DTOAltaInstanciaMascota {
     nombre: string;
     descripcion: string;
-    pageRegex: string;
+    pageSelector: string;
     selector: string;
-    events: string;
+    eventos: number[];
     imagenes: {texto: string, imagenId: number | null}[];
 }

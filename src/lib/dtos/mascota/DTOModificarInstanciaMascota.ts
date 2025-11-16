@@ -2,8 +2,8 @@ export default interface DTOModificarInstanciaMascota {
     id: number;
     nombre: string;
     descripcion: string;
-    pageRegex: string;
+    pageSelector: string;
     selector: string;
-    events: string;
+    eventos: number[];
     imagenes: {texto: string, imagenId: number | null}[];
 }

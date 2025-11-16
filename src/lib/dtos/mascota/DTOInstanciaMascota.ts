@@ -1,10 +1,12 @@
+import type DTOEventoMascota from "./DTOEventoMascota";
+
 export default interface DTOInstanciaMascota {
     id: number;
     nombre: string;
     descripcion: string;
-    pageRegex: string;
+    pageSelector: string;
     selector: string;
-    events: string;
+    eventos: DTOEventoMascota[];
     longitud: number;
     fechaAlta: Date | null;
     fechaBaja?: Date | null;

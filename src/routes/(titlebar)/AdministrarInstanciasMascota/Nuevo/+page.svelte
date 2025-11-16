@@ -8,12 +8,14 @@
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
 	import Popup from "$lib/components/Popup.svelte";
+	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import { InstanciasMascotaService } from "$lib/services/InstanciasMascotaService";
 	import type DTOAltaInstanciaMascota from "$lib/dtos/mascota/DTOAltaInstanciaMascota";
 	import Warning from "$lib/components/Warning.svelte";
 	import ComboBox from "$lib/components/ComboBox.svelte";
 	import type DTOImagenMascotaLista from "$lib/dtos/mascota/DTOImagenMascotaLista";
 	import { ImagenesMascotaService } from "$lib/services/ImagenesMascotaService";
+	import type DTOEventoMascota from "$lib/dtos/mascota/DTOEventoMascota";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -23,18 +25,24 @@
 	$: data = {
 		nombre: "",
 		descripcion: "",
-		pageRegex: "",
+		pageSelector: "",
 		selector: "",
-		events: "",
+		eventos: [],
         imagenes: []
 	} as DTOAltaInstanciaMascota;
 
-	let popupProbarRegex = false;
+	let popupProbarPageSelector = false;
 	let urlProbar = "";
-	let resultadoRegex = "";
+	let resultadoPageSelector = "";
+
+	$: popupEventosVisible = false;
 
     let imagenesMascota : DTOImagenMascotaLista[] = [];
     let imagenesMap : Map<number, string> = new Map();
+	
+    let eventosMascota : DTOEventoMascota[] = [];
+	let eventosMap : Map<number, string> = new Map();
+	let eventosSeleccionados : Map<number, string> = new Map();
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -43,7 +51,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionParametros")) {
+		if (!userPermisos.includes("AdministracionMascota")) {
 			errorPermiso = true;
 			return;
 		}
@@ -52,6 +60,11 @@
         imagenesMascota.forEach(i => {
             imagenesMap.set(i.id, i.nombre)
         });
+
+		eventosMascota = await InstanciasMascotaService.obtenerEventosMascota();
+		eventosMascota.forEach(e => {
+			eventosMap.set(e.id, e.nombre);
+		});
 	});
 
 	function validateNombre(nombre: string) {
@@ -87,15 +100,15 @@
 		};
 	}
 
-	function validatePageRegex(pageRegex: string) {
-		pageRegex = pageRegex.trim();
-		if (pageRegex.length === 0) {
+	function validatePageSelector(pageSelector: string) {
+		pageSelector = pageSelector.trim();
+		if (pageSelector.length === 0) {
 			return {
 				valid: false,
-				reason: "Es obligatoria la expresión regular"
+				reason: "Es obligatorio el selector de páginas"
 			};
 		}
-		if (pageRegex.length > 1000) {
+		if (pageSelector.length > 1000) {
 			return {
 				valid: false,
 				reason: "Máximo 1000 caracteres"
@@ -127,54 +140,48 @@
 		};
 	}
 
-	function validateEvents(events: string) {
-		events = events.trim();
-		if (events.length === 0) {
-			return {
-				valid: false,
-				reason: "Ingrese eventos de la lista de posibles eventos, separados por comas"
-			};
-		}
-		if (events.length > 1000) {
-			return {
-				valid: false,
-				reason: "Máximo 1000 caracteres"
-			};
-		}
-		return {
-			valid: true,
-			reason: undefined
-		};
-	}
-
 	$: completado = (
 		validateNombre(data.nombre).valid &&
 		validateDescripcion(data.descripcion).valid &&
-		validatePageRegex(data.pageRegex).valid &&
+		validatePageSelector(data.pageSelector).valid &&
 		validateSelector(data.selector).valid &&
-		validateEvents(data.events).valid
+		eventosSeleccionados.size > 0
 	);
 
-	function probarRegex() {
+	function probarPageSelector() {
 		urlProbar = "";
-		resultadoRegex = "";
-		popupProbarRegex = true;
+		resultadoPageSelector = "";
+		popupProbarPageSelector = true;
 	}
 
-	function ejecutarProbarRegex() {
+	function ejecutarProbarPageSelector() {
 		try {
-			const regex = new RegExp(data.pageRegex);
-			const valida = regex.test(urlProbar);
-			resultadoRegex = valida 
-				? "La expresión regular valida la URL ingresada" 
-				: "La expresión regular no valida la URL ingresada";
+			// Extract path from URL
+			let path = urlProbar.trim();
+			path = path.replace(/^https?:\/\/[^\/]+/, ''); // Remove protocol and domain
+			path = path.split('?')[0]; // Remove query params
+			path = path.replace(/^\/|\/$/g, ''); // Remove leading/trailing slashes
+			
+			const patterns = data.pageSelector.split(',').map(p => p.trim().replace(/^\/|\/$/g, ''));
+			const valida = patterns.some(pattern => {
+				const regexPattern = '^' + pattern.replace(/\*/g, '.*') + '$';
+				const regex = new RegExp(regexPattern);
+				return regex.test(path);
+			});
+			
+			resultadoPageSelector = valida 
+				? "El selector valida la URL ingresada" 
+				: "El selector no valida la URL ingresada";
 		} catch (e) {
-			resultadoRegex = "Error en la expresión regular";
+			resultadoPageSelector = "Error en el selector";
 		}
 	}
 
 	async function guardar() {
 		try {
+			// Convert selected eventos map to array of ids
+			data.eventos = Array.from(eventosSeleccionados.keys());
+			
 			await InstanciasMascotaService.altaInstanciaMascota(data);
             exitoVisible = true;
 		} catch (e) {
@@ -202,7 +209,14 @@
         data.imagenes = [...data.imagenes];
     }
 
-    
+	async function buscarEventos() {
+		let ret : Map<number, string> = new Map();
+		eventosMascota.forEach((e) => {
+			ret.set(e.id, e.nombre);
+		});
+
+		return ret;
+	}
 </script>
 
 <div id="content">
@@ -234,15 +248,15 @@
 			
 			<div class="flex gap-2 items-end">
 				<TextField 
-					label="Expresión regular de detección de páginas" 
-					bind:value={data.pageRegex} 
+					label="Selector de páginas" 
+					bind:value={data.pageSelector} 
 					classes="w-full" 
-					validate={validatePageRegex}
+					validate={validatePageSelector}
 					forceValidate
-                    placeholder="^(/a/b|/c/d)$"
+					placeholder="ruta/a/recurso, otra/ruta, ruta/con/comodin/*"
 					max={1000}
 				/>
-				<Button action={probarRegex} classes="h-fit">Probar</Button>
+				<Button action={probarPageSelector} classes="h-fit">Probar</Button>
 			</div>
 
 			<TextField 
@@ -254,14 +268,16 @@
                 max={1000}
             />
 
-			<TextField 
-                label="Eventos" 
-                bind:value={data.events} 
-                classes="w-full" 
-                validate={validateEvents}
-                forceValidate
-                max={1000}
-            />
+			<div class="flex justify-start gap-2 items-center">
+				<span>Eventos</span>
+				<Button action={() => {popupEventosVisible = true}}>Seleccionar</Button>
+			</div>
+			<div class="commaList">
+				{#each eventosSeleccionados as e}
+					<span>{e[1]}</span>
+				{/each}
+			</div>
+			<Warning visible={eventosSeleccionados.size === 0} text="Debe seleccionar al menos un evento"/>
 
 			<div class="flex items-center gap-2">
 				<h2 class="text-m">Secuencia</h2>
@@ -308,30 +324,32 @@
     </div>
         
 	<div class="flex gap-2 h-fit p-2 justify-center items-center md:justify-start">
-		<Button classes="text-m" action={() => {}}>Ayuda</Button>
+		<Button classes="text-m ayuda"> Ayuda</Button>
 		<Button classes="text-m" action={cancelar}>Cancelar</Button>
 		<Button classes="text-m" action={guardar} disabled={!completado}>Aceptar</Button>
 	</div>
 </div>
 
-<Popup bind:visible={popupProbarRegex} fitH fitW title="Probar expresión regular">
-	<p>Ingrese la URL que debería ser validada por la expresión regular</p>
-	<p class="font-semibold">"{data.pageRegex}"</p>
+<Popup bind:visible={popupProbarPageSelector} fitH fitW title="Probar selector de páginas">
+	<p>Ingrese la URL que debería ser validada por el selector</p>
+	<p class="font-semibold">"{data.pageSelector}"</p>
 	<TextField 
 		label={null}
 		placeholder="URL a probar"
 		bind:value={urlProbar} 
 		classes="w-full"
-        action={ejecutarProbarRegex}
+        action={ejecutarProbarPageSelector}
 	/>
-	{#if resultadoRegex}
-		<p class="mt-2">{resultadoRegex}</p>
+	{#if resultadoPageSelector}
+		<p class="mt-2">{resultadoPageSelector}</p>
 	{/if}
 	<div class="flex justify-center items-center gap-2 w-full mt-2">
-		<Button action={() => {popupProbarRegex = false; urlProbar = ""; resultadoRegex = ""}}>Cerrar</Button>
-		<Button action={ejecutarProbarRegex}>Probar</Button>
+		<Button action={() => {popupProbarPageSelector = false; urlProbar = ""; resultadoPageSelector = ""}}>Cerrar</Button>
+		<Button action={ejecutarProbarPageSelector}>Probar</Button>
 	</div>
 </Popup>
+
+<PopupSeleccion title="Selección de eventos" multiple={true} bind:visible={popupEventosVisible} searchFunction={buscarEventos} bind:selected={eventosSeleccionados} noSearch forceReSearch/>
 
 <PopupError bind:visible={errorVisible}>
 	{error}

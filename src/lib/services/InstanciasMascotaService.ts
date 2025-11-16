@@ -1,4 +1,5 @@
 import type DTOAltaInstanciaMascota from "$lib/dtos/mascota/DTOAltaInstanciaMascota";
+import type DTOEventoMascota from "$lib/dtos/mascota/DTOEventoMascota";
 import type DTOInstanciaMascota from "$lib/dtos/mascota/DTOInstanciaMascota";
 import type DTOModificarInstanciaMascota from "$lib/dtos/mascota/DTOModificarInstanciaMascota";
 import type Page from "$lib/request/Page";
@@ -32,4 +33,8 @@ export const InstanciasMascotaService = {
     altaInstanciaMascota: async (instancia: DTOAltaInstanciaMascota) => {
         await request(HttpRequestType.POST, "instanciasMascota/alta", true, null, JSON.stringify(instancia));
     },
+    obtenerEventosMascota: async () => {
+        let response : DTOEventoMascota[] = await request(HttpRequestType.GET, "instanciasMascota/obtenerEventosMascota", true);
+        return response;
+    }
 }

@@ -41,7 +41,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionParametros")) {
+		if (!userPermisos.includes("AdministracionMascota")) {
 			errorPermiso = true;
 			return;
 		}
