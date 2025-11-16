@@ -335,37 +335,43 @@
 			</div>
 			<div class="flex flex-col gap-2">
 				{#each data.imagenes as imagen, ix}
-					<div class="flex gap-2 justify-between items-start">
-						<div class="flex h-full justify-center items-center text-dark font-bold"><span>{ix+1}°</span></div>
-						<div class="flex grow flex-col gap-2">
-							<div class="flex gap-2">
-								<span>Texto:</span>
-								<TextField 
-									label={null}
-									multiline
-									rows={3}
-									bind:value={imagen.texto} 
-									classes="w-full"
-									max={1000}
-								/>
+					<div class="flex gap-2 justify-between items-start flex-wrap">
+						<div class="flex grow gap-2 justify-between items-start">
+							<div class="flex h-full justify-center items-center text-dark font-bold"><span>{ix+1}°</span></div>
+							<div class="flex grow flex-col gap-2">
+								<div class="flex gap-2">
+									<span>Texto:</span>
+									<TextField 
+										label={null}
+										multiline
+										rows={3}
+										bind:value={imagen.texto} 
+										classes="w-full"
+										max={1000}
+									/>
+								</div>
+								<Warning visible={imagen.texto.trim() === ""} text="Es obligatorio ingresar el texto a mostrar con la imagen"/>
 							</div>
-							<Warning visible={imagen.texto.trim() === ""} text="Es obligatorio ingresar el texto a mostrar con la imagen"/>
 						</div>
-						<div class="flex grow flex-col gap-2">
+						<div class="flex grow gap-2 justify-between items-start">
+							<div class="flex grow flex-col gap-2">
 							<div class="flex gap-2">
 								<span>Imagen:</span>
 								<ComboBox options={imagenesMap} bind:selected={imagen.imagenId} maxHeight={3}/>
 							</div>
 							<Warning visible={imagen.imagenId === null || imagen.imagenId === undefined} text="Seleccione la imagen"/>
-						</div>
-						{#if imagen.imagenId !== null && imagen.imagenId !== undefined}
-							<div class="flex justify-center">
-								<img src={imagenesMascota.filter(i => i.id === imagen.imagenId).at(0)?.url} alt="Mascota" class="h-18" />
 							</div>
-						{/if}
-						<div class="flex h-full justify-center items-center">
-							<Button icon="/icons/cross.svg" action={() => removeImagen(ix)}></Button>
+							{#if imagen.imagenId !== null && imagen.imagenId !== undefined}
+								<div class="flex justify-center">
+									<img src={imagenesMascota.filter(i => i.id === imagen.imagenId).at(0)?.url} alt="Mascota" class="h-18" />
+								</div>
+							{/if}
+							<div class="flex h-full justify-center items-center">
+								<Button icon="/icons/cross.svg" action={() => removeImagen(ix)}></Button>
+							</div>
 						</div>
+						
+						
 					</div>
 				{/each}
 			</div>
