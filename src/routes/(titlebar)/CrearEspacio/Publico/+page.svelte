@@ -254,8 +254,9 @@
             <Warning text="La ubicación es obligatoria" visible={warningUbicacionVisible}/>
         </div>
 
-        <h2 class="text-m text-center">
-            SubEspacios
+        <h2 class="text-m text-center flex justify-center items-center gap-2">
+            <span>SubEspacios</span>
+            <Button classes="text-xs info_subespacios min-w-[30px] font-bold">i</Button>
         </h2>
         <div class="mb-2 mt-2">
             <div class="flex flex-col gap-2">

@@ -14,6 +14,25 @@ export const InstanciasMascotaService = {
             args.set("texto", texto.trim());
         }
         let response : Page<DTOInstanciaMascota[]> = await request(HttpRequestType.GET, "instanciasMascota/obtenerInstanciasMascota", false, args);
+
+        response.content = response.content.map(instancia => ({
+            ...instancia,
+            secuenciaMuestra: instancia.secuenciaMuestra.map(item => {
+                if (item.url) {
+                    const byteCharacters = atob(item.url);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const bytes = new Uint8Array(byteNumbers);
+                    let urlCreator = window.URL || window.webkitURL;
+                    let url = urlCreator.createObjectURL(new Blob([bytes], {type: 'image/png'}));
+                    return { ...item, url };
+                }
+                return item;
+            })
+        }));
+       
         return response;
     },
     bajaInstanciaMascota: async (idInstancia: number) => {

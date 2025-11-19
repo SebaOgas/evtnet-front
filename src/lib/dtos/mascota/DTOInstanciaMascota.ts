@@ -15,4 +15,8 @@ export default interface DTOInstanciaMascota {
         imagenId: number,
         orden: number
     }[];
+    secuenciaMuestra: {
+        texto: string,
+        url: string
+    }[];
 }

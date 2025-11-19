@@ -50,8 +50,9 @@
 
 <div id="content">
     <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-        <h1 class="text-s text-center">
-            Administrar cronogramas
+        <h1 class="text-s text-center flex justify-center items-center gap-2">
+            <span>Administrar cronogramas</span>
+            <Button classes="text-xs info_cronograma min-w-[30px] font-bold">i</Button>
         </h1>
         <h2 class="text-m text-center">
             {data.nombre}

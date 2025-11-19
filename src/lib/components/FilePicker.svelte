@@ -84,7 +84,7 @@
 </script>
 
 <label class="{classes} flex flex-col md:items-center gap-2 md:flex-row mt-2 mb-2" for="inputfile">
-    {#if label !== null}
+    {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
     <div class="flex flex-row justify-between items-center flex-wrap gap-2">

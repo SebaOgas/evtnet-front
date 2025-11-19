@@ -568,7 +568,7 @@
 		<div class="flex flex-col md:flex-row justify-start md:items-center gap-2">
 			<span class="flex flex-row items-baseline gap-2">
 				<span>Subespacio</span>
-				<Button classes="text-xs info_subespacio min-w-[30px] font	-bold">i</Button> 
+				<Button classes="text-xs info_subespacio min-w-[30px] font-bold">i</Button> 
 			</span>
 			<ComboBox classes="!md:w-[50%]" options={subespaciosOpciones} bind:selected={data.idSubespacio} placeholder="Subespacio" maxHeight={8}/>
 			<Warning text="Seleccione un subespacio" visible={warningSubespacioVisible}/>
