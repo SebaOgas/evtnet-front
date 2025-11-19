@@ -217,6 +217,21 @@
 
 		return ret;
 	}
+
+	$: instanciaMascotaPaso = null as number | null;
+
+	async function instanciarMascota() {
+		instanciaMascotaPaso = 0;
+	}
+
+	function nextSecuenciaMascota() {
+		if (instanciaMascotaPaso === null) return;
+		if (data.imagenes.length <= instanciaMascotaPaso + 1) {
+			instanciaMascotaPaso = null;
+			return;
+		}
+		instanciaMascotaPaso += 1;
+	}
 </script>
 
 <div id="content">
@@ -282,7 +297,7 @@
 			<div class="flex items-center gap-2">
 				<h2 class="text-m">Secuencia</h2>
 				<Button icon="/icons/plus.svg" action={addImagen}></Button>
-				<Button icon="/icons/view.svg" action={() => {}}></Button>
+				<Button icon="/icons/view.svg" action={instanciarMascota}></Button>
 			</div>
             <div class="flex flex-col gap-2">
                 {#each data.imagenes as imagen, ix}
@@ -367,3 +382,23 @@
         <Button action={() => goto("/AdministrarInstanciasMascota")}>Aceptar</Button>
     </div>
 </Popup>
+
+{#if instanciaMascotaPaso !== null}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="mascota bg-[#1d438999] w-[100vw] h-[100vh] fixed top-0 left-0" on:click={nextSecuenciaMascota}>
+		<div class="h-[50vh] fixed bottom-0 right-0">
+			<img src={imagenesMascota.filter(i => i.id === data.imagenes[instanciaMascotaPaso === null ? 0 : instanciaMascotaPaso].imagenId).at(0)?.url} alt="Mascota" class="h-full">
+		</div>
+		<div class="bg-[#1d4389bb] text-white h-fit w-full fixed bottom-0 left-0 text-s p-8">
+			{data.imagenes[instanciaMascotaPaso].texto}
+		</div>
+	</div>
+{/if}
+
+
+<style>
+    .mascota {
+		user-select: none;
+	}
+</style>

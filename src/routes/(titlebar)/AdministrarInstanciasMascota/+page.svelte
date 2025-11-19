@@ -79,6 +79,24 @@
 			}
 		}
     }
+
+    $: instanciaMascota = null as DTOInstanciaMascota | null;
+	$: instanciaMascotaPaso = 0;
+
+	async function instanciarMascota(instancia: DTOInstanciaMascota) {
+		instanciaMascotaPaso = 0;
+		instanciaMascota = instancia;
+	}
+
+	function nextSecuenciaMascota() {
+		if (instanciaMascota === null) return;
+		if (instanciaMascota.secuenciaMuestra.length <= instanciaMascotaPaso + 1) {
+			instanciaMascota = null;
+			instanciaMascotaPaso = 0;
+			return;
+		}
+		instanciaMascotaPaso += 1;
+	}
 </script>
 
 <div id="content">
@@ -103,7 +121,7 @@
                         <td>{#if d.fechaBaja}{formatDate(d.fechaBaja, true)}{/if}</td>
                         <td>
                             <div class="flex gap-2 justify-center items-center">
-                                <Button icon="/icons/view.svg" action={() => {}}></Button>
+                                <Button icon="/icons/view.svg" action={() => {instanciarMascota(d)}}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarInstanciasMascota/${d.id}`)}></Button>
                                 {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {instanciaMascotaBaja = d; popupBaja = true}}></Button>{/if}
                             </div>
@@ -142,3 +160,23 @@
 <PopupError bind:visible={errorPermiso}>
     No tiene permiso para administrar instancias de mascota.
 </PopupError>
+
+{#if instanciaMascota !== null}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="mascota bg-[#1d438999] w-[100vw] h-[100vh] fixed top-0 left-0" on:click={nextSecuenciaMascota}>
+		<div class="h-[50vh] fixed bottom-0 right-0">
+			<img src={instanciaMascota.secuenciaMuestra[instanciaMascotaPaso].url} alt="Mascota" class="h-full">
+		</div>
+		<div class="bg-[#1d4389bb] text-white h-fit w-full fixed bottom-0 left-0 text-s p-8">
+			{instanciaMascota.secuenciaMuestra[instanciaMascotaPaso].texto}
+		</div>
+	</div>
+{/if}
+
+
+<style>
+    .mascota {
+		user-select: none;
+	}
+</style>

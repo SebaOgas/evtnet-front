@@ -108,8 +108,9 @@
         <h3 class="text-s text-center">
             Del {formatDate(data.fechaDesde)} al {formatDate(data.fechaHasta)}
         </h3>
-        <h4 class="text-m text-center">
-            Excepciones
+        <h4 class="text-s text-center flex justify-center items-center gap-2">
+            <span>Excepciones</span>
+            <Button classes="text-xs info_excepciones min-w-[30px] font-bold">i</Button>
         </h4>
         
         <div class="flex flex-col gap-4 mt-4">

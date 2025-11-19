@@ -196,7 +196,10 @@
 <div id="content">
 	{#if listo}
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
-		<h1 class="text-m text-center">Modificar cronograma</h1>
+		<h1 class="text-s text-center flex justify-center items-center gap-2">
+            <span>Modificar cronograma</span>
+            <Button classes="text-xs info_cronograma min-w-[30px] font-bold">i</Button>
+        </h1>
 		<h2 class="text-center">{data.nombreEspacio}</h2>
 
 		<DatePicker 

@@ -370,9 +370,10 @@
 		</div> -->
 		
 		<div class="mb-2 mt-2">
-            <div class="flex gap-2 relative md:flex-row">
+            <div class="flex gap-2 relative md:flex-row items-center">
                 <span class="md:items-center gap-2  mt-3 mb-2">Documentación</span>
                 <FilePicker bind:files={documentacionFiles} multiple label="" />
+                <Button classes="text-xs info_documentacion min-w-[30px] font-bold">i</Button> 
                 
                 <!-- <Button classes="px-4 h-10 text-xs" action={() => tooltipVisible = !tooltipVisible}> i </Button>
                 {#if tooltipVisible}
@@ -403,8 +404,9 @@
 			{/if}
             <CheckBox bind:checked={data.requiereAprobacion}>Requiere Aprobación de Eventos</CheckBox>    
         </div>
-		<h2 class="text-m text-center">
-            SubEspacios
+		<h2 class="text-m text-center flex justify-center items-center gap-2">
+            <span>SubEspacios</span>
+            <Button classes="text-xs info_subespacios min-w-[30px] font-bold">i</Button>
         </h2>
         <div class="mb-2 mt-2">
             <div class="flex flex-col gap-2">

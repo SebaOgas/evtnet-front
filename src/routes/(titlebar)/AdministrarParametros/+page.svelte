@@ -45,14 +45,16 @@
 
 
 <div id="content">
-    <h1 class="text-m mt-4 mb-4 ml-4">Parámetros</h1>
-    <div class="flex flex-col gap-3 ml-8">
-        {#each parametros as p}
-            <div class="flex items-center gap-2">
-                <span>{p.nombre}</span>
-                <Button classes="!px-3 !py-1 !text-xs" action={() => goto(p.ruta)}>Ver</Button>
-            </div>
-        {/each}
+    <div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
+        <h1 class="text-m mt-4 mb-4 ml-4">Parámetros</h1>
+        <div class="flex flex-col gap-3 ml-8">
+            {#each parametros as p}
+                <div class="flex items-center gap-2">
+                    <span>{p.nombre}</span>
+                    <Button classes="!px-3 !py-1 !text-xs" action={() => goto(p.ruta)}>Ver</Button>
+                </div>
+            {/each}
+        </div>
     </div>
 </div>
 
