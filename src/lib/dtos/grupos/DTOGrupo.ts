@@ -8,8 +8,10 @@ export default interface DTOGrupo {
         username: string,
         nombre: string,
         apellido: string,
-        fechaHoraUnion: Date
+        fechaHoraUnion: Date,
+        aceptado: boolean
     }[],
 
-    esAdministrador: boolean
+    esAdministrador: boolean,
+    invitado: boolean
 }

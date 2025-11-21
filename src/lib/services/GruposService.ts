@@ -27,7 +27,7 @@ export const GruposService = {
     },
 
     obtenerMisGrupos: async () => {
-        let response : {id: number, nombre: string, idChat: number}[] = await request(HttpRequestType.GET, "grupos/obtenerMisGrupos", true);
+        let response : {id: number, nombre: string, idChat: number, aceptado: boolean}[] = await request(HttpRequestType.GET, "grupos/obtenerMisGrupos", true);
 
         return response;
     },
@@ -53,9 +53,18 @@ export const GruposService = {
 
         return response.id;
     },
-    buscarUsuariosParaAgregar: async (idGrupo: number | null, texto: string) => {
+
+    toggleInvitacion: async (idGrupo: number, aceptar: boolean) => {
         let args = new Map<string, string>();
         args.set("idGrupo", `${idGrupo}`);
+        args.set("aceptar", `${aceptar}`);
+
+        await request(HttpRequestType.POST, "grupos/toggleInvitacion", true, args);
+    },
+
+    buscarUsuariosParaAgregar: async (idGrupo: number | null, texto: string) => {
+        let args = new Map<string, string>();
+        args.set("idGrupo", idGrupo === null ? "" : "" + idGrupo);
         args.set("texto", texto);
 
         let response : DTOBusquedaUsuario[] = await request(HttpRequestType.GET, "grupos/buscarUsuariosParaAgregar", false, args);

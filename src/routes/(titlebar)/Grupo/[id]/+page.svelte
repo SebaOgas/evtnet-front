@@ -32,8 +32,12 @@
 
         puedeAdministrar = get(permisos).includes("AdministracionGrupos")
 
-        grupo = await GruposService.obtenerGrupo(id);
+        load();
     })
+
+	async function load() {
+		grupo = await GruposService.obtenerGrupo(id);
+	}
 
     let popupBaja = false;
     let exitoBaja = false;
@@ -57,6 +61,43 @@
 			img.style.display = "block";
 		})()	
 	}
+
+
+	$: popupInvitacion = false;
+	$: aceptarInvitacion = true;
+    $: exitoInvitacion = false;
+    $: mensajeInvitacion = "";
+    async function toggleInvitacion(aceptar: boolean) {
+		if (grupo === null) return;
+		popupInvitacion = true;
+        aceptarInvitacion = aceptar;
+        if (aceptarInvitacion) {
+            mensajeInvitacion = `¿Estás seguro de que deseás unirte al grupo ${grupo.nombre}?`
+        } else {
+            mensajeInvitacion = `¿Estás seguro de que deseás rechazar la invitación al grupo ${grupo.nombre}?`
+        }
+    }
+
+    async function ejecutarToggleInvitacion() {
+		if (grupo === null) return;
+        try {
+			await GruposService.toggleInvitacion(grupo.id, aceptarInvitacion);
+			if (!aceptarInvitacion) goto(`/MisGrupos`);
+            load();
+			popupInvitacion = false;
+            exitoInvitacion = true;
+            if (aceptarInvitacion) {
+                mensajeInvitacion = "Te has unido al grupo exitosamente"
+            } else {
+                mensajeInvitacion = "Invitación rechazada"
+            }
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
+    }
 
 </script>
 
@@ -83,9 +124,16 @@
                     <div class="flex flex-col w-full gap-2 items-start">
                         <div class="flex flex-row justify-start w-full items-center gap-2">
                             <img use:loadFotoDePerfil={p.username} alt="Foto de perfil" class="h-[40px] w-[40px] rounded-full object-cover cursor-pointer hidden">
-                            <div>{p.nombre} {p.apellido}</div>
+                            <div>{p.nombre} {p.apellido} {#if !p.aceptado}<span class="text-xs">(Pendiente de aceptación)</span>{/if}</div>
                         </div>
-                        <div class="ml-8">Se unió en {formatDate(p.fechaHoraUnion, true)}</div>
+                        <div class="ml-8">
+							{#if p.aceptado}
+								Se unió en {formatDate(p.fechaHoraUnion, true)}
+							{:else}
+								Invitado en {formatDate(p.fechaHoraUnion, true)}
+							{/if}
+							
+						</div>
                     </div>
                 {/each}
             </div>
@@ -95,14 +143,19 @@
 	</div>
 
 	<div class="flex flex-wrap gap-2 h-fit p-2 justify-center items-center">
-		<Button classes="text-m" action={() => goto(`/MisGrupos`)}>Atrás</Button>
-        {#if grupo.esAdministrador && puedeAdministrar}
-		    <Button classes="text-m" action={() => goto(`/Grupo/${id}/Modificar`)}>Modificar</Button>
-        {/if}
-		<Button classes="text-m" action={() => {popupBaja = true}}>Salir</Button>
-		<Button classes="h-full aspect-square" icon="/icons/chat.svg" action={() => goto(`/Chat/${grupo?.idChat}`)}></Button>
+		<Button action={() => goto(`/MisGrupos`)}>Atrás</Button>
+		{#if !grupo.invitado}
+			{#if grupo.esAdministrador && puedeAdministrar}
+				<Button action={() => goto(`/Grupo/${id}/Modificar`)}>Modificar</Button>
+			{/if}
+			<Button action={() => {popupBaja = true}}>Salir</Button>
+			<Button classes="aspect-square" icon="/icons/chat.svg" action={() => goto(`/Chat/${grupo?.idChat}`)}></Button>
+		{:else}
+			<Button classes="h-fit" action={() => {toggleInvitacion(true)}}>Aceptar</Button>
+			<Button classes="h-fit" action={() => {toggleInvitacion(false)}}>Rechazar</Button>
+		{/if}
 	</div>
-    {/if}
+	{/if}
 </div>
 
 <Popup bind:visible={popupBaja} fitH fitW>
@@ -117,6 +170,21 @@
 	Salió del grupo exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {goto(`/MisGrupos`)}}>Aceptar</Button>
+	</div>
+</Popup>
+
+<Popup visible={popupInvitacion} fitH fitW>
+	{mensajeInvitacion}
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupInvitacion = false}}>Cancelar</Button>
+		<Button action={ejecutarToggleInvitacion}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={exitoInvitacion} fitH fitW>
+	{mensajeInvitacion}
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {exitoInvitacion = false}}>Aceptar</Button>
 	</div>
 </Popup>
 
