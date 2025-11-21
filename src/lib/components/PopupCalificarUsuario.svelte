@@ -165,7 +165,7 @@
             {/each}
         </div>
         {:else}
-            {#if califTipoNombre === "Calificación Normal"}
+            {#if califTipoNombre === "Calificación"}
                 <div class="flex flex-col {califSelec !== null ? "justify-start" : "justify-center"} items-center h-full">
                     <div class="w-full flex flex-wrap gap-2 justify-center items-center {califSelec !== null ? "" : "h-full"}">
                         {#each calificaciones as cal}

@@ -99,19 +99,19 @@
                 </div>
                 {#if selectedCopy?.username === f.username}
                     <div>@{f.username}</div>
-                    {#if selectedCopy?.dni !== null}
+                    {#if selectedCopy?.dni !== null && selectedCopy?.dni !== undefined}
                         <div class="flex justify-between items-center">
                             <span>DNI:</span>
                             <span>{selectedCopy?.dni}</span>
                         </div>
                     {/if}
-                    {#if selectedCopy?.mail !== null}
+                    {#if selectedCopy?.mail !== null && selectedCopy?.mail !== undefined}
                         <div class="flex justify-between items-center">
                             <span>mail:</span>
                             <span>{selectedCopy?.mail}</span>
                         </div>
                     {/if}
-                    {#if selectedCopy?.fechaNacimiento !== null}
+                    {#if selectedCopy?.fechaNacimiento !== null && selectedCopy?.fechaNacimiento !== undefined}
                         <div class="flex justify-between items-center">
                             <span>Nacimiento:</span>
                             <span>{formatDate(selectedCopy?.fechaNacimiento)}</span>

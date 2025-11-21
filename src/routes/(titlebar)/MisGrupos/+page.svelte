@@ -14,7 +14,7 @@
 	$: error = "";
 	$: errorVisible = false;
 
-    $: grupos = [] as {id: number, nombre: string, idChat: number}[];
+    $: grupos = [] as {id: number, nombre: string, idChat: number, aceptado: boolean}[];
 
     let puedeCrear = false;
 
@@ -66,6 +66,40 @@
 
     }
 
+    $: grupoInvitacion = null as { id: number; nombre: string; idChat: number; aceptado: boolean; } | null;
+    $: aceptarInvitacion = true;
+    $: exitoInvitacion = false;
+    $: mensajeInvitacion = "";
+    async function toggleInvitacion(grupo: { id: number; nombre: string; idChat: number; aceptado: boolean; }, aceptar: boolean) {
+        grupoInvitacion = grupo;
+        aceptarInvitacion = aceptar;
+        if (aceptarInvitacion) {
+            mensajeInvitacion = `¿Estás seguro de que deseás unirte al grupo ${grupo.nombre}?`
+        } else {
+            mensajeInvitacion = `¿Estás seguro de que deseás rechazar la invitación al grupo ${grupo.nombre}?`
+        }
+    }
+
+    async function ejecutarToggleInvitacion() {
+        if (grupoInvitacion === null) return;
+        try {
+			await GruposService.toggleInvitacion(grupoInvitacion.id, aceptarInvitacion);
+            load();
+            exitoInvitacion = true;
+            if (aceptarInvitacion) {
+                mensajeInvitacion = "Te has unido al grupo exitosamente"
+            } else {
+                mensajeInvitacion = "Invitación rechazada"
+            }
+            grupoInvitacion = null;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
+    }
+
 </script>
 
 
@@ -80,14 +114,35 @@
 
         <div class="flex flex-col gap-4 md:gap-16 md:flex-row md:flex-wrap md:justify-center">
             {#each grupos as g}
-                <div class="flex flex-row justify-between items-center gap-2 md:max-w-[45vw] lg:max-w-[30vw]">
-                    <div>{g.nombre}</div>
-                    <div class="flex justify-center items-center gap-2">
-                        <Button icon="/icons/view.svg" classes="h-fit" action={() => {goto(`/Grupo/${g.id}`)}}></Button>
-                        <Button icon="/icons/chat.svg" classes="h-fit" action={() => {goto(`/Chat/${g.idChat}`)}}></Button>
-                        <Button icon="/icons/trash.svg" classes="h-fit" action={() => {grupoBaja = g.id}}></Button>
+                {#if g.aceptado}
+                    <div class="flex flex-row justify-between items-center gap-2 md:max-w-[45vw] lg:max-w-[30vw]">
+                        <div>{g.nombre}</div>
+                        <div class="flex justify-center items-center gap-2">
+                            <Button icon="/icons/view.svg" classes="h-fit" action={() => {goto(`/Grupo/${g.id}`)}}></Button>
+                            <Button icon="/icons/chat.svg" classes="h-fit" action={() => {goto(`/Chat/${g.idChat}`)}}></Button>
+                            <Button icon="/icons/trash.svg" classes="h-fit" action={() => {grupoBaja = g.id}}></Button>
+                        </div>
                     </div>
-                </div>
+                {/if}
+            {/each}
+        </div>
+
+        <h1 class="text-m flex justify-center items-center gap-2">
+			<span>Invitaciones</span>
+		</h1>
+
+        <div class="flex flex-col gap-4 md:gap-16 md:flex-row md:flex-wrap md:justify-center">
+            {#each grupos as g}
+                {#if !g.aceptado}
+                    <div class="flex flex-row justify-between items-center gap-2 md:max-w-[45vw] lg:max-w-[30vw]">
+                        <div>{g.nombre}</div>
+                        <div class="flex justify-center items-center gap-2">
+                            <Button icon="/icons/view.svg" classes="h-fit" action={() => {goto(`/Grupo/${g.id}`)}}></Button>
+                            <Button icon="/icons/check.png" classes="h-fit" action={() => {toggleInvitacion(g, true)}}></Button>
+                            <Button icon="/icons/cross.svg" classes="h-fit" action={() => {toggleInvitacion(g, false)}}></Button>
+                        </div>
+                    </div>
+                {/if}
             {/each}
         </div>
 	</div>
@@ -109,6 +164,22 @@
 	Salió del grupo exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
+	</div>
+</Popup>
+
+
+<Popup visible={grupoInvitacion !== null} fitH fitW>
+	{mensajeInvitacion}
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {grupoInvitacion = null}}>Cancelar</Button>
+		<Button action={ejecutarToggleInvitacion}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={exitoInvitacion} fitH fitW>
+	{mensajeInvitacion}
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {exitoInvitacion = false}}>Aceptar</Button>
 	</div>
 </Popup>
 

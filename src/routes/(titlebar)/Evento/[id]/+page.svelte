@@ -282,7 +282,9 @@
                                     <span class="text-xs font-bold">{inscripto.nombre} {inscripto.apellido}</span>
                                     <span class="text-xs text-black">{inscripto.username}</span>
                                 </div>
-                                <Button icon="/icons/white_star.svg" action={() => {usernameCalificar = inscripto.username; popupCalificarVisible = true;}}/>
+								{#if $username !== inscripto.username}
+                                	<Button icon="/icons/white_star.svg" action={() => {usernameCalificar = inscripto.username; popupCalificarVisible = true;}}/>
+								{/if}
                             </div>
                         {/each}
                     </div>

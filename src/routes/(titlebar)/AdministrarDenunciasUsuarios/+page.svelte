@@ -75,7 +75,7 @@
         </h1>
 
         {#if listo}
-            <Table cols={["Nombre Denunciado", "Nombre Denunciado", "Fecha", "Acciones"]}>
+            <Table cols={["Nombre Denunciante", "Nombre Denunciado", "Fecha", "Acciones"]}>
                 {#each resultados as d}
                     <tr>
                         <td>{d.denunciado.nombre} {d.denunciado.apellido}</td>

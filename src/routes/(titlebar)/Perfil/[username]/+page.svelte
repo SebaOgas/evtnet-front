@@ -35,12 +35,14 @@
 
     $: permisosList = [] as string[]
     $: isLoggedInUser = false;
+    $: isAdmin = false;
 
     onMount(async () => {     
         if (get(token) === "") {
             goto("/");
         }
-        
+
+        isAdmin = get(permisos).includes("VisionPerfilTerceroCompleta");
 
         if (get(username) === requestedUsername) {
             isLoggedInUser = true;
@@ -102,7 +104,7 @@
                 <span>{perfil.mail}</span>
             {/if}
         </div>
-        {#if isLoggedInUser}
+        {#if isLoggedInUser || isAdmin}
             {#if perfil.dni !== null}
                 <div class="w-full md:w-[50vw] mx-auto">
                     DNI N.°: {perfil.dni}
@@ -113,21 +115,22 @@
                     Fecha de nacimiento: {formatDate(new Date(perfil.fechaNacimiento))}
                 </div>
             {/if}
-            {#if perfil.calificaciones !== null && calificaciones.length === perfil.calificaciones.length}
-                <div>
-                    <div class="w-full md:w-[50vw] mx-auto mb-4">
-                        Calificación:
-                    </div>
-                    <div class="w-full flex flex-wrap gap-2 justify-center">
-                        {#each calificaciones as cal}
-                        <div class="w-[25vw] sm:w-[70px] h-fit flex flex-col justify-start items-center">
-                            <img src={cal.imgUrl} alt={cal.nombre} class="object-contain">
-                            <span class="mt-2">{cal.porcentaje}%</span>
-                        </div>
-                        {/each}
-                    </div>
+        {/if}
+
+        {#if perfil.calificaciones !== null && calificaciones.length === perfil.calificaciones.length}
+            <div>
+                <div class="w-full md:w-[50vw] mx-auto mb-4">
+                    Calificación:
                 </div>
-            {/if}
+                <div class="w-full flex flex-wrap gap-2 justify-center">
+                    {#each calificaciones as cal}
+                    <div class="w-[25vw] sm:w-[70px] h-fit flex flex-col justify-start items-center">
+                        <img src={cal.imgUrl} alt={cal.nombre} class="object-contain">
+                        <span class="mt-2">{cal.porcentaje}%</span>
+                    </div>
+                    {/each}
+                </div>
+            </div>
         {/if}
         
     </div>
