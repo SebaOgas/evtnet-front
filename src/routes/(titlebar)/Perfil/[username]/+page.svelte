@@ -83,6 +83,11 @@
             }            
         }
     });
+
+    async function vincularMP() {
+        let link = await UsuariosService.obtenerLinkIntegrarMP();        
+        window.open(link);
+    }
 </script>
 
 <div id="content">
@@ -130,6 +135,12 @@
                     </div>
                     {/each}
                 </div>
+            </div>
+        {/if}
+
+        {#if isLoggedInUser && !perfil.vinculadoMP}
+            <div class="w-full flex justify-center items-center">
+                <Button action={vincularMP} classes="text-m">Vincular con Mercado Pago</Button>
             </div>
         {/if}
         

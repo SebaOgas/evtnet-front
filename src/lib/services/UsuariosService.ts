@@ -295,4 +295,18 @@ export const UsuariosService = {
 
         return response;
     },
+
+
+    obtenerLinkIntegrarMP: async () => {
+        let response : string = await request(HttpRequestType.GET, "usuarios/obtenerLinkIntegrarMP", true);
+        return response;
+    },
+
+    obtenerCredencialesMP: async (code: string, state: string) => {
+        let args = new Map<string, string>();
+        args.set("code", `${code}`);
+        args.set("state", `${state}`);
+        
+        await request(HttpRequestType.GET, "usuarios/obtenerCredencialesMP", true, args);
+    }
 }

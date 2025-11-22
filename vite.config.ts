@@ -16,7 +16,8 @@ export default defineConfig({
 			usePolling: true,
 			interval: 100,
     		ignored: ['**/node_modules/**', '**/.git/**', '**/android/**', '**/build/**']
-		}
+		},
+		allowedHosts: ["evtnet.sebaogas.cc"]
 	},
 
 	test: {

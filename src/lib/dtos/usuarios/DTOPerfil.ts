@@ -6,5 +6,6 @@ export default interface DTOPerfil {
     dni: string | null,
     fechaNacimiento: Date | null,
     calificaciones: null | {nombre: string, porcentaje: number}[],
-    idChat: number | null
+    idChat: number | null,
+    vinculadoMP: boolean
 }
