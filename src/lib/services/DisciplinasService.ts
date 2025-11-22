@@ -2,55 +2,64 @@ import type DTOAltaDisciplina from "$lib/dtos/disciplinas/DTOAltaDisciplina";
 import type DTOBusquedaDisciplina from "$lib/dtos/disciplinas/DTOBusquedaDisciplinas";
 import type DTODisciplina from "$lib/dtos/disciplinas/DTODisciplina";
 import type DTOModificarDisciplina from "$lib/dtos/disciplinas/DTOModificarDisciplina";
+import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
 
 
+
 export const DisciplinasService = {
-  buscar: async (text: string) => {
-        let args = new Map<string, string>();
-        args.set("text", text);
+      buscar: async (text: string) => {
+            let args = new Map<string, string>();
+            args.set("text", text);
 
-        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "disciplinas/buscar", false, args);
+            let response: { id: number, nombre: string }[] = await request(HttpRequestType.GET, "disciplinas/buscar", false, args);
 
-        return response;
-  },
-  buscarPorEspacio: async (text: string, espacioId: number) => {
-        let args = new Map<string, string>();
-        args.set("text", text);
-        args.set("espacioId", "" + espacioId);
+            return response;
+      },
+      buscarPorEspacio: async (text: string, espacioId: number) => {
+            let args = new Map<string, string>();
+            args.set("text", text);
+            args.set("espacioId", "" + espacioId);
 
-        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "disciplinas/buscarPorEspacio", false, args);
+            let response: { id: number, nombre: string }[] = await request(HttpRequestType.GET, "disciplinas/buscarPorEspacio", false, args);
 
-        return response;
-  },
-  buscarDisciplinas: async (filtros: DTOBusquedaDisciplina) => {
-        let response = await request(HttpRequestType.PUT, "disciplinas/buscarDisciplinas", true, null, JSON.stringify(filtros));
-        return response.content as DTODisciplina[];
-  },
-  altaDisciplina: async (disciplina: DTOAltaDisciplina) => {
-        await request(HttpRequestType.POST, "disciplinas/alta", true, null, JSON.stringify(disciplina));
-  },
-  obtenerDisciplinaCompleta: async (id: number) => {
-        let args = new Map<string, string>();
-        args.set("id", `${id}`);
-        let response : DTODisciplina = await request(HttpRequestType.GET, "disciplinas/obtenerDisciplinaCompleta", true, args);
-        return response;
-  },
-  modificarDisciplina: async (disciplina: DTOModificarDisciplina) => {
-        await request(HttpRequestType.PUT, "disciplinas/modificar", true, null, JSON.stringify(disciplina));
-  },
-  bajaDisciplina: async (id: number) => {
-        let args = new Map<string, string>();
-        args.set("id", `${id}`);
-        await request(HttpRequestType.DELETE, "disciplinas/baja", true, args);
-  },
-  buscarPorSubespacio: async (text: string, subespacioId: number) => {
-        let args = new Map<string, string>();
-        args.set("text", text);
-        args.set("subespacioId", "" + subespacioId);
+            return response;
+      },
+      buscarDisciplinas: async (filtros: DTOBusquedaDisciplina, page: number) => {
+            let args = new Map<string, string>();
+            args.set("page", `${page}`);
+            let response :Page<DTODisciplina[]> = await request(HttpRequestType.PUT, "disciplinas/buscarDisciplinas", true, args, JSON.stringify(filtros));
+            return response;
+      },
+      altaDisciplina: async (disciplina: DTOAltaDisciplina) => {
+            await request(HttpRequestType.POST, "disciplinas/alta", true, null, JSON.stringify(disciplina));
+      },
+      obtenerDisciplinaCompleta: async (id: number) => {
+            let args = new Map<string, string>();
+            args.set("id", `${id}`);
+            let response: DTODisciplina = await request(HttpRequestType.GET, "disciplinas/obtenerDisciplinaCompleta", true, args);
+            return response;
+      },
+      modificarDisciplina: async (disciplina: DTOModificarDisciplina) => {
+            await request(HttpRequestType.PUT, "disciplinas/modificar", true, null, JSON.stringify(disciplina));
+      },
+      bajaDisciplina: async (id: number) => {
+            let args = new Map<string, string>();
+            args.set("id", `${id}`);
+            await request(HttpRequestType.DELETE, "disciplinas/baja", true, args);
+      },
+      buscarPorSubespacio: async (text: string, subespacioId: number) => {
+            let args = new Map<string, string>();
+            args.set("text", text);
+            args.set("subespacioId", "" + subespacioId);
 
-        let response : {id: number, nombre: string}[] = await request(HttpRequestType.GET, "disciplinas/buscarPorSubespacio", false, args);
+            let response: { id: number, nombre: string }[] = await request(HttpRequestType.GET, "disciplinas/buscarPorSubespacio", false, args);
 
-        return response;
-  },
+            return response;
+      },
+      restaurarDisciplina: async (id: number) => {
+            let args = new Map<string, string>();
+            args.set("id", `${id}`);
+            await request(HttpRequestType.PUT, "disciplinas/restaurar", true, args);
+      },
 }

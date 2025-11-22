@@ -20,13 +20,17 @@
 
 	$: errorTamanoImagenIconoVisible = false;
 	$: errorTamanoImagenIcono = "";
+	$: errorMotivoVacioVisible = false;
+	$: errorMotivoVacio = "Deber haber al menos un motivo";
 
 	$: data = {
 		url: "",
-		nombre:""
+		nombre:"",
+		motivos: []
 	} as DTOAltaTipoCalificacion;
 
 	let icono: File | null = null;
+	let motivos: string[] = [];
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -35,7 +39,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionMediosPago")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}
@@ -128,10 +132,30 @@
 		reader.readAsDataURL(icono);
 	}
 
+	function agregarMotivo() {
+		motivos = [...motivos, ""];
+	}
+
+	function eliminarMotivo(index: number) {
+		motivos = motivos.filter((_, i) => i !== index);
+	}
+
 
 	async function guardar() {
-		
-		
+		if (motivos.length === 0) {
+			errorMotivoVacioVisible = true;
+			return;
+		} else {
+			errorMotivoVacioVisible = false;
+		}
+		for(let i = 0; i < motivos.length; i++) {
+			if(motivos[i].length === 0) {
+				errorMotivoVacioVisible = true;
+				errorMotivoVacio = "Los motivos no pueden estar vacíos";
+				return;
+			}
+		}
+		data.motivos = motivos.map(nombre => ({ id: 0, nombre }));
 		try {
 			await CalificacionService.altaTipoCalificacion(data);
             exitoVisible = true;
@@ -182,6 +206,26 @@
 				showFileName={false}
 			/>
 			<Warning text={errorTamanoImagenIcono} visible={errorTamanoImagenIconoVisible}/>
+
+			<div class="flex gap-2 items-center">
+				<h2 class="text-m">Motivos</h2>
+				<Button icon="/icons/plus.svg" action={agregarMotivo}></Button>
+				<Button classes="text-xs info_motivoCalificacion min-w-[30px] font-bold">i</Button> 
+			</div>
+
+			{#each motivos as motivo, i}
+				<div class="flex gap-2 items-center">
+					<TextField 
+						label="Motivo {i + 1}" 
+						bind:value={motivos[i]}
+						validate={validateNombre} 
+						classes="flex-1" 
+						max={100}
+					/>
+					<Button icon="/icons/cross.svg" action={() => eliminarMotivo(i)}></Button>
+				</div>
+			{/each}
+			<Warning text={errorMotivoVacio} visible={errorMotivoVacioVisible}/>
         </div>
     </div>
         

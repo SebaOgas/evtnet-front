@@ -14,25 +14,29 @@
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import type DTOBusquedaDisciplina from "$lib/dtos/disciplinas/DTOBusquedaDisciplinas";
 	import { HttpError } from "$lib/request/request";
+	import CheckBox from "$lib/components/CheckBox.svelte";
 
 
     $: errorPermiso = false;
     $: errorGenerico = "";
     $: errorGenericoVisible = false;
     $: popupDetalle = false;
+    $: vigentes = true;
+    $: dadasDeBaja = true;
 
     let page = 0;
     let lastPage = 0;
-    
+    $: page, buscar();
 
     let listo = false;
 
-    let filtros : DTOBusquedaDisciplina={texto:"", fechaDesde:null, fechaHasta:null};
+    let filtros : DTOBusquedaDisciplina={texto:"", fechaDesde:null, fechaHasta:null, vigentes:true, dadasDeBaja:true};
 
     
     let minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 2);
 
     let fechaDesde: Date | null = filtros.fechaDesde;
     let fechaHasta: Date | null = filtros.fechaHasta;
@@ -41,9 +45,14 @@
 
     let disciplinaDetalle: DTODisciplina | null = null;
     let disciplinaBaja: number | null = null;
+    let disciplinaAlta: number | null = null;
 
     $: popupBaja = disciplinaBaja !== null;
     let exitoBaja = false;
+
+
+    $: popupAlta = disciplinaAlta !== null;
+    let exitoAlta = false;
 
     onMount(() => {
         if (get(token) === "") {
@@ -63,11 +72,13 @@
     async function buscar() {
         filtros.fechaDesde = fechaDesde;
         filtros.fechaHasta = fechaHasta;
-        
+        filtros.vigentes = vigentes;
+        filtros.dadasDeBaja = dadasDeBaja;
 
         try {
-			resultados = await DisciplinasService.buscarDisciplinas(filtros);
-            
+			let response = await DisciplinasService.buscarDisciplinas(filtros, page);
+            resultados = response.content;
+            lastPage = response.totalPages - 1;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
@@ -97,6 +108,27 @@
 
     }
 
+    async function alta() {
+        if (disciplinaAlta === null) {
+            errorGenerico = "No se pudo identificar a la disciplina a dar de alta";
+            errorGenericoVisible = true;
+            return;
+        }
+
+        try {
+			await DisciplinasService.restaurarDisciplina(disciplinaAlta);
+            buscar();
+            disciplinaAlta = null;
+            exitoAlta = true;
+		} catch (e) {
+			if (e instanceof HttpError) {
+				errorGenerico = e.message;
+				errorGenericoVisible = true;
+			}
+		}
+
+    }
+
 </script>
 
 <div id="content">
@@ -112,11 +144,15 @@
                 <Button icon="/icons/search.svg" action={buscar} classes="h-fit"></Button>
             </div>
 
-            <DatePicker range label="Fechas desde - hasta: " bind:startDate={fechaDesde} bind:endDate={fechaHasta} {minDate} {maxDate} classes="!md:w-[70%]"/>
+            <div class="flex flex-row gap-2 items-center">
+                <DatePicker range label="Fechas desde - hasta: " bind:startDate={fechaDesde} bind:endDate={fechaHasta} {minDate} {maxDate} classes="w-2/3"/>
+                <CheckBox bind:checked={vigentes}>Vigentes</CheckBox>
+                <CheckBox bind:checked={dadasDeBaja}>Dados de baja</CheckBox>
+            </div>
 
             <Table cols={["Nombre", "Descripción", "Alta", "Baja", "Acciones"]}>
                 {#each resultados as d}
-                    <tr>
+                    <tr class="{d.fechaBaja ? 'text-gray-400' : ''}">
                         <td>{d.nombre}</td>
                         <td>{d.descripcion}</td>
                         <td>{formatDate(d.fechaAlta, true)}</td>
@@ -126,6 +162,7 @@
                                 <Button icon="/icons/view.svg" action={() => {disciplinaDetalle = d; popupDetalle = true}}></Button>
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarDisciplinas/${d.id}`)}></Button>
                                 {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {disciplinaBaja = d.id; popupBaja = true}}></Button>{/if}
+                                {#if d.fechaBaja}<Button icon="/icons/check.png" action={() => {disciplinaAlta = d.id; popupAlta = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>
@@ -167,6 +204,21 @@
 	Disciplina dada de baja exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={popupAlta} fitH fitW>
+	¿Está seguro de que desea restaurar a esta disciplina?
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {popupAlta = false}}>Cancelar</Button>
+		<Button action={alta}>Confirmar</Button>
+	</div>
+</Popup>
+
+<Popup bind:visible={exitoAlta} fitH fitW>
+	Disciplina restaurada exitosamente
+	<div class="flex justify-center items-center gap-2 w-full">
+		<Button action={() => {exitoAlta = false}}>Aceptar</Button>
 	</div>
 </Popup>
 
