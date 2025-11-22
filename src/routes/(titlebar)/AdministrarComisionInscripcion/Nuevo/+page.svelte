@@ -34,7 +34,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionComisionInscripcion")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}
