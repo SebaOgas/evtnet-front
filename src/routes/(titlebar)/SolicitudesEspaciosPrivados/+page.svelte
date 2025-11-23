@@ -147,7 +147,9 @@
         }
 
         try {
-			resultados = await SolicitudEspacioService.buscarSolicitudesEspaciosPrivados(filtros);
+			let response = await SolicitudEspacioService.buscarSolicitudesEspaciosPrivados(filtros, page);
+            resultados=response.content;
+            lastPage = response.totalPages -1;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;

@@ -14,6 +14,7 @@
 	import FilePicker, { getImageFileDimensions } from "$lib/components/FilePicker.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import type DTOMotivoCalificacion from "$lib/dtos/motivoCalificacion/DTOMotivoCalificacion";
 
 	$: errorPermiso = false;
 	$: errorVisible = false;
@@ -35,12 +36,15 @@
 		id: id,
 		url: "",
 		nombre: "",
-		fechaBaja: null
+		fechaBaja: null,
+		motivos: []
 	};
 
 	let listo = false;
 
 	let icono: File | null = null;
+	let motivosExistentes: DTOMotivoCalificacion[] = [];
+	let motivosNuevos: DTOMotivoCalificacion[] = [];
 
 	onMount(async () => {
 		if (get(token) === "") {
@@ -49,7 +53,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionDisciplinas")) {
+		if (!userPermisos.includes("AdministracionParametros")) {
 			errorPermiso = true;
 			return;
 		}
@@ -60,6 +64,7 @@
             data.id = original.id;
             data.url = original.url;
 			data.nombre = original.nombre;
+			motivosExistentes = original.motivos;
         }catch(e){
             if(e instanceof HttpError){
                 error = e.message;
@@ -153,8 +158,20 @@
 		reader.readAsDataURL(icono);
 	}
 
+	function agregarMotivo() {
+		motivosNuevos = [...motivosNuevos, { id: 0, nombre: "" }];
+	}
+
+	function eliminarMotivoExistente(index: number) {
+		motivosExistentes = motivosExistentes.filter((_, i) => i !== index);
+	}
+
+	function eliminarMotivoNuevo(index: number) {
+		motivosNuevos = motivosNuevos.filter((_, i) => i !== index);
+	}
+
 	async function guardar() {
-		
+		data.motivos = [...motivosExistentes, ...motivosNuevos];
 		try {
 			await CalificacionService.modificarTipoCalificacion(data);
             exitoVisible = true;
@@ -204,6 +221,36 @@
 				showFileName={false}
 			/>
 			<Warning text={errorTamanoImagenIcono} visible={errorTamanoImagenIconoVisible}/>
+
+			<div class="flex gap-2 items-center">
+				<h2 class="text-m">Motivos</h2>
+				<Button icon="/icons/plus.svg" action={agregarMotivo}></Button>
+			</div>
+
+			{#each motivosExistentes as motivo, i}
+				<div class="flex gap-2 items-center">
+					<TextField 
+						label="Motivo {i + 1}" 
+						bind:value={motivosExistentes[i].nombre} 
+						classes="flex-1" 
+						disabled={true}
+						max={100}
+					/>
+					<Button icon="/icons/cross.svg" action={() => eliminarMotivoExistente(i)}></Button>
+				</div>
+			{/each}
+
+			{#each motivosNuevos as motivo, i}
+				<div class="flex gap-2 items-center">
+					<TextField 
+						label="Motivo {motivosExistentes.length + i + 1}" 
+						bind:value={motivosNuevos[i].nombre} 
+						classes="flex-1" 
+						max={100}
+					/>
+					<Button icon="/icons/cross.svg" action={() => eliminarMotivoNuevo(i)}></Button>
+				</div>
+			{/each}
         </div>
 		{/if}
     </div>

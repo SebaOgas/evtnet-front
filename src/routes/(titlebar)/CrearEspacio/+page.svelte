@@ -70,7 +70,6 @@
     let disciplinasSeleccionadas : Map<number, string> = new Map<number, string>();
     let documentacionFiles: File[] = [];
     let basesYCondicionesFile: File | null = null;
-    let tooltipVisible = false;
     let requiereAprobacionEventos = false;
 
     function cerrar() {
@@ -277,12 +276,6 @@
                 <FilePicker bind:files={documentacionFiles} multiple label="" />
                 <Button classes="text-xs info_documentacion min-w-[30px] font-bold">i</Button> 
                 <Warning text="La documentación es obligatoria" visible={warningDocumentacionVisible}/>
-                <!-- <Button classes="px-4 h-10 text-xs" action={() => tooltipVisible = !tooltipVisible}> i </Button>
-                {#if tooltipVisible}
-                <div class="absolute left-12 top-10 bg-gray-800 text-white text-xs rounded px-2 py-1 shadow z-50">
-                    Aquí debe subir toda la documentación que acredite que es el dueño o que cuenta con el permiso de uso o alquiler del espacio
-                </div>
-                {/if} -->
             </div>          
             <div class="flex gap-2 relative md:flex-row items-center">                
                 <span class="md:items-center gap-2  mt-3 mb-2">Bases y Condiciones</span>

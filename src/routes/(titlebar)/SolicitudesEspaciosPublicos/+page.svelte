@@ -150,7 +150,9 @@
         }
 
         try {
-			resultados = await SolicitudEspacioService.buscarSolicitudesEspaciosPublicos(filtros);
+			let response = await SolicitudEspacioService.buscarSolicitudesEspaciosPublicos(filtros, page);
+            resultados=response.content;
+            lastPage = response.totalPages -1;
 		} catch (e) {
 			if (e instanceof HttpError) {
 				errorGenerico = e.message;
