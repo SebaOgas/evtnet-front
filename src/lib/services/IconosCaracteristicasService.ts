@@ -2,6 +2,7 @@ import type DTOCaracteristica from "$lib/dtos/espacios/DTOCaracteristica";
 import type DTOAltaIconoCaracteristica from "$lib/dtos/iconoscaracteristicas/DTOAltaIconoCaracteristica";
 import type DTOIconoCaracteristica from "$lib/dtos/iconoscaracteristicas/DTOIconoCaracteristica";
 import type DTOModificarIconoCaracteristica from "$lib/dtos/iconoscaracteristicas/DTOModificarIconoCaracteristica";
+import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
 
 
@@ -63,10 +64,17 @@ export const IconosCaracteristicasService = {
             };
         });
     },
-    obtenerIconosCaracteristicas: async () => {
-        let response  = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerIconosCaracteristicas", false, null);
-        let data=response.content as DTOIconoCaracteristica[];
-        return data.map(iconoObj => {
+    obtenerIconosCaracteristicas: async (page:number, vigentes:boolean, dadasDeBaja:boolean) => {
+        /**let args = new Map<string, string>();
+                    args.set("page", `${page}`);
+                    let response :Page<DTODisciplina[]> = await request(HttpRequestType.PUT, "disciplinas/buscarDisciplinas", true, args, JSON.stringify(filtros));
+                    return response; */
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+        args.set("vigentes", `${vigentes}`);
+        args.set("dadasDeBaja", `${dadasDeBaja}`);
+        let response:Page<DTOIconoCaracteristica[]>  = await request(HttpRequestType.GET, "iconosCaracteristicas/obtenerIconosCaracteristicas", false, args);
+        response.content.map(iconoObj => {
             const byteCharacters = atob(iconoObj.url);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
@@ -80,6 +88,7 @@ export const IconosCaracteristicasService = {
             iconoObj.url = url;
             return iconoObj;
         });
+        return response;
     },
     bajaIconoCaracteristica: async (idIcono: number) => {
         let args = new Map<string, string>();
@@ -109,5 +118,11 @@ export const IconosCaracteristicasService = {
     },
     altaIconoCaracteristica: async (icono: DTOAltaIconoCaracteristica) => {
             await request(HttpRequestType.POST, "iconosCaracteristicas/alta", true, null, JSON.stringify(icono));
+    },
+    restaurarIconoCaracteristica: async (idIcono: number) => {
+        let args = new Map<string, string>();
+        args.set("id", `${idIcono}`);
+        await request(HttpRequestType.PUT, "iconosCaracteristicas/restaurar", true, args);
+        return;
     },
 }

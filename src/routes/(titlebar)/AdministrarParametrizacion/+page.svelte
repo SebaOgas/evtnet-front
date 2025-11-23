@@ -19,6 +19,7 @@
 
     let page = 0;
     let lastPage = 0;
+    $: page, buscar();
     
 
     let listo = false;
@@ -47,7 +48,9 @@
 
     async function buscar() {
         try {
-			resultados = await ParametroService.obtenerListaParametros();
+			let response = await ParametroService.obtenerListaParametros(page);
+            resultados = response.content as DTOParametro[];
+            lastPage = response.totalPages - 1;
 
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -84,19 +87,22 @@
 	<div class="p-2 text-xs flex flex-col gap-2 overflow-y-auto grow">
 		<h1 class="text-m flex gap-2 justify-start items-center">
             <span>Parametrización</span>
-            <Button icon="/icons/plus.svg" action={() => goto("/AdministrarParametrizacion/Nuevo")}></Button>
+            <Button classes="text-xs info_parametrizacion min-w-[30px] font-bold">i</Button> 
+            <!-- <Button icon="/icons/plus.svg" action={() => goto("/AdministrarParametrizacion/Nuevo")}></Button> -->
         </h1>
 
         {#if listo}
-            <Table cols={["Nombre", "Valor", "Acciones"]}>
+            <Table cols={["ID", "Nombre", "Descripción", "Valor", "Acciones"]}>
                 {#each resultados as d}
                     <tr>
-                        <td>{d.nombre}</td>
-                        <td>{d.valor}</td>
-                        <td>
+                        <td class="w-[10%]">{d.identificador}</td>
+                        <td class="w-[20%]">{d.nombre}</td>
+                        <td class="w-[40%]">{d.descripcion}</td>
+                        <td class="w-[20%]">{d.valor}</td>
+                        <td class="w-[10%]">
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarParametrizacion/${d.id}`)}></Button>
-                                <Button icon="/icons/trash.svg" action={() => {parametroBaja = d.id; popupBaja = true}}></Button>
+                                <!-- <Button icon="/icons/trash.svg" action={() => {parametroBaja = d.id; popupBaja = true}}></Button> -->
                             </div>
                         </td>
                     </tr>
