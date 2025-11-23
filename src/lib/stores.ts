@@ -2,6 +2,7 @@ import { writable, type Writable } from "svelte/store";
 import { browser } from '$app/environment';
 import type DTOPreferenciaPago from "./dtos/usuarios/DTOPreferenciaPago";
 import type DTOPago from "./dtos/usuarios/DTOPago";
+import type DTOPagoCompleto from "./dtos/usuarios/DTOPagoCompleto";
 
 function createPersistentStore(key : string, initialValue : any) {
   
@@ -67,4 +68,4 @@ export const user : Writable<{
 
 
 export const preferences : Writable<DTOPreferenciaPago[]> = createPersistentStore('preferences', []);
-export const actionPago: Writable<((data: DTOPago[]) => void) | null> = writable(null);
+export const pagoCompleto : Writable<DTOPagoCompleto | null> = createPersistentStore('pagoCompleto', null);
