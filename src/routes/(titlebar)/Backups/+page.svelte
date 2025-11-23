@@ -3,6 +3,7 @@
 	import { base } from "$app/paths";
 	import Button from "$lib/components/Button.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
+	import PageControl from "$lib/components/PageControl.svelte";
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import Table from "$lib/components/Table.svelte";
@@ -28,6 +29,10 @@
     $: errorGenerico = ""
 	$: errorGenericoVisible = false
 
+	let page = 0;
+    let lastPage = 0;
+    $: page, load();
+
 
     let backups : DTOBackup[] = []
 
@@ -46,12 +51,27 @@
 
 	async function load() {
 		try {
-            backups = await BackupsService.obtenerBackups();
+            let response = await BackupsService.obtenerBackups(page);
+			backups=response.content
+			lastPage = response.totalPages - 1;
 			programacion = await BackupsService.obtenerProgramacion();
         } catch (e) {
             if (e instanceof HttpError) {
 				errorGenerico = e.message;
 				errorGenericoVisible = true;
+				if(e.message.includes("No hay copias programadas")){
+					programacion = {
+						frecuencia: {
+							meses: 0,
+							dias: 1,
+							horas: 0
+						},
+						fechaHoraInicio: new Date(),
+						copiasIncrementalesPorCompleta: 2,
+						copiasAnterioresAConservar: 3
+					};
+				}
+				
 			} 
         }
 	}
@@ -209,9 +229,16 @@
 		</Table>
 
 	</div>
+	<div class="flex gap-2 h-fit p-2 justify-end items-center">
+        <PageControl bind:page={page} lastPage={lastPage}/>
+    </div>
 </div>
 
-<Popup bind:visible={popupManualVisible} title="Realizar Copia de Seguridad Manual" fitW fitH>
+<Popup bind:visible={popupManualVisible} fitW fitH>
+	<h1 class="text-m flex gap-2 justify-start items-center">
+		<span>Realizar Copia de Seguridad Manual</span>
+		<Button classes="text-xs info_copiaManual min-w-[30px] font-bold">i</Button>
+	</h1>
 	<DatePicker time label="Fecha y hora:" minDate={new Date()} bind:value={fechaCopiaManual} classes="[&_.calendars-container]:!static"/>
 	<div>Se realizará una copia de seguridad completa.</div>
 	<div class="flex justify-center items-center gap-2 w-full">
@@ -265,7 +292,11 @@
 
 
 
-<Popup bind:visible={popupAutomaticaVisible} title="Realizar Copia de Seguridad Manual" fitW fitH>
+<Popup bind:visible={popupAutomaticaVisible} fitW fitH>
+	<h1 class="text-m flex gap-2 justify-start items-center">
+		<span>Programa Copia de Seguridad Automática</span>
+		<Button classes="text-xs info_copiaAutomatica min-w-[30px] font-bold">i</Button>
+	</h1>
 	<div class="flex flex-col gap-2 md:max-w-[600px] mb-4">
 		{#if programacion !== null}
 		<div class="flex flex-wrap gap-2 justify-start items-center w-full">
