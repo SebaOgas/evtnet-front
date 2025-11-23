@@ -13,10 +13,15 @@
     const parametros = [
         { nombre: "Disciplinas", ruta: "/AdministrarDisciplinas" },
         { nombre: "Icono característica", ruta: "/AdministrarIconoCaracteristica" },
+        { nombre: "Modo de Evento", ruta: "/AdministrarModosEvento" },
         { nombre: "Comision por Inscripcion", ruta: "/AdministrarComisionInscripcion" },
         { nombre: "Comision por Organizacion", ruta: "/AdministrarComisionOrganizacion" },
         { nombre: "Parametrización", ruta: "/AdministrarParametrizacion" },
         { nombre: "Tipo Calificación", ruta: "/AdministrarTipoCalificacion" },
+        { nombre: "Motivo de Calificación", ruta: "/AdministrarMotivoCalificacion" },
+        { nombre: "Estado Denuncia Evento", ruta: "/AdministrarEstadoDenunciaEvento" },
+        { nombre: "Estado Solicitud Espacio Publico", ruta: "/AdministrarEstadoSolicitudEspacioPublico" },
+        { nombre: "Medio de Pago", ruta: "/AdministrarMedioPago" },
         { nombre: "Administrar Roles", ruta: "/AdministrarRoles" },
         { nombre: "Imágenes de Mascota", ruta: "/AdministrarImagenesMascota" },
         { nombre: "Instancias de Mascota", ruta: "/AdministrarInstanciasMascota" }

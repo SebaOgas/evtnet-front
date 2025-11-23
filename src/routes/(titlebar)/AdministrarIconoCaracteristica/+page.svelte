@@ -12,32 +12,24 @@
 	import type DTOIconoCaracteristica from "$lib/dtos/iconoscaracteristicas/DTOIconoCaracteristica";
 	import { IconosCaracteristicasService } from "$lib/services/IconosCaracteristicasService";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
-	import CheckBox from "$lib/components/CheckBox.svelte";
 
 
     $: errorPermiso = false;
     $: errorGenerico = "";
     $: errorGenericoVisible = false;
-    $: vigentes = true;
-    $: dadasDeBaja = true;
 
     let page = 0;
     let lastPage = 0;
-    $: page, buscar();
-    $: vigentes, dadasDeBaja, buscar();
+    
 
     let listo = false;
 
     let resultados=[] as DTOIconoCaracteristica[];
 
     let iconoCaracteristicaBaja: number | null = null;
-    let iconoCaracteristicaAlta: number | null = null;
 
     $: popupBaja = iconoCaracteristicaBaja !== null;
     let exitoBaja = false;
-
-    $: popupAlta = iconoCaracteristicaAlta !== null;
-    let exitoAlta = false;
 
     onMount(() => {
         if (get(token) === "") {
@@ -57,9 +49,7 @@
     async function buscar() {
         
         try {
-			let response = await IconosCaracteristicasService.obtenerIconosCaracteristicas(page, vigentes, dadasDeBaja);
-            resultados = response.content;
-            lastPage = response.totalPages - 1;
+			resultados = await IconosCaracteristicasService.obtenerIconosCaracteristicas();
             
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -90,28 +80,6 @@
 
     }
 
-    
-    async function alta() {
-        if (iconoCaracteristicaAlta === null) {
-            errorGenerico = "No se pudo identificar al icono a dar de alta";
-            errorGenericoVisible = true;
-            return;
-        }
-
-        try {
-			await IconosCaracteristicasService.restaurarIconoCaracteristica(iconoCaracteristicaAlta);
-            buscar();
-            iconoCaracteristicaAlta = null;
-            exitoAlta = true;
-		} catch (e) {
-			if (e instanceof HttpError) {
-				errorGenerico = e.message;
-				errorGenericoVisible = true;
-			}
-		}
-
-    }
-
 </script>
 
 <div id="content">
@@ -122,13 +90,9 @@
         </h1>
 
         {#if listo}
-            <div class="flex flex-row gap-2 items-center">
-                <CheckBox bind:checked={vigentes}>Vigentes</CheckBox>
-                <CheckBox bind:checked={dadasDeBaja}>Dados de baja</CheckBox>
-            </div>
             <Table cols={["Ícono", "Alta", "Baja", "Acciones"]}>
                 {#each resultados as d}
-                    <tr class="{d.fechaBaja ? 'text-gray-400' : ''}">
+                    <tr>
                         <td>
                             <div class="flex justify-center">
                                 <img src="{d.url}" alt="Ícono" class="w-12 h-12" />
@@ -140,7 +104,6 @@
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarIconoCaracteristica/${d.id}`)}></Button>
                                 {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {iconoCaracteristicaBaja = d.id; popupBaja = true}}></Button>{/if}
-                                {#if d.fechaBaja}<Button icon="/icons/check.png" action={() => {iconoCaracteristicaAlta = d.id; popupAlta = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>
@@ -167,21 +130,6 @@
 	Ícono dado de baja exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
-	</div>
-</Popup>
-
-<Popup bind:visible={popupAlta} fitH fitW>
-	¿Está seguro de que desea restaurar a este ícono?
-	<div class="flex justify-center items-center gap-2 w-full">
-		<Button action={() => {popupAlta = false}}>Cancelar</Button>
-		<Button action={alta}>Confirmar</Button>
-	</div>
-</Popup>
-
-<Popup bind:visible={exitoAlta} fitH fitW>
-	Ícono restaurado exitosamente
-	<div class="flex justify-center items-center gap-2 w-full">
-		<Button action={() => {exitoAlta = false}}>Aceptar</Button>
 	</div>
 </Popup>
 

@@ -12,18 +12,14 @@
 	import type DTOTipoCalificacion from "$lib/dtos/tipoCalificacion/DTOTipoCalificacion.ts";
 	import { CalificacionService } from "$lib/services/CalificacionService";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
-	import CheckBox from "$lib/components/CheckBox.svelte";
 
 
     $: errorPermiso = false;
     $: errorGenerico = "";
     $: errorGenericoVisible = false;
-    $: vigentes = true;
-    $: dadasDeBaja = true;
 
     let page = 0;
     let lastPage = 0;
-    $: page, vigentes, dadasDeBaja,  buscar();
     
 
     let listo = false;
@@ -35,18 +31,13 @@
     $: popupBaja = TipoCalificacionBaja !== null;
     let exitoBaja = false;
 
-    let TipoCalificacionAlta: number | null = null;
-
-    $: popupAlta = TipoCalificacionAlta !== null;
-    let exitoAlta = false;
-
     onMount(() => {
         if (get(token) === "") {
 			goto("/");
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionParametros")) {
+		if (!userPermisos.includes("AdministracionTiposCalificacion")) {
 			errorPermiso = true;
 			return;
 		}
@@ -58,9 +49,7 @@
     async function buscar() {
         
         try {
-			let response = await CalificacionService.obtenerListaTiposCalificacion(page, vigentes, dadasDeBaja);
-            resultados = response.content as DTOTipoCalificacion[];
-            lastPage = response.totalPages -1;
+			resultados = await CalificacionService.obtenerListaTiposCalificacion();
             
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -91,27 +80,6 @@
 
     }
 
-    async function alta() {
-        if (TipoCalificacionAlta === null) {
-            errorGenerico = "No se pudo identificar al tipo de calificación a dar de alta";
-            errorGenericoVisible = true;
-            return;
-        }
-
-        try {
-			await CalificacionService.restaurarTipoCalificacion(TipoCalificacionAlta);
-            buscar();
-            TipoCalificacionAlta = null;
-            exitoAlta = true;
-		} catch (e) {
-			if (e instanceof HttpError) {
-				errorGenerico = e.message;
-				errorGenericoVisible = true;
-			}
-		}
-
-    }
-
 </script>
 
 <div id="content">
@@ -119,30 +87,22 @@
 		<h1 class="text-m flex gap-2 justify-start items-center">
             <span>Tipo de calificación</span>
             <Button icon="/icons/plus.svg" action={() => goto("/AdministrarTipoCalificacion/Nuevo")}></Button>
-            <Button classes="text-xs info_tipoCalificacion min-w-[30px] font-bold">i</Button> 
         </h1>
 
         {#if listo}
-            <div class="flex flex-row gap-2 items-center">
-                <CheckBox bind:checked={vigentes}>Vigentes</CheckBox>
-                <CheckBox bind:checked={dadasDeBaja}>Dados de baja</CheckBox>
-            </div>
-            <Table cols={["Nombre", "Imagen", "Alta", "Baja", "Acciones"]}>
+            <Table cols={["Nombre", "Imagen", "Acciones"]}>
                 {#each resultados as d}
-                    <tr class="{d.fechaBaja ? 'text-gray-400' : ''}">
+                    <tr>
                         <td>{d.nombre}</td>
                         <td>
                             <div class="flex justify-center">
                                 <img src="{d.url}" alt="Ícono" class="w-12 h-12" />
                             </div>
-                        </td>  
-                        <td>{d.fechaAlta ? new Date(d.fechaAlta).toLocaleDateString() : ""}</td>
-                        <td>{d.fechaBaja ? new Date(d.fechaBaja).toLocaleDateString() : ""}</td>
+                        </td>                        
                         <td>
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarTipoCalificacion/${d.id}`)}></Button>
                                 {#if !d.fechaBaja}<Button icon="/icons/trash.svg" action={() => {TipoCalificacionBaja = d.id; popupBaja = true}}></Button>{/if}
-                                {#if d.fechaBaja}<Button icon="/icons/check.png" action={() => {TipoCalificacionAlta = d.id; popupAlta = true}}></Button>{/if}
                             </div>
                         </td>
                     </tr>
@@ -169,21 +129,6 @@
 	Tipo de calificación dado de baja exitosamente
 	<div class="flex justify-center items-center gap-2 w-full">
 		<Button action={() => {exitoBaja = false}}>Aceptar</Button>
-	</div>
-</Popup>
-
-<Popup bind:visible={popupAlta} fitH fitW>
-	¿Está seguro de que desea restaurar a este ícono?
-	<div class="flex justify-center items-center gap-2 w-full">
-		<Button action={() => {popupAlta = false}}>Cancelar</Button>
-		<Button action={alta}>Confirmar</Button>
-	</div>
-</Popup>
-
-<Popup bind:visible={exitoAlta} fitH fitW>
-	Ícono restaurado exitosamente
-	<div class="flex justify-center items-center gap-2 w-full">
-		<Button action={() => {exitoAlta = false}}>Aceptar</Button>
 	</div>
 </Popup>
 

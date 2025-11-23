@@ -36,7 +36,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionParametros")) {
+		if (!userPermisos.includes("AdministracionMotivoCalificacion")) {
 			errorPermiso = true;
 			return;
 		}

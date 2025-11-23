@@ -4,7 +4,6 @@ import type DTOCrearSolicitudEspacio from "$lib/dtos/espacios/DTOCrearSolicitudE
 import type DTOEspacioPrivadoCompleto from "$lib/dtos/espacios/DTOEspacioPrivadoCompleto";
 import type DTOResultadoBusquedaSEP from "$lib/dtos/espacios/DTOResultadoBusquedaSEP";
 import type DTOSolicitudEPCompleta from "$lib/dtos/espacios/DTOSolicitudEPCompleta";
-import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
 
 export const SolicitudEspacioService = {
@@ -14,10 +13,8 @@ export const SolicitudEspacioService = {
 
         return response;
     },
-    buscarSolicitudesEspaciosPublicos: async (data: DTOBusquedaSEP, page:number) => {
-        let args = new Map<string, string>();
-        args.set("page", `${page}`);
-        let response : Page<DTOResultadoBusquedaSEP[]> = await request(HttpRequestType.PUT, "solicitudEspacio/buscarSolicitudesEspaciosPublicos", false, args, JSON.stringify(data));
+    buscarSolicitudesEspaciosPublicos: async (data: DTOBusquedaSEP) => {
+        let response : DTOResultadoBusquedaSEP[] = await request(HttpRequestType.PUT, "solicitudEspacio/buscarSolicitudesEspaciosPublicos", false, null, JSON.stringify(data));
         return response;
     },
     obtenerEstadosSEP: async () => {
@@ -68,10 +65,8 @@ export const SolicitudEspacioService = {
         args.set("idEspacio", `${idEspacio}`);
         await request(HttpRequestType.PUT, "solicitudEspacio/vincularEspacioASolicitud", true, args);
     },
-    buscarSolicitudesEspaciosPrivados: async (data: DTOBusquedaSEP, page:number) => {
-        let args = new Map<string, string>();
-        args.set("page", `${page}`);
-        let response : Page<DTOResultadoBusquedaSEP[]> = await request(HttpRequestType.PUT, "solicitudEspacio/buscarSolicitudesEspaciosPrivados", false, args, JSON.stringify(data));
+    buscarSolicitudesEspaciosPrivados: async (data: DTOBusquedaSEP) => {
+        let response : DTOResultadoBusquedaSEP[] = await request(HttpRequestType.PUT, "solicitudEspacio/buscarSolicitudesEspaciosPrivados", false, null, JSON.stringify(data));
         return response;
     },
     obtenerEstadosSEPrivados: async () => {
