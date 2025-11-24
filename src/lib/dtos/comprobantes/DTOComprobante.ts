@@ -12,8 +12,7 @@ export default interface DTOComprobante {
     cobro: {
         nombre: string,
         apellido: string,
-        dni: number,
-        cbu: string
+        dni: string
     }
     montoTotalBruto: number,
     comision: number,

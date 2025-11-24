@@ -67,7 +67,7 @@
 		disciplinas: [],
 		precio: 0,
 		maxParticipantes: 2,
-		pago: null
+		pagos: []
 	};
 
 	$: permitirSeleccionarModoOrganizacion = true;
@@ -321,7 +321,9 @@
 
 		try {
 			let preferencias = await EventosService.pagarCreacionEvento(data);
-			startPopupPago(crearEvento, preferencias);
+			startPopupPago(data, "eventos/crearEvento", `/MisEventos`, [preferencias]);
+			
+			//startPopupPago(crearEvento, preferencias);
 		} catch (e) {
 			if (e instanceof HttpError) {
 				if (e.code === 900) {
@@ -345,7 +347,7 @@
 		data.horarioId = selectedHorarioId !== null ? selectedHorarioId : -1;
 
 		if (datosPago.length > 0 )
-			data.pago = datosPago[0];
+			data.pagos = datosPago;
 
 		try {
 			eventoId = await EventosService.crearEvento(data);

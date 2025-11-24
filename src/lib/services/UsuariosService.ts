@@ -11,6 +11,7 @@ import type DTOGruposUsuario from "$lib/dtos/usuarios/DTOGruposUsuario";
 import type DTOInteraccionesUsuario from "$lib/dtos/usuarios/DTOInteraccionesUsuario";
 import type DTOModificarRol from "$lib/dtos/usuarios/DTOModificarRol";
 import type DTOModificarUsuario from "$lib/dtos/usuarios/DTOModificarUsuario";
+import type DTOPago from "$lib/dtos/usuarios/DTOPago";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
@@ -308,5 +309,9 @@ export const UsuariosService = {
         args.set("state", `${state}`);
         
         await request(HttpRequestType.GET, "usuarios/obtenerCredencialesMP", true, args);
+    },
+
+    cancelarPagoIncompleto: async (pagos: DTOPago[]) => {
+        await request(HttpRequestType.DELETE, "usuarios/cancelarPagoIncompleto", true, null, JSON.stringify(pagos));
     }
 }

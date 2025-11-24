@@ -65,10 +65,10 @@
             <span class="self-end">{comprobante.formaDePago}</span>
         </div>
         <div class="flex justify-between items-center">
-            <span>Pagó: {comprobante.pago.apellido}, {comprobante.pago.nombre} (DNI N.°: {comprobante.pago.dni}, CBU: {comprobante.pago.cbu})</span>
+            <span>Pagó: {comprobante.pago.apellido}, {comprobante.pago.nombre} (DNI N.°: {comprobante.pago.dni})</span>
         </div>
         <div class="flex justify-between items-center">
-            <span>Cobró: {comprobante.cobro.apellido}, {comprobante.cobro.nombre} (DNI N.°: {comprobante.cobro.dni}, CBU: {comprobante.cobro.cbu})</span>
+            <span>Cobró: {comprobante.cobro.apellido}, {comprobante.cobro.nombre} (DNI N.°: {comprobante.cobro.dni})</span>
         </div>
         <div class="flex justify-between items-center">
             <span>Total bruto:</span>

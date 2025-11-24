@@ -17,8 +17,11 @@ export const ComprobantesService = {
 		let args = new Map<string, string>();
 		args.set("numero", `${numero}`);
 
-		let response = await request(HttpRequestType.GET, "comprobantes/obtenerArchivo", true, args);
+		let response = await request(HttpRequestType.GET, "comprobantes/obtenerArchivo", true, args);		
 
+		let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(response.content);
+		/*
         const bytes = new Uint8Array(response.content.length);
     
         for (let i = 0; i < response.content.length; i++) {
@@ -27,7 +30,7 @@ export const ComprobantesService = {
         
         let urlCreator = window.URL || window.webkitURL;
         let url = urlCreator.createObjectURL(new Blob([bytes], {type: response.contentType}));
-
+		*/
         return url;
   	},
 

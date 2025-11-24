@@ -22,5 +22,5 @@ export default interface DTOCrearEvento {
     maxParticipantes: number
 
     //Para cuando ya se la va a generar
-    pago: DTOPago | null
+    pagos: DTOPago[]
 }

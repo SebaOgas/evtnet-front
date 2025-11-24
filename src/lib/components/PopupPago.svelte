@@ -24,6 +24,7 @@
     import { pagoCompleto, preferences } from "$lib/stores";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+	import { UsuariosService } from "$lib/services/UsuariosService";
 
     let preferences_local: DTOPreferenciaPago[] = [];
     let errorGenericoVisible = false;
@@ -89,11 +90,21 @@
         await goto(`/Pago?payment_id=-1&status=approved&external_reference=&preference_id=${p.preference_id}`);
     }
 
+    $: redir = "";
+    $: cancelado = false;
+
     async function cancel() {
+        const pc = get(pagoCompleto);
+        if (pc === null) return;
+
+        await UsuariosService.cancelarPagoIncompleto(pc.pagos);
+
         preferences.set([]);
         pagoCompleto.set(null);
+
+        redir = pc.redir;
+        cancelado = true;
         buttonsRendered = false;
-        await goto("?");
     }
 </script>
 
@@ -124,9 +135,9 @@
                         </div>
                     </div>
                     
-                    <div class="flex w-full justify-center">
+                    <!--<div class="flex w-full justify-center">
                         <Button classes="text-xs" action={() => simularPago(p)}>Simular Pago</Button>
-                    </div>
+                    </div>-->
                 {:else}
                     <div class="text-center text-s">Pago realizado</div>
                 {/if}
@@ -135,10 +146,19 @@
     </div>
 
     <div class="mt-2 flex w-full flex-col items-center justify-center gap-2">
-        <Button action={cancel}>Cancelar</Button>
+        {#if preferences_local.filter(p => !p.completada).length > 0}
+            <Button action={cancel}>Cancelar</Button>
+        {/if}
     </div>
 </Popup>
 
 <PopupError bind:visible={errorGenericoVisible}>
     {errorGenerico}
 </PopupError>
+
+<Popup title="Pago Cancelado" bind:visible={cancelado} fitH={true} fitW={true}>
+    <p>Su pago ha sido cancelado. Se efectuarán los reembolsos correspondientes.</p>
+    <div class="flex justify-center items-center w-full">
+        <Button action={() => {cancelado = !cancelado; goto(redir);}}>Aceptar</Button>
+    </div>
+</Popup>
