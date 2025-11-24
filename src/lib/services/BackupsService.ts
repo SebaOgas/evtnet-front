@@ -1,10 +1,13 @@
 import type DTOBackup from "$lib/dtos/backups/DTOBackup";
 import type DTOProgramacionBackupsAutomaticos from "$lib/dtos/backups/DTOProgramacionBackupsAutomaticos";
+import type Page from "$lib/request/Page";
 import { HttpRequestType, request } from "$lib/request/request";
 
 export const BackupsService={
-    obtenerBackups: async () => {
-        let response : DTOBackup[]= await request(HttpRequestType.GET, "backups/obtenerBackups", true);
+    obtenerBackups: async (page:number) => {
+        let args = new Map<string, string>();
+        args.set("page", `${page}`);
+        let response : Page<DTOBackup[]>= await request(HttpRequestType.GET, "backups/obtenerBackups", true, args);
         return response;
     },
 
