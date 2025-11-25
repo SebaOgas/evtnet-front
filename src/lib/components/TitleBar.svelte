@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterNavigate, goto } from "$app/navigation";
 	import { UsuariosService } from "$lib/services/UsuariosService";
-	import { permisos, token, username, user } from "$lib/stores";
+	import { permisos, token, username, user, vinculadoMP } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
@@ -34,6 +34,8 @@
         token.set("");
         permisos.set([]);
         username.set("");
+        vinculadoMP.set(false);
+        user.set(null);
         goto("/");
     }
 

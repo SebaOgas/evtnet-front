@@ -415,6 +415,7 @@
 
 	// Check if user can edit refund ranges (is organizer)
 	$: puedeEditarRangos = datosOriginales !== null && datosOriginales.organizadorEvento === true;
+	$: puedeGestionarAdmins = datosOriginales !== null && datosOriginales.organizadorEvento === true;
 	$: puedeCancelarEvento = datosOriginales !== null && datosOriginales.organizadorEvento === true;
 	// Check if user can leave admin (is not organizer)
 	$: puedeDejarAdmin = datosOriginales !== null && datosOriginales.organizadorEvento !== true && datosOriginales.administradorEvento === true;
@@ -623,7 +624,7 @@
 		<Button action={() => goto(`/Evento/${id}`)}>Atrás</Button>
 		<Button action={guardarEvento}>Guardar</Button>
 		<Button action={() => goto(`/Evento/${id}/Inscripciones`)}>Administrar inscripciones</Button>
-		{#if puedeEditarRangos}
+		{#if puedeGestionarAdmins}
 			<Button action={() => goto(`/Evento/${id}/GestionarAdministradores`)}>Gestionar administradores</Button>
 		{/if}
 		{#if puedeDejarAdmin}

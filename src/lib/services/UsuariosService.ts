@@ -21,7 +21,7 @@ import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import type DTOUsuarioCompleto from "$lib/dtos/usuarios/DTOUsuarioCompleto";
 import type Page from "$lib/request/Page";
 import {HttpRequestType, request } from "$lib/request/request";
-import { permisos, token, user, username } from "$lib/stores";
+import { permisos, token, user, username, vinculadoMP } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -37,6 +37,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -48,6 +49,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -62,6 +64,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -96,6 +99,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 

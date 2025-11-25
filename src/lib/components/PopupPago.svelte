@@ -21,10 +21,11 @@
     import Button from "./Button.svelte";
     import type DTOPreferenciaPago from "$lib/dtos/usuarios/DTOPreferenciaPago";
     import PopupError from "./PopupError.svelte";
-    import { pagoCompleto, preferences } from "$lib/stores";
+    import { debugPagos, pagoCompleto, preferences } from "$lib/stores";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { HttpError, HttpRequestType, request } from "$lib/request/request";
 
     let preferences_local: DTOPreferenciaPago[] = [];
     let errorGenericoVisible = false;
@@ -46,6 +47,7 @@
 
     async function renderButtons() {
         if (buttonsRendered) return;
+        if (get(debugPagos)) return;
         
         // Small delay to ensure DOM is ready
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -87,7 +89,7 @@
     }
 
     async function simularPago(p: DTOPreferenciaPago) {
-        await goto(`/Pago?payment_id=-1&status=approved&external_reference=&preference_id=${p.preference_id}`);
+        await goto(`/Pago?payment_id=-1&status=approved&external_reference=${p.concepto}&preference_id=${p.preference_id}`);
     }
 
     $: redir = "";
@@ -97,13 +99,42 @@
         const pc = get(pagoCompleto);
         if (pc === null) return;
 
-        await UsuariosService.cancelarPagoIncompleto(pc.pagos);
+        //await UsuariosService.cancelarPagoIncompleto(pc.pagos);
+
+        if (preferences_local.filter(p => p.completada).length === 0) {
+
+            try {
+                await request(HttpRequestType.POST, pc.endpoint + "/cancelar", true, null, JSON.stringify({
+                    ...pc.data,
+                    pagos: pc.pagos
+                }));
+            } catch (e) {
+                if (e instanceof HttpError) {
+                    errorGenerico = e.message;
+                    errorGenericoVisible = true;
+                }
+                
+                return;
+            }
+
+        }
 
         preferences.set([]);
         pagoCompleto.set(null);
 
         redir = pc.redir;
         cancelado = true;
+        buttonsRendered = false;
+    }
+
+    function aceptar() {
+        const pc = get(pagoCompleto);
+        if (pc === null) return;
+
+        preferences.set([]);
+        pagoCompleto.set(null);
+
+        redir = pc.redir;
         buttonsRendered = false;
     }
 </script>
@@ -129,15 +160,17 @@
                     <span>${(p.montoBruto * (1 + p.comision)).toFixed(2).replace('.', ',')}</span>
                 </div>
                 {#if !p.completada}
-                    <div class="flex justify-center">
-                        <div class="w-full md:max-w-[300px]">
-                            <div id="boton_pago_{p.preference_id}"></div>
+                    {#if !get(debugPagos)}
+                        <div class="flex justify-center">
+                            <div class="w-full md:max-w-[300px]">
+                                <div id="boton_pago_{p.preference_id}"></div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!--<div class="flex w-full justify-center">
-                        <Button classes="text-xs" action={() => simularPago(p)}>Simular Pago</Button>
-                    </div>-->
+                    {:else}
+                        <div class="flex w-full justify-center">
+                            <Button classes="text-xs" action={() => simularPago(p)}>Simular Pago</Button>
+                        </div>
+                    {/if}
                 {:else}
                     <div class="text-center text-s">Pago realizado</div>
                 {/if}
@@ -148,6 +181,8 @@
     <div class="mt-2 flex w-full flex-col items-center justify-center gap-2">
         {#if preferences_local.filter(p => !p.completada).length > 0}
             <Button action={cancel}>Cancelar</Button>
+        {:else}
+            <Button action={aceptar}>Aceptar</Button>
         {/if}
     </div>
 </Popup>

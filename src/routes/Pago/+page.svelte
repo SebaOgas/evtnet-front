@@ -6,7 +6,7 @@
     import { pagoCompleto, preferences } from "$lib/stores";
     import { goto } from "$app/navigation";
     import { get } from "svelte/store";
-    import { HttpRequestType, request } from "$lib/request/request";
+    import { HttpError, HttpRequestType, request } from "$lib/request/request";
     import PopupError from "$lib/components/PopupError.svelte";
 	import type DTOPagoCompleto from "$lib/dtos/usuarios/DTOPagoCompleto";
 	import Popup from "$lib/components/Popup.svelte";
@@ -16,13 +16,14 @@
     let errorGenerico = "";
     let processing = false;
 
-    onMount(async () => {
+    onMount(async () => {        
         await procesarPago();
     });
 
     async function procesarPago() {
         if (processing) return;
         processing = true;
+        
 
         try {
             const pc = get(pagoCompleto);
@@ -45,12 +46,21 @@
                 preference_id: searchParams.get("preference_id") ?? ""
             };
 
+            console.log(data);
+            
+
             // Si no hay parámetros de pago, redirigir
             if (data.paymentId === -1 && data.status === "" && data.external_reference === "") {
                 await goto("/");
                 return;
             }
 
+            
+            if (Number.isNaN(data.paymentId) || data.status === "null") {
+                goto(pc.redir);
+                return;
+            }
+            
             // Marcar el pago como completado
             let pagoEncontrado = false;
             preferences_local.forEach((p, ix, arr) => {
@@ -113,9 +123,10 @@
             redir = pc.redir;
             exito = true;
         } catch (error) {
-            console.error(error);
-            errorGenericoVisible = true;
-            errorGenerico = "Error al procesar la transacción en el servidor.";
+            if (error instanceof HttpError) {
+                errorGenerico = error.message;
+                errorGenericoVisible = true;
+            }
         }
     }
 </script>

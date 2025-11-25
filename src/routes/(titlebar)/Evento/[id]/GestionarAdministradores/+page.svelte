@@ -7,10 +7,7 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupBusquedaUsuarios from "$lib/components/PopupBusquedaUsuarios.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import TextField from "$lib/components/TextField.svelte";
-	import Warning from "$lib/components/Warning.svelte";
 	import type DTOAdministradores from "$lib/dtos/eventos/DTOAdministradores";
-	import type DTOInscripcion from "$lib/dtos/eventos/DTOInscripcion";
 	import type DTOBusquedaUsuario from "$lib/dtos/usuarios/DTOBusquedaUsuario";
 	import { HttpError } from "$lib/request/request";
 	import { EventosService } from "$lib/services/EventosService";

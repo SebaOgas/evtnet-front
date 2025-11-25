@@ -19,7 +19,8 @@
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { EventosService } from "$lib/services/EventosService";
-	import { permisos, token } from "$lib/stores";
+	import { UsuariosService } from "$lib/services/UsuariosService";
+	import { permisos, token, vinculadoMP } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
@@ -482,6 +483,11 @@
 	}
 
 	$: checkedBases = false;
+
+	async function vincularMP() {
+        let link = await UsuariosService.obtenerLinkIntegrarMP();        
+        window.location.href = link;
+    }
 </script>
 
 <Popup
@@ -714,6 +720,15 @@
 <PopupError bind:visible={errorVisible}>
 	{error}
 </PopupError>
+
+{#if !get(vinculadoMP)}
+    <Popup title="Vincular a Mercado Pago" visible={true} fitH fitW>
+        <p>Su cuenta de evtnet no está vinculada a Mercado Pago. Esto es necesario para que pueda cobrar por las inscripciones a sus eventos.</p>
+        <div class="flex justify-center items-center w-full">
+            <Button action={vincularMP}>Vincular</Button>
+        </div>
+    </Popup>
+{/if}
 
 <Popup bind:visible={popupExitoVisible} fitH fitW>
 	Evento registrado exitosamente
