@@ -53,11 +53,11 @@
                     </div>
                     <div class="flex flex-row justify-between items-baseline gap-2 w-full pl-4">
                         <span>Fecha</span>
-                        <span>{formatDate(c.fechaHoraEmision)}</span>
+                        <span>{formatDate(c.fechaHoraEmision, true)}</span>
                     </div>
                     <div class="flex flex-row justify-between items-baseline gap-2 w-full pl-4">
                         <span>Total</span>
-                        <span>${c.numero.toFixed(2).replaceAll(".", ",")}</span>
+                        <span>${c.monto.toFixed(2).replaceAll(".", ",")}</span>
                     </div>
                 </div>
             {/each}

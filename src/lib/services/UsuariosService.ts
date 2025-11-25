@@ -11,6 +11,7 @@ import type DTOGruposUsuario from "$lib/dtos/usuarios/DTOGruposUsuario";
 import type DTOInteraccionesUsuario from "$lib/dtos/usuarios/DTOInteraccionesUsuario";
 import type DTOModificarRol from "$lib/dtos/usuarios/DTOModificarRol";
 import type DTOModificarUsuario from "$lib/dtos/usuarios/DTOModificarUsuario";
+import type DTOPago from "$lib/dtos/usuarios/DTOPago";
 import type DTOPerfil from "$lib/dtos/usuarios/DTOPerfil";
 import type DTORegistrarse from "$lib/dtos/usuarios/DTORegistrarse";
 import type DTOResultadoBusquedaUsuario from "$lib/dtos/usuarios/DTOResultadoBusquedaUsuario";
@@ -20,7 +21,7 @@ import type DTOTipoCalificacion from "$lib/dtos/usuarios/DTOTipoCalificacion";
 import type DTOUsuarioCompleto from "$lib/dtos/usuarios/DTOUsuarioCompleto";
 import type Page from "$lib/request/Page";
 import {HttpRequestType, request } from "$lib/request/request";
-import { permisos, token, user, username } from "$lib/stores";
+import { permisos, token, user, username, vinculadoMP } from "$lib/stores";
 
 export const UsuariosService = {
     iniciarSesion: async (
@@ -36,6 +37,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -47,6 +49,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -61,6 +64,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -95,6 +99,7 @@ export const UsuariosService = {
         token.set(response.token);
         permisos.set(response.permisos);
         username.set(response.username);
+        vinculadoMP.set(response.vinculadoMP);
         user.set(response.user);
     },
 
@@ -295,4 +300,22 @@ export const UsuariosService = {
 
         return response;
     },
+
+
+    obtenerLinkIntegrarMP: async () => {
+        let response : string = await request(HttpRequestType.GET, "usuarios/obtenerLinkIntegrarMP", true);
+        return response;
+    },
+
+    obtenerCredencialesMP: async (code: string, state: string) => {
+        let args = new Map<string, string>();
+        args.set("code", `${code}`);
+        args.set("state", `${state}`);
+        
+        await request(HttpRequestType.GET, "usuarios/obtenerCredencialesMP", true, args);
+    },
+
+    cancelarPagoIncompleto: async (pagos: DTOPago[]) => {
+        await request(HttpRequestType.DELETE, "usuarios/cancelarPagoIncompleto", true, null, JSON.stringify(pagos));
+    }
 }

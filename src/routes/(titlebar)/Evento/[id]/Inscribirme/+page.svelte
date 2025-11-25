@@ -117,7 +117,7 @@
 			username: "", // Will be set by backend
 			invitados: invitados,
 			precioInscripcion: calcularPrecioTotal(),
-			datosPago: []
+			pagos: []
 		};
 
 		try {
@@ -128,11 +128,9 @@
 				return;
 			}
 
-			if (response.preferencias.length === 0) {
-				procesarPago([]);
-			} else {		
-				startPopupPago(procesarPago, response.preferencias);
-			}
+			
+			startPopupPago(inscripcionData, "eventos/inscribirse", `/Evento/${id}`, response.preferencias);
+				
 
 		} catch (e) {
 			if (e instanceof HttpError) {
@@ -150,7 +148,7 @@
 			username: "",
 			invitados: invitados,
 			precioInscripcion: calcularPrecioTotal(),
-			datosPago: datosPago
+			pagos: datosPago
 		};
 
 		try {

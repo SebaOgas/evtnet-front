@@ -13,11 +13,12 @@
 	import { HttpError } from "$lib/request/request";
 	import { DisciplinasService } from "$lib/services/DisciplinasService";
 	import { EspaciosService } from "$lib/services/EspaciosService";
-	import { permisos, token, username } from "$lib/stores";
+	import { permisos, token, username, vinculadoMP } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import type { DTOSubespacio } from "$lib/dtos/espacios/DTOCrearEspacio";
 	import CheckBox from "$lib/components/CheckBox.svelte";
+	import { UsuariosService } from "$lib/services/UsuariosService";
 
     let previousPage: string = base;
 
@@ -73,7 +74,6 @@
     let requiereAprobacionEventos = false;
 
     function cerrar() {
-        console.log(disciplinas)
         disciplinasSeleccionadas = disciplinas;
         popupSubespacioVisible = false;
         subespacio = {
@@ -247,6 +247,10 @@
         
     }
 
+    async function vincularMP() {
+        let link = await UsuariosService.obtenerLinkIntegrarMP();        
+        window.location.href = link;
+    }
 
 </script>
 
@@ -360,6 +364,15 @@
         <Button action={() => {goto(`/Espacio/${espacioId}`)}}>Aceptar</Button>
     </div>
 </Popup>
+
+{#if !get(vinculadoMP)}
+    <Popup title="Vincular a Mercado Pago" visible={true} fitH fitW>
+        <p>Su cuenta de evtnet no está vinculada a Mercado Pago. Esto es necesario para que pueda cobrar por los eventos que se organicen en sus espacios.</p>
+        <div class="flex justify-center items-center w-full">
+            <Button action={vincularMP}>Vincular</Button>
+        </div>
+    </Popup>
+{/if}
 
 
 

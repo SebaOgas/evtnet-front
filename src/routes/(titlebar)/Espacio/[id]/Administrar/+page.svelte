@@ -441,7 +441,9 @@
 			<Button action={() => {goto(`/Espacio/${id}/AdministrarImagenes`)}}>Administrar imágenes</Button>
 			<Button action={() => {popupSubEspaciosVisible = true; esCronograma = false}}>Administrar características</Button>
 			{#if !data.esPublico}
-				<Button action={() => {goto(`/Espacio/${id}/GestionarAdministradores`)}}>Gestionar administradores</Button>
+				{#if data.esPropietario}
+					<Button action={() => {goto(`/Espacio/${id}/GestionarAdministradores`)}}>Gestionar administradores</Button>
+				{/if}
 				<Button action={() => {popupConfirmDejarVisible = true}}>Dejar de ser administrador</Button>
 			{/if}
 			{#if data.esPublico}

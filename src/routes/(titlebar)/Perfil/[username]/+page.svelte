@@ -2,7 +2,7 @@
 	import { goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
-	import { token, permisos, username } from "$lib/stores";
+	import { token, permisos, username, vinculadoMP } from "$lib/stores";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
     import { page } from "$app/state"
@@ -62,6 +62,8 @@
         try {
             if (requestedUsername === undefined) return;
             perfil = await UsuariosService.obtenerPerfil(requestedUsername);
+            if (isLoggedInUser && perfil.vinculadoMP !== null) vinculadoMP.set(perfil.vinculadoMP);
+
             urlFotoDePerfil = await UsuariosService.obtenerFotoDePerfil(requestedUsername);
             
             perfil.calificaciones?.forEach(async cal => {
@@ -83,6 +85,11 @@
             }            
         }
     });
+
+    async function vincularMP() {
+        let link = await UsuariosService.obtenerLinkIntegrarMP();        
+        window.location.href = link;
+    }
 </script>
 
 <div id="content">
@@ -130,6 +137,12 @@
                     </div>
                     {/each}
                 </div>
+            </div>
+        {/if}
+
+        {#if isLoggedInUser && !perfil.vinculadoMP}
+            <div class="w-full flex justify-center items-center">
+                <Button action={vincularMP} classes="text-m">Vincular con Mercado Pago</Button>
             </div>
         {/if}
         

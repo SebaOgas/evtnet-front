@@ -183,6 +183,7 @@ export async function request(
         let contentType = response.headers.get("content-type")
         switch (contentType) {
             case "text/plain":
+            case "text/plain;charset=UTF-8":
                 return await response.text()
             case "application/json":
                 return await response.json()
