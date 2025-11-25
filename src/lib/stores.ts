@@ -73,4 +73,4 @@ export const pagoCompleto : Writable<DTOPagoCompleto | null> = createPersistentS
 
 
 
-export const debugPagos : Writable<boolean> = writable(false);
+export const debugPagos : Writable<boolean> = writable(true);
