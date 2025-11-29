@@ -724,7 +724,8 @@
 {#if !get(vinculadoMP)}
     <Popup title="Vincular a Mercado Pago" visible={true} fitH fitW>
         <p>Su cuenta de evtnet no está vinculada a Mercado Pago. Esto es necesario para que pueda cobrar por las inscripciones a sus eventos.</p>
-        <div class="flex justify-center items-center w-full">
+        <div class="flex justify-center items-center w-full gap-2">
+            <Button action={() => goto(`/Espacio/${espacioId}`)}>Cancelar</Button>
             <Button action={vincularMP}>Vincular</Button>
         </div>
     </Popup>

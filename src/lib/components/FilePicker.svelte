@@ -60,10 +60,10 @@
     function openInput() { el.click(); }
 
     $: filename = !multiple
-        ? placeholder
+        ? (file ? file.name : placeholder)
         : files.length > 0 
             ? files.map(f => f.name).join(", ")
-            : "";
+            : placeholder;
 
     function changeFile() {     
         if (el.files !== null && el.files.length > 0) {

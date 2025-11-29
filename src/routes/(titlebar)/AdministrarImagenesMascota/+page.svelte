@@ -105,7 +105,7 @@
         {#if listo}
             <Table cols={["Nombre", "Imagen", "Alta", "Baja", "Acciones"]}>
                 {#each resultados as d}
-                    <tr>
+                    <tr class="{d.fechaBaja ? 'text-gray-400' : ''}">
                         <td>{d.nombre}</td>
                         <td>
                             <div class="flex justify-center">

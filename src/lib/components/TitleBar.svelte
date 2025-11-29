@@ -121,7 +121,7 @@
                 {#if permisosList.includes("AdministracionEspaciosPublicos")}
                     <li><a href="/SolicitudesEspaciosPublicos">Solicitudes de Espacio Público</a></li>
                 {/if}
-                {#if permisosList.includes("AdministracionEspaciosPrivados")}
+                {#if permisosList.includes("AdministracionSolicitudesEspaciosPrivados")}
                     <li><a href="/SolicitudesEspaciosPrivados">Solicitudes de Espacio Privado</a></li>
                 {/if}
             </menu>

@@ -260,7 +260,6 @@
             <TextField label="DNI N.°" bind:value={data.dni} classes="w-full md:w-fit md:grow" validate={validateDNI} min={8} max={9}/>
         </div>
         <DatePicker label="Fecha de nacimiento" bind:value={data.fechaNacimiento} classes="w-full" validate={validateFechaNacimiento}/>
-        <TextField label="CBU/CVU" bind:value={data.cbu} classes="w-full" validate={validateCBU} min={22} max={22}/>
         <FilePicker label="Cambiar foto de perfil" bind:file={fotoDePerfil} accept={[".jpeg",".jpg",".png"]} validate={validateFotoDePerfil} classes=""/>
         <Warning text={errorTamanoFotoDePerfil} visible={errorTamanoFotoDePerfilVisible}/>
     </div>

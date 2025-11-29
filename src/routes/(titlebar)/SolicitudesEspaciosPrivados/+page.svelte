@@ -95,7 +95,7 @@
 		}
 
 		const userPermisos = get(permisos);
-		if (!userPermisos.includes("AdministracionEspaciosPrivados")) {
+		if (!userPermisos.includes("AdministracionSolicitudesEspaciosPrivados")) {
 			errorPermiso = true;
 			return;
 		}
