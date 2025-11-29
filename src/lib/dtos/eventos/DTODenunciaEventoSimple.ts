@@ -6,5 +6,6 @@ export default interface DTODenunciaEventoSimple {
     usernameOrganizador: string,
     estado: string,
     fechaHoraUltimoCambio: Date,
-    fechaHoraIngreso: Date
+    fechaHoraIngreso: Date,
+    permiteCambioEstado: boolean
 }

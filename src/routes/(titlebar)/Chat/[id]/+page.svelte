@@ -120,12 +120,27 @@
 			.replace(urlRegex, '<a href="$1" rel="noopener noreferrer" class="!text-white">$1</a>')
 			.replaceAll("\n", "<br/>");
 	}
+
+	function formatChatUrl(chat: DTOChatResponse | null) {
+		if (chat === null) return "";
+
+        switch(chat.tipo) {
+            case "GRUPAL": return `/Grupo/${chat.grupoId}`;
+            case "DIRECTO": return `/Perfil/${chat.usuarioUsername}`;
+            case "ESPACIO": return `/Espacio/${chat.espacioId}`;
+            case "EVENTO": return `/Evento/${chat.eventoId}`;
+            case "SUPEREVENTO": return `/SuperEvento/${chat.superEventoId}`;
+        }
+		return "";
+    }
 </script>
 
 {#if chat !== null}
 <div id="content">
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div class="text-xs flex flex-col overflow-y-auto grow">
-		<h1 class="text-s bg-light text-white p-2 font-bold">
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<h1 class="text-s bg-light text-white p-2 font-bold" on:click={() => goto(formatChatUrl(chat))}>
 			{#if chat.tipo === "GRUPAL"}
 				Chat: {chat.nombreGrupo}
 			{:else if chat.tipo === "DIRECTO"}

@@ -51,5 +51,6 @@ export default interface DTODenunciaEventoCompleta {
             username: string,
             mail: string
         }[]
-    }
+    },
+    permiteCambioEstado: boolean
 }

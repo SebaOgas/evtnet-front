@@ -327,19 +327,19 @@
                             <Button icon="/icons/arrow-right.svg" 
                                 action={()=>{
                                     switch(ev.tipo) {
-                                        case "Evento":
+                                        case "EVENTO":
                                             redir(`/Evento/${ev.id}`)
                                             return;
-                                        case "Espacio":
+                                        case "ESPACIO":
                                             redir(`/Espacio/${ev.id}`)
                                             return;
-                                        case "SuperEvento":
+                                        case "SUPEREVENTO":
                                             redir(`/SuperEvento/${ev.id}`)
                                             return;
-                                        case "Grupo":
+                                        case "GRUPO":
                                             subGrupo = ev.id;
                                             return;
-                                        case "Directo":
+                                        case "DIRECTO":
                                             if (ev.username === undefined) {
                                                 error = "Se desconoce el usuario; no se pudo lograr la redirección.";
                                                 errorVisible = true;

@@ -152,7 +152,7 @@
         {#if perfil.calificaciones !== null && calificaciones.length === perfil.calificaciones.length}
             <div>
                 <div class="w-full md:w-[50vw] mx-auto mb-4">
-                    Calificación:
+                    Calificación por otros usuarios:
                 </div>
                 <div class="w-full flex flex-wrap gap-2 justify-center">
                     {#each calificaciones as cal}
