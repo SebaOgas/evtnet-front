@@ -13,6 +13,8 @@
 	import type DTOChatResponse from "$lib/dtos/chat/DTOChatResponse";
 	import TextField from "$lib/components/TextField.svelte";
 	import { UsuariosService } from "$lib/services/UsuariosService";
+	import PopupError from "$lib/components/PopupError.svelte";
+	import { HttpError } from "$lib/request/request";
 
 	const id: number = parseInt(page.params.id === undefined ? "0" : page.params.id);
 
@@ -31,7 +33,6 @@
 		stompClient = Stomp.over(socket);
 
 		stompClient.connect({Authorization: `Bearer ${jwtToken}`}, function (frame: string) {
-			console.log("Conectado: " + frame);
 			if (stompClient === null) return;
 
 			stompClient.subscribe("/topic/chat/" + id, function (msg) {
@@ -48,9 +49,7 @@
 		}
 	}
 
-	function sendMessage() {
-        console.log(nuevoMensaje);
-        
+	function sendMessage() {        
 		if (!nuevoMensaje.trim() || stompClient === null) return;
 
 		stompClient.send(
@@ -84,14 +83,24 @@
 		}
 	}
 
+	$: errorVisible = false;
+	$: error = "";
+
 	onMount(async () => {
 		if (get(token) === "") {
 			goto("/");
 			return;
 		}
-		chat = await ChatsService.obtenerDetalle(id);
-		mensajes = await ChatsService.obtenerMensajesDeChat(id);
-		connect();
+		try {
+			chat = await ChatsService.obtenerDetalle(id);
+			mensajes = await ChatsService.obtenerMensajesDeChat(id);
+			connect();
+		} catch (e) {
+			if (e instanceof HttpError) {
+				error = e.message;
+				errorVisible = true;
+			}
+		}
 	});
 
 	onDestroy(() => {
@@ -105,8 +114,11 @@
 		return div.innerHTML;
 	}
 	
-	function formatMessage(text:string) {
-		return escapeHtml(text).replaceAll("\n", "<br/>");
+	function formatMessage(text: string) {
+		const urlRegex = /(https?:\/\/[^\s<]+)/g;
+		return escapeHtml(text)
+			.replace(urlRegex, '<a href="$1" rel="noopener noreferrer" class="!text-white">$1</a>')
+			.replaceAll("\n", "<br/>");
 	}
 </script>
 
@@ -116,13 +128,13 @@
 		<h1 class="text-s bg-light text-white p-2 font-bold">
 			{#if chat.tipo === "GRUPAL"}
 				Chat: {chat.nombreGrupo}
-			{:else if chat.tipo = "DIRECTO"}
+			{:else if chat.tipo === "DIRECTO"}
 				Chat con {chat.usuarioNombre} {chat.usuarioApellido}
-			{:else if chat.tipo = "ESPACIO"}
+			{:else if chat.tipo ==="ESPACIO"}
 				Chat: {chat.nombreEspacio}
-			{:else if chat.tipo = "EVENTO"}
+			{:else if chat.tipo === "EVENTO"}
 				Chat: {chat.nombreEvento}
-			{:else if chat.tipo = "SUPEREVENTO"}
+			{:else if chat.tipo === "SUPEREVENTO"}
 				Chat: {chat.nombreSuperEvento}
 			{/if}
 		</h1>
@@ -148,6 +160,7 @@
 					<div class="flex w-full">
 						<div class="bg-dark h-4 grow-0 aspect-square rounded-bl-full"></div>
 						<div class="flex gap-2 bg-dark rounded-lg rounded-tl-none">
+							{#if chat.tipo !== "DIRECTO"}
 							<div class="flex-shrink-0">
 								<div class="rounded-full flex items-center justify-center">
 									{#await UsuariosService.obtenerFotoDePerfil(mensaje.username)}
@@ -161,11 +174,14 @@
 									{/await}
 								</div>
 							</div>
+							{/if}
 							<div>
 								<div class="text-white 2 max-w-full p-1">
+									{#if chat.tipo !== "DIRECTO"}
 									<p class="text-orange font-semibold text-xs">
 										{mensaje.usuarioNombre} {mensaje.usuarioApellido}
 									</p>
+									{/if}
 									<p class="break-words text-xs">{@html formatMessage(mensaje.texto)}</p>
 									<p class="text-[10px] text-white text-right">
 										{formatDate(mensaje.fechaHora, true)}
@@ -200,3 +216,7 @@
 	</div>
 </div>
 {/if}
+
+<PopupError bind:visible={errorVisible}>
+	{error}
+</PopupError>

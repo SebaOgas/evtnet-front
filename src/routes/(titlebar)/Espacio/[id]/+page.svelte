@@ -17,6 +17,7 @@
 	import Carousel from "$lib/components/Carousel.svelte";
 	import type { DTOSubespacioDetalle } from "$lib/dtos/espacios/DTOEspacio";
 	import type { DTOEspacioEstado } from "$lib/dtos/espacios/DTOEspacioEditar";
+	import PopupComparticion from "$lib/components/PopupComparticion.svelte";
 
     let previousPage : string = base ;
 
@@ -97,6 +98,8 @@
             }            
         }
     });
+
+    $: compartir = false;
 </script>
 
 <div id="content">
@@ -192,14 +195,16 @@
         {#if data.estado!.id==2 || data.estado!.id==3}
             <Button action={() => {goto(`/CrearEvento/${id}`)}}>Organizar evento</Button>
             <Button action={() => {goto(`${page.url.pathname}/Resenas`)}}>Ver reseñas</Button>
-            <Button icon="/icons/share.svg"></Button>   
+            <Button icon="/icons/share.svg" action={() => compartir = true}></Button>   
             
-            {#if data.esAdmin }
-                <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>           
+            {#if data.esAdmin }  
                 <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
             {/if}
         {:else if data.estado!.id==4 && data.esAdmin }
             <Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
+        {/if}
+        {#if data.esAdmin}
+            <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>  
         {/if}
     </div>
 </div>  
@@ -211,3 +216,5 @@
 <PopupError bind:visible={errorGenericoVisible}>
     {errorGenerico}
 </PopupError>
+
+<PopupComparticion bind:visible={compartir} mensaje={`¡Mirá el espacio ${data.nombre}!`} mensajeExito="Espacio compartido"/>
