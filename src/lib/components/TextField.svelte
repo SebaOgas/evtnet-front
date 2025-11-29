@@ -31,6 +31,9 @@
     //Para password
     export let isPassword : boolean = false;
 
+    //Para wrap
+    export let wrap : boolean = false;
+
     $: valido = true;
     $: razonInvalidez = "";
 
@@ -53,8 +56,12 @@
     }
 
     function onKeyDown(event: KeyboardEvent) {
-        if (event.key === "Enter")
+        if (event.key === "Enter" && !useTextarea)
             action();
+        else if (event.key === "Enter" && useTextarea && !event.shiftKey) {
+            event.preventDefault();
+            action();
+        }
     }
 
     $: (() => {
@@ -63,6 +70,8 @@
         }
     })()
 
+    $: useTextarea = multiline || (!multiline && wrap);
+
 </script>
 
 
@@ -70,20 +79,27 @@
     {#if label !== null && label !== ""}
         <span>{label}</span>
     {/if}
-    {#if !multiline}
-        <input {disabled} type="{!isPassword ? "text" : "password"}" on:focusout={validar} on:keydown={onKeyDown} on:keyup={change} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg h-fit" >
+    {#if !useTextarea}
+        <input {disabled} type="{!isPassword ? "text" : "password"}" on:focusout={validar} on:keydown={onKeyDown} on:keyup={change} placeholder={placeholder} bind:value minlength={min} maxlength={max} class="border border-solid rounded-lg h-fit">
     {:else}
-        <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={rows} class="border border-solid rounded-lg w-full" style="resize:{resize?"vertical":"none"}"></textarea>
+        <textarea {disabled} on:focusout={validar} on:keydown={onKeyDown} on:keyup={change} placeholder={placeholder} bind:value minlength={min} maxlength={max} rows={multiline ? rows : 1} class="border border-solid rounded-lg w-full {wrap ? 'auto-resize' : ''}" style="resize:{multiline && resize ? "vertical" : "none"}; {wrap ? `max-height: calc(1.5em * ${rows} + 8px); overflow-y: auto;` : ''}"></textarea>
     {/if}
     <Warning visible={!valido} text={razonInvalidez} classes="h-fit"/>
     
 </label>
 
 <style>
-    input, textarea {
+    input,     textarea {
         padding-left: 4px;
         padding-right: 4px;
         flex: 1 1 auto;
+    }
+
+    .auto-resize {
+        field-sizing: content;
+        min-height: 1.5em;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     input:disabled, textarea:disabled {
@@ -92,4 +108,3 @@
         cursor: not-allowed;
     }
 </style>
-

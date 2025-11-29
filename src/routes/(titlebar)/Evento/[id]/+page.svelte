@@ -16,6 +16,7 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import PopupCalificarUsuario from "$lib/components/PopupCalificarUsuario.svelte";
 	import TextField from "$lib/components/TextField.svelte";
+	import PopupComparticion from "$lib/components/PopupComparticion.svelte";
 
 	let previousPage: string = base;
 
@@ -182,6 +183,8 @@
 
 	let popupCalificarVisible = false;
 	let usernameCalificar : string | null = null;
+
+	$: compartir = false;
 </script>
 
 <div id="content">
@@ -329,7 +332,7 @@
 			{/if}
 		{/if}
 
-        <Button icon="/icons/share.svg"></Button>
+        <Button icon="/icons/share.svg" action={() => compartir = true}></Button>
 
         {#if data.administrador || data.inscripto}
 			<Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${data.idChat}`)}}></Button>
@@ -400,3 +403,5 @@
 </Popup>
 
 <PopupCalificarUsuario bind:visible={popupCalificarVisible} bind:username={usernameCalificar}/>
+
+<PopupComparticion bind:visible={compartir} mensaje={`¡Mirá el evento ${data.nombre}!`} mensajeExito="Evento compartido"/>

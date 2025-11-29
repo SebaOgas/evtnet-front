@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
 	import Button from "$lib/components/Button.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import { token, permisos, username, vinculadoMP } from "$lib/stores";
@@ -10,6 +10,9 @@
 	import { UsuariosService } from "$lib/services/UsuariosService";
 	import { HttpError } from "$lib/request/request";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
+	import { ChatsService } from "$lib/services/ChatsService";
+	import type DTOChatResponse from "$lib/dtos/chat/DTOChatResponse";
+	import { base } from "$app/paths";
 
     $: errorPermiso = false;
 
@@ -90,6 +93,28 @@
         let link = await UsuariosService.obtenerLinkIntegrarMP();        
         window.location.href = link;
     }
+
+    async function openChat() {
+        if (perfil.idChat === null) {
+            try {
+                let chat : DTOChatResponse = await ChatsService.crearChatDirecto(perfil.username);
+                goto(`/Chat/${chat.id}`);
+            } catch (e) {
+                if (e instanceof HttpError) {
+                    errorGenericoVisible = true;
+                    errorGenerico = e.message;
+                }
+            }
+        } else {
+            goto(`/Chat/${perfil.idChat}`);
+        }
+    }
+
+    let previousPage: string = base;
+
+	afterNavigate(({from}) => {
+		previousPage = from?.url.pathname || previousPage
+	});
 </script>
 
 <div id="content">
@@ -154,6 +179,7 @@
             {/if}
 
             <Button action={() => {goto("/MisComprobantes")}}>Ver Mis Comprobantes</Button>
+            <Button action={() => {goto("/ChatsDirectos")}}>Ver Chats Directos</Button>
             
             {#if permisosList.includes("ModificacionPerfilPropio")}
                 <Button action={() => {goto("/EditarPerfil")}}>Editar Perfil</Button>
@@ -161,7 +187,8 @@
 
             <Button action={() => {goto("/RestablecerContrasena")}}>Cambiar Contraseña</Button>
         {:else}
-            <Button icon="/icons/chat.svg" action={() => {goto(`/Chat/${perfil.idChat}`)}}></Button>
+            <Button icon="/icons/chat.svg" action={openChat}></Button>
+            <Button action={() => goto(previousPage)}>Atrás</Button>
         {/if}
     </div>
 </div>  

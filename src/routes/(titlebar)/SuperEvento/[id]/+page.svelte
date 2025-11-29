@@ -5,6 +5,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import { formatDate } from "$lib/components/DatePicker.svelte";
 	import MapDisplay from "$lib/components/MapDisplay.svelte";
+	import PopupComparticion from "$lib/components/PopupComparticion.svelte";
 	import PopupError from "$lib/components/PopupError.svelte";
 	import Warning from "$lib/components/Warning.svelte";
 	import type DTOSuperEvento from "$lib/dtos/eventos/DTOSuperEvento";
@@ -52,7 +53,7 @@
         }
     })
 
-
+    $: compartir = false;
 </script>
 
 
@@ -103,8 +104,11 @@
 			<Button action={() => {goto(`${page.url.pathname}/Administrar`)}}>Administrar</Button>
         {/if}
 
-        <Button icon="/icons/share.svg"></Button>
-	</div>
+        <Button icon="/icons/share.svg" action={() => compartir = true}></Button>
+        {#if superevento?.esAdministrador}
+            <Button classes="aspect-square" icon="/icons/chat.svg" action={() => goto(`/Chat/${superevento?.chatId}`)}></Button>
+        {/if}
+    </div>
 </div>
 
 
@@ -115,3 +119,5 @@
 <PopupError bind:visible={errorGenericoVisible}>
 	{errorGenerico}
 </PopupError>
+
+<PopupComparticion bind:visible={compartir} mensaje={`¡Mirá el superevento ${superevento?.nombre}!`} mensajeExito="Superevento compartido"/>
