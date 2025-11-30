@@ -227,7 +227,9 @@
                         <td>
                             <div class="flex gap-2 justify-center items-center">
                                 <Button icon="/icons/view.svg" action={() => mostrarDenuncia(d)}></Button>
-                                <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarDenunciasEventos/${d.idDenuncia}`)}></Button>
+                                {#if d.permiteCambioEstado}
+                                    <Button icon="/icons/edit.svg" action={() => goto(`/AdministrarDenunciasEventos/${d.idDenuncia}`)}></Button>
+                                {/if}
                             </div>
                         </td>
                     </tr>
@@ -295,7 +297,9 @@
         </div>
         <div class="w-full flex justify-center items-center gap-2">
             <Button action={() => popupDetalleVisible = false}>Atrás</Button>
-            <Button action={() => goto(`/AdministrarDenunciasEventos/${denuncia?.id}`)}>Realizar cambio de estado</Button>
+            {#if denuncia.permiteCambioEstado}
+                <Button action={() => goto(`/AdministrarDenunciasEventos/${denuncia?.id}`)}>Realizar cambio de estado</Button>
+            {/if}
         </div>
     </Popup>
 {/if}

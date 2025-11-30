@@ -67,14 +67,17 @@
     $: warningCapacidadMaximaVisible = false;
     let title = "Nuevo subespacio";  
 
-    let disciplinas : Map<number, string> = new Map<number, string>();
-    let disciplinasSeleccionadas : Map<number, string> = new Map<number, string>();
+    // Global map to store all discipline names for display
+    let todasLasDisciplinas : Map<number, string> = new Map<number, string>();
+    // Temporary map for current subespacio being edited
+    let disciplinasDelSubespacio : Map<number, string> = new Map<number, string>();
+    
     let documentacionFiles: File[] = [];
     let basesYCondicionesFile: File | null = null;
     let requiereAprobacionEventos = false;
 
     function cerrar() {
-        disciplinasSeleccionadas = disciplinas;
+        disciplinasDelSubespacio = new Map();
         popupSubespacioVisible = false;
         subespacio = {
             nombre: "",
@@ -85,6 +88,7 @@
         warningNombreVisible = false;
         warningCapacidadMaximaVisible = false;
         confirmarVisible = false;
+        indiceSubespacio = -1;
     }
 
     function confirmar() {
@@ -101,27 +105,28 @@
         }
 
         if (subespacio.nombre !== "" && subespacio.capacidadMaxima !== null && subespacio.capacidadMaxima !== undefined && subespacio.capacidadMaxima >= 1) {
-            // Recolectar los ids de las disciplinas seleccionadas
+            // Collect IDs from selected disciplines
             const disciplinasIds: number[] = [];
-            disciplinas.forEach((_, key) => disciplinasIds.push(key));
+            disciplinasDelSubespacio.forEach((_, key) => disciplinasIds.push(key));
 
-            // Asignar el array de ids al subespacio (reemplaza cualquier valor previo)
+            // Assign to subespacio
             subespacio.disciplinas = [...disciplinasIds];
 
+            // Merge to global map for display
+            disciplinasDelSubespacio.forEach((value, key) => {
+                todasLasDisciplinas.set(key, value);
+            });
+            todasLasDisciplinas = new Map(todasLasDisciplinas);
+
             if (indiceSubespacio !== -1 && indiceSubespacio >= 0 && indiceSubespacio < data.subEspacios.length) {
-                // Actualizar subespacio existente
                 data.subEspacios[indiceSubespacio] = { ...subespacio };
             } else {
-                // Agregar nuevo subespacio
                 data.subEspacios.push({ ...subespacio });
             }
 
-            // Forzar reactividad
             data.subEspacios = [...data.subEspacios];
 
-            // Limpiar estado del popup
             cerrar();
-            indiceSubespacio = -1;
         }
     }
 
@@ -302,13 +307,31 @@
                         <div>Disciplinas: {
                             se.disciplinas
                                 .map((d) => {
-                                    const nombre = disciplinas.get(d);
+                                    const nombre = todasLasDisciplinas.get(d);
                                     return nombre ? nombre : d;
                                 })
                                 .filter(Boolean)
                                 .join(", ")
                         }</div>
-                        <Button icon="/icons/edit.svg" classes="ml-1" action={() => {popupSubespacioVisible = true; indiceSubespacio=i; subespacio={...se}}}></Button>
+                        <div class="flex gap-2 ">
+                            <Button icon="/icons/edit.svg" classes="ml-1" action={() => {
+                                popupSubespacioVisible = true; 
+                                indiceSubespacio = i; 
+                                subespacio = {...se};
+                                // Load existing disciplines for this subespacio
+                                disciplinasDelSubespacio = new Map();
+                                se.disciplinas.forEach(id => {
+                                    const nombre = todasLasDisciplinas.get(id);
+                                    if (nombre) {
+                                        disciplinasDelSubespacio.set(id, nombre);
+                                    }
+                                });
+                            }}></Button>
+                            <Button icon="/icons/cross.svg" classes="ml-1" action={() => {
+                                data.subEspacios.splice(i, 1);
+                                data.subEspacios = [...data.subEspacios];
+                            }}></Button>    
+                        </div>                    
                     </div>
                 {/each}
             </div>           
@@ -316,7 +339,10 @@
     </div>
 
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
-        <Button classes="text-s" action={() => { popupSubespacioVisible = true; }}>Agregar Subespacio</Button>
+        <Button classes="text-s" action={() => {
+            disciplinasDelSubespacio = new Map();
+            popupSubespacioVisible = true;
+        }}>Agregar Subespacio</Button>
         
     </div>
     <div class="flex gap-2 h-fit p-2 justify-center items-center">
@@ -338,7 +364,7 @@
             <Button action={() => {popupDisciplinasVisible = !popupDisciplinasVisible}}>Seleccionar</Button>
         </div>
         <div class="commaList">
-            {#each disciplinas as d}
+            {#each disciplinasDelSubespacio as d}
                 <span>{d[1]}</span>
             {/each}
         </div>
@@ -352,7 +378,7 @@
 </Popup>
 
 
-<PopupSeleccion title="Selección múltiple" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinas} classes="z-40"/>
+<PopupSeleccion title="Selección múltiple" multiple={true} bind:visible={popupDisciplinasVisible} searchFunction={buscarDisciplinas} bind:selected={disciplinasDelSubespacio} classes="z-40"/>
 
 <PopupError bind:visible={errorVisible}>
     {error}
@@ -368,16 +394,9 @@
 {#if !get(vinculadoMP)}
     <Popup title="Vincular a Mercado Pago" visible={true} fitH fitW>
         <p>Su cuenta de evtnet no está vinculada a Mercado Pago. Esto es necesario para que pueda cobrar por los eventos que se organicen en sus espacios.</p>
-        <div class="flex justify-center items-center w-full">
+        <div class="flex justify-center items-center w-full gap-2">
+            <Button action={() => goto(previousPage)}>Cancelar</Button>
             <Button action={vincularMP}>Vincular</Button>
         </div>
     </Popup>
 {/if}
-
-
-
-<style>
-    .commaList>*:not(:last-child)::after {
-        content: ", ";
-    }
-</style>

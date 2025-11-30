@@ -433,7 +433,7 @@
 	<div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
 		<Button action={cancelar}>Cancelar</Button>
 		<Button action={guardarEspacio}>Guardar</Button>
-		{#if data.estado!.id==2 || data.estado!.id==3}
+		{#if data.estado?.nombre === "Habilitado" || data.estado?.nombre === "Oculto"}
 			{#if !data.esPublico}
 				<Button action={() => {popupSubEspaciosVisible = true; esCronograma = true}}>Administrar cronograma</Button>
 			{/if}

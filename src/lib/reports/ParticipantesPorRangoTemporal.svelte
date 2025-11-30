@@ -209,7 +209,7 @@
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Fechas:" classes="md:min-w-md" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <DatePicker time range label="Fechas:" classes="md:min-w-md" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
         <div class="flex flex-row gap-2 justify-start items-baseline flex-wrap">
             <span>Rango:</span>
             <span class="flex gap-2 items-baseline w-fit">

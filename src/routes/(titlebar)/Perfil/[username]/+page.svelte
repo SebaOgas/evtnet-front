@@ -127,7 +127,7 @@
         {/if}
         </h1>
         <div class="flex justify-center items-center">
-            <img src={urlFotoDePerfil} alt="Foto de perfil" class="h-[200px] w-[200px]">
+            <img src={urlFotoDePerfil} alt="Foto de perfil" class="h-[200px] w-[200px] rounded-full">
         </div>
         <div class="text-center flex flex-col">
             <span>{perfil.nombre} {perfil.apellido}</span>
@@ -152,7 +152,7 @@
         {#if perfil.calificaciones !== null && calificaciones.length === perfil.calificaciones.length}
             <div>
                 <div class="w-full md:w-[50vw] mx-auto mb-4">
-                    Calificación:
+                    Calificación por otros usuarios:
                 </div>
                 <div class="w-full flex flex-wrap gap-2 justify-center">
                     {#each calificaciones as cal}

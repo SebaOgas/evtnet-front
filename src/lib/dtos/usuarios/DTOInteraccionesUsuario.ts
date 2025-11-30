@@ -2,7 +2,7 @@ export default interface DTOInteraccionesUsuario {
     interacciones: {
         id: number,
         nombre: string,
-        tipo: "Evento" | "Espacio" | "SuperEvento" | "Grupo" | "Directo",
+        tipo: "EVENTO" | "ESPACIO" | "SUPEREVENTO" | "GRUPO" | "DIRECTO",
         fechaDesde: Date,
         fechaHasta: Date,
         username: string | undefined

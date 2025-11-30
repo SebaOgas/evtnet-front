@@ -37,6 +37,12 @@
                 preferences_local = [preferences_local];
             }
 
+
+            if (preferences_local.length === 0) {
+                await realizarAccionFinal(pc);
+                return;
+            }
+
             const searchParams = $page.url.searchParams;
             
             const data: DTOPago = {
