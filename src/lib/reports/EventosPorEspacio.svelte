@@ -138,7 +138,7 @@
         </span>
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
-    <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+    <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
     <div class="w-full flex justify-end">
         <Button action={generar} disabled={!completo}>Generar reporte</Button>
     </div>

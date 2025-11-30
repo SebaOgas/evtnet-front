@@ -13,6 +13,10 @@
             endpoint: endpoint,
             redir: redir
         });
+
+        if (get(preferences).length === 0) {
+            goto("/Pago");
+        }
     };
 </script>
 

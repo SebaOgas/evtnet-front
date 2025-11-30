@@ -192,7 +192,7 @@
 
     <div class="flex flex-row flex-wrap gap-2 h-fit p-2 justify-center items-center">
         <Button action={() => {goto(`/Espacios`)}}>Atrás</Button>
-        {#if data.estado!.id==2 || data.estado!.id==3}
+        {#if data.estado?.nombre === "Habilitado" || data.estado?.nombre === "Oculto"}
             <Button action={() => {goto(`/CrearEvento/${id}`)}}>Organizar evento</Button>
             <Button action={() => {goto(`${page.url.pathname}/Resenas`)}}>Ver reseñas</Button>
             <Button icon="/icons/share.svg" action={() => compartir = true}></Button>   
