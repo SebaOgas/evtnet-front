@@ -126,6 +126,8 @@
             return;
 		}
 
+        rangos = [];
+
         let functions : {
             dots: {
                 x: number,
@@ -159,6 +161,8 @@
         })
         
         await tick();
+
+        refs.innerHTML = "";
 
         // @ts-ignore
         plotXY(canvas, functions, {
@@ -247,7 +251,7 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Espacio", rangos.map(r => `${formatDate(r.inicio, true)} - ${formatDate(r.fin, true)}`)].flat()}>
+    <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Espacio - Subespacio", rangos.map(r => `${formatDate(r.inicio, true)} - ${formatDate(r.fin, true)}`)].flat()}>
         {#each data.datos as d}
         <tr>
             <td>{d.espacio}</td>

@@ -21,6 +21,7 @@
     let minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 1);
 
     let fechaDesde : Date | null;
     let fechaHasta : Date | null;
@@ -99,6 +100,11 @@
 			}
             return;
 		}
+        registraciones.dots = [];
+        iniciosSesion.dots = [];
+        iniciosSesionRegistraciones.dots = [];
+
+        rangos = [];
 
         data.datos.forEach(r => {
             registraciones.dots.push({
@@ -111,7 +117,7 @@
             })
             iniciosSesionRegistraciones.dots.push({
                 x: ((new Date(r.fin)).getTime()) / 1000000,
-                y: r.iniciosSesion / r.registraciones
+                y: Number.isNaN(r.iniciosSesion / r.registraciones) || !Number.isFinite(r.iniciosSesion / r.registraciones) ? 0 : r.iniciosSesion / r.registraciones
             })
             if (rangos.some(r2 => r2.inicio === r.inicio && r2.fin === r.fin)) return;
 
@@ -128,7 +134,7 @@
     }
 
     let grafico : "r" | "is" | "ris" = "r";
-    function mostrar(g?: "r" | "is" | "ris") {
+    async function mostrar(g?: "r" | "is" | "ris") {
         if (g !== undefined)
             grafico = g;
 
@@ -151,6 +157,8 @@
                 return;
         }        
 
+        await tick();
+
         // @ts-ignore
         plotXY(canvas, [func], {
             height: 500 * 2,
@@ -167,7 +175,7 @@
             },
             offset: {
                 top: 0.1,
-                left: 0.05,
+                left: 0.08,
                 bottom: 0.12,
                 right: 0.1
             },
@@ -250,7 +258,7 @@
             <td>{formatDate(d.fin, true)}</td>
             <td>{d.registraciones.toFixed(0)}</td>
             <td>{d.iniciosSesion.toFixed(0)}</td>
-            <td>{(d.iniciosSesion / d.registraciones).toFixed(2).replaceAll(".", ",")}</td>
+            <td>{Number.isNaN((d.iniciosSesion / d.registraciones)) || !Number.isFinite((d.iniciosSesion / d.registraciones)) ? "-" : (d.iniciosSesion / d.registraciones).toFixed(2).replaceAll(".", ",")}</td>
         </tr>
         {/each}
     </Table>
