@@ -22,6 +22,7 @@
     let minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 1);
 
     let fechaDesde : Date | null;
     let fechaHasta : Date | null;
@@ -97,6 +98,8 @@
             return;
 		}
 
+        rangos = [];
+
         let series: { name: string; values: number[]; color: string; }[] = [];
         let qMedios = data.datos[0].medios.length;
 
@@ -129,6 +132,8 @@
 
 
         await tick();
+
+        refs.innerHTML = "";
 
         // @ts-ignore
         plotBar(canvas, series, rangos.map(r => `${formatDate(r.inicio)} - ${formatDate(r.fin)}`), {

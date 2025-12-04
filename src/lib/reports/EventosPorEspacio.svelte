@@ -153,7 +153,7 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table bind:raw={raw} cols={["Espacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
+    <Table bind:raw={raw} cols={["Espacio - Subespacio", "Desde", "Hasta", "Eventos"]} classes="md:min-h-fit">
         {#each data.datos as d}
         <tr>
             <td>{d.espacio}</td>
