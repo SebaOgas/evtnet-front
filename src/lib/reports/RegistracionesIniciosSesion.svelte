@@ -207,7 +207,7 @@
     let raw : string[][] = [];
 </script>
 
-<div class="flex flex-col gap-2 justify-between">
+<div class="flex flex-col gap-2 justify-between mb-4">
     <div>
         Analizar intervalos de tiempo entre cierto rango de fechas para saber cuántas veces los usuarios iniciaron sesión, se registraron y qué relación hay entre estas dos variables.
     </div>

@@ -65,7 +65,7 @@
 		trs.forEach(tr => {
 			let tds = tr.querySelectorAll("th, td");
 
-			let row = Array.from(tds.values()).map(td => td.innerHTML);
+			let row = Array.from(tds.values()).map(td => td.textContent);
 			raw.push(row);
 		})
 	}

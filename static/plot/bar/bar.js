@@ -26,6 +26,15 @@ const plotBarConfig = {
 }
 
 const plotBar = function(canvas, series = [], labels = [], config = {}){
+
+    function fillTextMultiline(ctx, text, x, y, lineHeight) {
+        const lines = text.split('\n');
+        lines.forEach((line, i) => {
+            ctx.fillText(line, x, y + (i * lineHeight));
+        });
+    }
+
+
     for (const [key, value] of Object.entries(plotBarConfig)) {
         if (config[key] === undefined)
             config[key] = value;
@@ -148,7 +157,8 @@ const plotBar = function(canvas, series = [], labels = [], config = {}){
             pos += config.gap.outer * msf;
 
             ctx.fillStyle = "black";
-            ctx.fillText(l, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2, gh + oy + config.fontSize);
+            fillTextMultiline(ctx, l, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2, gh + oy + config.fontSize, config.fontSize);
+            //ctx.fillText(l, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2, gh + oy + config.fontSize);
 
             series.forEach(s => {
                 ctx.fillStyle = s.color;
@@ -204,7 +214,8 @@ const plotBar = function(canvas, series = [], labels = [], config = {}){
             pos += config.gap.outer * msf;
 
             ctx.fillStyle = "black";
-            ctx.fillText(l, ox - config.fontSize / 4, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2);
+            fillTextMultiline(ctx, l, ox - config.fontSize / 4, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2, config.fontSize);
+            //ctx.fillText(l, ox - config.fontSize / 4, pos + (config.barSize * cs + config.gap.inner * (cs - 1)) * msf / 2);
 
             ctx.textAlign = "left";
             series.forEach(s => {

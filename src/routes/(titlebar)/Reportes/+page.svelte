@@ -28,7 +28,7 @@
 
         if (permisoGeneral) {
             reportes.set("REGISTRACIONES_E_INICIOS_DE_SESION", "Registraciones e inicios de sesión");
-            reportes.set("INGRESOS_POR_TIEMPO_Y_MEDIO", "Ingresos por tiempo y por medio de monetización");
+            reportes.set("INGRESOS_POR_COMISION", "Ingresos por tipo de comisión");
         }
     })
 
@@ -50,7 +50,7 @@
         <ParticipantesPorRangoTemporal/>
     {:else if reporteSeleccionado === "REGISTRACIONES_E_INICIOS_DE_SESION"}
         <RegistracionesIniciosSesion/>
-    {:else if reporteSeleccionado === "INGRESOS_POR_TIEMPO_Y_MEDIO"}
+    {:else if reporteSeleccionado === "INGRESOS_POR_COMISION"}
         <IngresosTiempoMedioMonetizacion/>
     {/if}
 </div>
