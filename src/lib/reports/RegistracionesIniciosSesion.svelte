@@ -168,7 +168,7 @@
             biggerDots: true,
             labelMethod: {
                 x: "marks",
-                y: "marks"
+                y: "gcd"
             },
             marks: {
                 x: rangos.length - 1,

@@ -11,7 +11,9 @@
 	import { HttpError } from "$lib/request/request";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { ReportesService } from "$lib/services/ReportesService";
+	import { user, username } from "$lib/stores";
 	import { onMount, tick } from "svelte";
+	import { get } from "svelte/store";
 
     onMount(() => {
         loadGraph("bar");
@@ -45,8 +47,9 @@
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
 
-    let fechaDesde : Date | null;
-    let fechaHasta : Date | null;
+    let fechaDesde : Date | null = new Date();
+    fechaDesde.setDate(fechaDesde.getDate() - 7);
+    let fechaHasta : Date | null = new Date();
 
     $: completo = espacios.size > 0 && fechaDesde !== null && fechaHasta !== null;
 
@@ -127,6 +130,9 @@
 
 <PopupSeleccion title="Buscar espacios" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW/>
 
+<div>
+    Analizar la cantidad de eventos por espacio y subespacio, y entre qué fechas están organizados.
+</div>
 <div class="flex flex-col gap-2 justify-between">
     <div class="flex flex-col md:flex-row gap-2 md:items-baseline md:justify-between">
         <span>Espacios: 
@@ -138,7 +144,7 @@
         </span>
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
-    <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+    <DatePicker time range label="Generar entre las fechas: " classes="md:min-w-sm" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
     <div class="w-full flex justify-end">
         <Button action={generar} disabled={!completo}>Generar reporte</Button>
     </div>
@@ -166,7 +172,20 @@
 
     <div class="flex flex-col md:flex-row justify-center md:justify-between gap-2 mb-2">
         <p>Reporte generado al {formatDate(data.fechaHoraGeneracion, true)}</p>
-        <Button action={() => exportarCSV(raw, "Cantidad de eventos por espacio")}>Exportar</Button>
+        <Button action={() => 
+            exportarCSV(
+                raw, 
+                "Cantidad de eventos por espacio", 
+                [
+                    "evtnet - Cantidad de eventos por espacio",
+                    `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
+                    `Generado por: ${get(user)?.apellido}, ${get(user)?.nombre} (@${get(username)})`,
+                    `Espacios: ${espacios.values().reduce((acc, curr) => `${acc}, ${curr}`)}`,
+                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                ])
+            }>
+            Exportar
+        </Button>
     </div>
 {/if}
 

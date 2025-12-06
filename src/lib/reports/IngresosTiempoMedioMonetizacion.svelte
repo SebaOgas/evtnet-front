@@ -173,7 +173,7 @@
         Analizar intervalos de tiempo entre cierto rango de fechas para saber cuántos ingresos generó cada tipo de comisión.
     </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Fechas:" classes="md:min-w-md" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <DatePicker time range label="Generar entre las fechas:" classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
         <div class="flex flex-col md:flex-row items-center gap-2">
             <h1 class="text-xxs whitespace-nowrap">Separar en intervalos de</h1>
             <TextField bind:value={cantidad} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>

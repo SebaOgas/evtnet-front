@@ -65,7 +65,7 @@
 		trs.forEach(tr => {
 			let tds = tr.querySelectorAll("th, td");
 
-			let row = Array.from(tds.values()).map(td => td.textContent);
+			let row = Array.from(tds.values()).map(td => [...td.childNodes].filter(n => n.nodeType === 3).reduce((acc, curr) => `${acc} ${curr.nodeValue}`, ""));
 			raw.push(row);
 		})
 	}

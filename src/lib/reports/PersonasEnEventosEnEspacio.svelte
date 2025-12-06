@@ -2,6 +2,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import { loadGraph } from "$lib/components/Plot";
+	import PopupError from "$lib/components/PopupError.svelte";
 	import PopupSeleccion from "$lib/components/PopupSeleccion.svelte";
 	import Table, { exportarCSV } from "$lib/components/Table.svelte";
 	import Warning from "$lib/components/Warning.svelte";
@@ -10,7 +11,9 @@
 	import { HttpError } from "$lib/request/request";
 	import { EspaciosService } from "$lib/services/EspaciosService";
 	import { ReportesService } from "$lib/services/ReportesService";
+	import { user, username } from "$lib/stores";
 	import { onMount, tick } from "svelte";
+	import { get } from "svelte/store";
 
     onMount(() => {
         loadGraph("bar");
@@ -45,8 +48,9 @@
     minDate.setFullYear(minDate.getFullYear() - 100);
     let maxDate = new Date();
 
-    let fechaDesde : Date | null;
-    let fechaHasta : Date | null;
+    let fechaDesde : Date | null = new Date();
+    fechaDesde.setDate(fechaDesde.getDate() - 7);
+    let fechaHasta : Date | null = new Date();
 
     $: completo = espacio !== null && espacio !== undefined && fechaDesde !== null && fechaHasta !== null;
 
@@ -74,7 +78,7 @@
         if (espacio === null || espacio === undefined || fechaDesde === null || fechaHasta === null) return;
         try {
             data = await ReportesService.generarPersonasEnEventosEnEspacio(espacio, fechaDesde, fechaHasta);
-        } catch (e) {
+        } catch (e) {            
 			if (e instanceof HttpError) {
 				error = e.message;
 				errorVisible = true;
@@ -126,13 +130,16 @@
 
 <PopupSeleccion title="Buscar espacio" searchFunction={buscarEspacios} bind:selected={espacios} bind:visible={popupUsuarioVisible} fitH fitW multiple={false}/>
 
+<div>
+    Analizar los eventos y sus participantes en un espacio.
+</div>
 <div class="flex flex-col md:flex-row gap-2 justify-between">
     <div class="flex flex-col md:flex-row gap-2 md:items-baseline">
         <span>Espacio: {espacio !== null && espacio !== undefined ? espacios.get(espacio) : ""}</span>
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
-    <DatePicker time range label="Fechas" classes="md:min-w-sm" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
-    <Button action={generar} disabled={!completo}>Generar reporte</Button>
+    <DatePicker time range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+    <Button action={generar} disabled={!completo} classes="h-fit">Generar reporte</Button>
 </div>
 
 <Warning text="No se encontraron eventos en el rango de fechas indicado." visible={data !== null && data.datos.length === 0}/>
@@ -157,7 +164,23 @@
 
     <div class="flex flex-col md:flex-row justify-center md:justify-between gap-2 mb-2">
         <p>Reporte generado al {formatDate(data.fechaHoraGeneracion, true)}</p>
-        <Button action={() => exportarCSV(raw, "Personas por evento en un espacio")}>Exportar</Button>
+        <Button action={() => 
+            exportarCSV(
+                raw, 
+                "Personas por evento en un espacio", 
+                [
+                    "evtnet - Personas por evento en un espacio",
+                    `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
+                    `Generado por: ${get(user)?.apellido}, ${get(user)?.nombre} (@${get(username)})`,
+                    `Espacio: ${espacio !== null && espacio !== undefined ? espacios.get(espacio) : "No válido"}`,
+                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                ])
+            }>
+            Exportar
+        </Button>
     </div>
 {/if}
 
+<PopupError bind:visible={errorVisible}>
+    {error}
+</PopupError>
