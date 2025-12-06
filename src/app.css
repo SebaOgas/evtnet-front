@@ -12,6 +12,7 @@
 	/*--color-orange: #FF5C00;*/
 
 	/*Tamaños de letra*/
+	--text-xxs: 16px;
 	--text-xs: 18px;
 	--text-s: 20px;
 	--text-m: 26px;

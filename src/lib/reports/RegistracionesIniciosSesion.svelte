@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
+	import ComboBox from "$lib/components/ComboBox.svelte";
 	import DatePicker, { formatDate } from "$lib/components/DatePicker.svelte";
 	import { loadGraph } from "$lib/components/Plot";
 	import PopupError from "$lib/components/PopupError.svelte";
@@ -10,10 +11,23 @@
 	import { HttpError } from "$lib/request/request";
 	import { ReportesService } from "$lib/services/ReportesService";
 	import { onMount, tick } from "svelte";
+    
 
-    onMount(() => {
+    let unidades : Map<number, string> = new Map([
+        [1, "horas"],
+        [24, "días"],
+        [24*30, "meses"],
+        [24*365, "años"]
+    ]);
+    let unidadSeleccionada : number = 24;
+    let cantidad : number | undefined = 1;
+
+    onMount(async () => {
         loadGraph("xy");
     })
+    $: (() => {
+        if (cantidad === undefined) cantidad = 0;
+    })()
 
     $: error = "";
 	$: errorVisible = false;
@@ -23,16 +37,12 @@
     let maxDate = new Date();
     maxDate.setDate(maxDate.getDate() + 1);
 
-    let fechaDesde : Date | null;
-    let fechaHasta : Date | null;
-
-    let anios = 0;
-    let meses = 0;
-    let dias = 0;
-    let horas = 0;    
+    let fechaDesde : Date | null = new Date();
+    fechaDesde.setDate(fechaDesde.getDate() - 7);
+    let fechaHasta : Date | null = new Date(); 
 
     // @ts-ignore
-    $: completo = fechaDesde !== null && fechaHasta !== null && anios >= 0 && meses >= 0 && meses <= 11 && dias >= 0 && dias <= 30 && horas >= 0 && horas <= 23 && anios !== "" && meses !== "" && dias !== "" && horas !== "";
+    $: completo = fechaDesde !== null && fechaHasta !== null && cantidad !== undefined && unidadSeleccionada !== null;
     let textoWarning = ""
     $: (() => {
         if (completo) {
@@ -43,25 +53,14 @@
             textoWarning = "Ingrese el rango de fechas";
             return;
         }
-        if (anios < 0) {
-            textoWarning = "Especifique un número de años de 0 o mayor";
-            return;
-        }
-        if (meses < 0 || meses > 11) {
-            textoWarning = "Especifique un número de meses entre 0 y 11";
-            return;
-        }
-        if (dias < 0 || dias > 30) {
-            textoWarning = "Especifique un número de días entre 0 y 30";
-            return;
-        }
-        if (horas < 0 || horas > 23) {
-            textoWarning = "Especifique un número de horas entre 0 y 23";
-            return;
-        }
         
         textoWarning = "Datos inválidos; verifique los filtros";
     })()
+
+    $: (() => {
+        if (cantidad !== undefined) cantidad = parseInt("" + cantidad);
+        if (cantidad === undefined || Number.isNaN(cantidad) || cantidad <= 0) cantidad = 1;
+    })();
 
     let data : DTOReporteRegistracionesIniciosSesion | null = null;
 
@@ -89,10 +88,12 @@
     };
 
     async function generar() {
-        if (fechaDesde === null || fechaHasta === null || !completo) return;
+        if (fechaDesde === null || fechaHasta === null || cantidad === undefined || !completo) return;
 
+        let horas = unidadSeleccionada * cantidad;
+        
         try {
-            data = await ReportesService.generarRegistracionesIniciosSesion(fechaDesde, fechaHasta, anios, meses, dias, horas);
+            data = await ReportesService.generarRegistracionesIniciosSesion(fechaDesde, fechaHasta, 0, 0, 0, horas);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -108,15 +109,15 @@
 
         data.datos.forEach(r => {
             registraciones.dots.push({
-                x: ((new Date(r.fin)).getTime()) / 1000000,
+                x: ((new Date(r.inicio)).getTime()) / 1000,
                 y: r.registraciones
             })
             iniciosSesion.dots.push({
-                x: ((new Date(r.fin)).getTime()) / 1000000,
+                x: ((new Date(r.inicio)).getTime()) / 1000,
                 y: r.iniciosSesion
             })
             iniciosSesionRegistraciones.dots.push({
-                x: ((new Date(r.fin)).getTime()) / 1000000,
+                x: ((new Date(r.inicio)).getTime()) / 1000,
                 y: Number.isNaN(r.iniciosSesion / r.registraciones) || !Number.isFinite(r.iniciosSesion / r.registraciones) ? 0 : r.iniciosSesion / r.registraciones
             })
             if (rangos.some(r2 => r2.inicio === r.inicio && r2.fin === r.fin)) return;
@@ -161,7 +162,7 @@
 
         // @ts-ignore
         plotXY(canvas, [func], {
-            height: 500 * 2,
+            height: 500,
             width: (rangos.length <= 8 ? 1000 : 1000 + (rangos.length - 8) * 100)*2,
             scaledWidth : rangos.length <= 8 ? 100 : 100 + (rangos.length - 8) * 10,
             biggerDots: true,
@@ -175,14 +176,25 @@
             },
             offset: {
                 top: 0.1,
-                left: 0.08,
-                bottom: 0.12,
-                right: 0.1
+                left: 0.2,
+                bottom: 0.15,
+                right: 0.2
             },
             lineWidth: 6,
-            fontSize: 40,
+            fontSize: 20,
             fontFamily: "Montserrat",
-            xLabelFunction: (l: string) => formatDate(new Date(Number(l)*1000000)),
+            xLabelFunction: (l: string) => {                
+                if (cantidad === undefined) cantidad = 1;
+                
+                let initDate = new Date(Number(l)*1000);
+                let from = formatDate(initDate, true);
+                
+                let endDate = new Date(Number(l)*1000 + cantidad * unidadSeleccionada * 60 * 60 * 1000);               
+                //endDate.setTime(endDate.getTime() + cantidad * unidadSeleccionada);
+                let to = formatDate(endDate, true);   
+                
+                return from + " - \n" + to;
+            },
             precision: {
                 x: 0,
                 y: precY
@@ -196,26 +208,15 @@
 </script>
 
 <div class="flex flex-col gap-2 justify-between">
+    <div>
+        Analizar intervalos de tiempo entre cierto rango de fechas para saber cuántas veces los usuarios iniciaron sesión, se registraron y qué relación hay entre estas dos variables.
+    </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Fechas:" classes="md:min-w-md" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
-        <div class="flex flex-row gap-2 justify-start items-baseline flex-wrap">
-            <span>Rango:</span>
-            <span class="flex gap-2 items-baseline w-fit">
-                <TextField bind:value={anios} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
-                <span>años</span>
-            </span>
-            <span class="flex gap-2 items-baseline w-fit">
-                <TextField bind:value={meses} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
-                <span>meses</span>
-            </span>
-            <span class="flex gap-2 items-baseline w-fit">
-                <TextField bind:value={dias} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
-                <span>días</span>
-            </span>
-            <span class="flex gap-2 items-baseline w-fit">
-                <TextField bind:value={horas} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
-                <span>horas</span>
-            </span>
+        <DatePicker time range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <div class="flex flex-col md:flex-row items-center gap-2">
+            <h1 class="text-xxs whitespace-nowrap">Separar en intervalos de</h1>
+            <TextField bind:value={cantidad} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
+            <ComboBox options={unidades} bind:selected={unidadSeleccionada} maxHeight={5} classes="min-w-[100px]"/>
         </div>
     </div>
     <div class="w-full flex justify-end">
@@ -265,7 +266,19 @@
 
     <div class="flex flex-col md:flex-row justify-center md:justify-between gap-2 mb-2">
         <p>Reporte generado al {formatDate(data.fechaHoraGeneracion, true)}</p>
-        <Button action={() => exportarCSV(raw, "Registraciones e inicios de sesión")}>Exportar</Button>
+        <Button action={() => 
+            exportarCSV(
+                raw, 
+                "Registraciones e inicios de sesión", 
+                [
+                    "evtnet - Registraciones e inicios de sesión",
+                    `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
+                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                    `Longitud de intervalos: ${cantidad} ${unidades.get(unidadSeleccionada)}`
+                ])
+            }>
+            Exportar
+        </Button>
     </div>
 {/if}
 
