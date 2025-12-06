@@ -1,30 +1,35 @@
 <script lang="ts" context="module">
-    export const exportarCSV = (raw: string[][], name: string) => {
-        const csvContent = raw
-			.map(row => 
-			row.map(cell => 
-				// Escape quotes and wrap in quotes if cell contains comma, quote, or newline
-				cell.includes(',') || cell.includes('"') || cell.includes('\n')
-				? `"${cell.replace(/"/g, '""')}"`
-				: cell
-			).join(',')
-			)
-			.join('\n');
+    export const exportarCSV = (raw: string[][], name: string, headerLines: string[] = []) => {
+    // Add header lines at the beginning (first column only)
+    const headerRows = headerLines.map(line => [line, ...Array(raw[0]?.length - 1 || 0).fill('')]);
+    
+    const allRows = [...headerRows, ...raw];
+    
+    const csvContent = allRows
+        .map(row => 
+            row.map(cell => 
+                // Escape quotes and wrap in quotes if cell contains comma, quote, or newline
+                cell.includes(',') || cell.includes('"') || cell.includes('\n')
+                ? `"${cell.replace(/"/g, '""')}"`
+                : cell
+            ).join(',')
+        )
+        .join('\n');
 
-		// Create blob and download
-		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-		const link = document.createElement('a');
-		
-		if (link.download !== undefined) {
-			const url = URL.createObjectURL(blob);
-			link.setAttribute('href', url);
-			link.setAttribute('download', `${name}.csv`);
-			link.style.visibility = 'hidden';
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
-    };
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${name}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+};
 </script>
 
 <script lang="ts">
@@ -60,10 +65,9 @@
 		trs.forEach(tr => {
 			let tds = tr.querySelectorAll("th, td");
 
-			let row = Array.from(tds.values()).map(td => td.innerHTML);
+			let row = Array.from(tds.values()).map(td => [...td.childNodes].filter(n => n.nodeType === 3).reduce((acc, curr) => `${acc} ${curr.nodeValue}`, ""));
 			raw.push(row);
 		})
-		
 	}
 
 	onMount(() => {

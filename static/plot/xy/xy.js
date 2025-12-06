@@ -44,6 +44,15 @@ const plotXYConfig = {
 }
 
 const plotXY = function(canvas, functions = [], config = {}){
+
+    function fillTextMultiline(ctx, text, x, y, lineHeight) {
+        const lines = text.split('\n');
+        lines.forEach((line, i) => {
+            ctx.fillText(line, x, y + (i * lineHeight));
+        });
+    }
+
+
     for (const [key, value] of Object.entries(plotXYConfig)) {
         if (config[key] === undefined)
             config[key] = value;
@@ -65,11 +74,12 @@ const plotXY = function(canvas, functions = [], config = {}){
     let cvw = canvas.width;
 
     let gh = cvh * (1 - config.offset.top - config.offset.bottom);
-    let gw = cvw * (1 - config.offset.left - config.offset.right);
+    //let gw = cvw * (1 - config.offset.left - config.offset.right);
+    let gw = cvw - cvh * (config.offset.left + config.offset.right)
     let oy = cvh * config.offset.top;
-    let ox = cvw * config.offset.left;
+    let ox = cvh * config.offset.left;
 
-    let ls = cvw * 0.025;
+    let ls = cvh * 0.1;
 
     ctx.lineWidth = config.lineWidth;
     ctx.strokeStyle = "black";
@@ -242,7 +252,8 @@ const plotXY = function(canvas, functions = [], config = {}){
             ctx.stroke();
             ctx.closePath();
             ctx.beginPath();
-            ctx.fillText(label, ox + i/config.marks.x * gw, oy + gh + ls*1.5);
+            fillTextMultiline(ctx, label, ox + i/config.marks.x * gw, oy + gh + ls/2 + fontSize, fontSize);
+            //ctx.fillText(label, ox + i/config.marks.x * gw, oy + gh + ls/2 + fontSize);
             ctx.closePath();
             if (config.grid.x) {
                 ctx.beginPath();
@@ -292,7 +303,8 @@ const plotXY = function(canvas, functions = [], config = {}){
             ctx.stroke();
             ctx.closePath();
             ctx.beginPath();
-            ctx.fillText(labels[i], ox + i/(xValues.length-1) * gw, oy + gh + ls*1.5 );
+            fillTextMultiline(ctx, labels[i], ox + i/(xValues.length-1) * gw, oy + gh + ls/2 + fontSize, fontSize);
+            //ctx.fillText(labels[i], ox + i/(xValues.length-1) * gw, oy + gh + ls/2 + fontSize );
             ctx.closePath();
             if (config.grid.x) {
                 ctx.beginPath();
@@ -369,3 +381,4 @@ const plotXY = function(canvas, functions = [], config = {}){
         config.refs.classList.add("xy_refs");
     }
 }
+
