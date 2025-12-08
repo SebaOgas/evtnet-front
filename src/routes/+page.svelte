@@ -84,10 +84,10 @@
         <p class="text-center">
             <a href="./RecuperarContrasena">Olvidé mi contraseña</a>
         </p>
-        <hr class="border border-dark w-full m-2"/>
+        <!-- <hr class="border border-dark w-full m-2"/>
         <div class="flex justify-center">
             <Button classes="bg-white border border-black"><img src="icons/google.svg" alt=""/><span class="text-black">Continuar con Google</span></Button>
-        </div>
+        </div> -->
     </div>
     
 </div>
