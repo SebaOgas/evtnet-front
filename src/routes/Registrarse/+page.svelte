@@ -274,10 +274,10 @@
             ¿Ya tenés una cuenta?
             <a href="/">Iniciar Sesión</a>
         </p>
-        <hr class="border border-dark w-full m-2 mb-4"/>
+        <!-- <hr class="border border-dark w-full m-2 mb-4"/>
         <div class="flex justify-center">
             <Button classes="bg-white border border-black"><img src="icons/google.svg" alt=""/><span class="text-black">Continuar con Google</span></Button>
-        </div>
+        </div> -->
     </div>
     
 </div>
