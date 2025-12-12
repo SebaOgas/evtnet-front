@@ -41,6 +41,8 @@
     fechaDesde.setDate(fechaDesde.getDate() - 7);
     let fechaHasta : Date | null = new Date(); 
 
+    $: usarHoras = unidadSeleccionada === 1;
+
     // @ts-ignore
     $: completo = fechaDesde !== null && fechaHasta !== null && cantidad !== undefined && unidadSeleccionada !== null;
     let textoWarning = ""
@@ -91,9 +93,17 @@
         if (fechaDesde === null || fechaHasta === null || cantidad === undefined || !completo) return;
 
         let horas = unidadSeleccionada * cantidad;
+
+        let desde = new Date(fechaDesde);
+        let hasta = new Date(fechaHasta);
+
+        if (!usarHoras) {
+            desde = new Date(desde.toDateString());
+            hasta = new Date(hasta.toDateString());
+        }
         
         try {
-            data = await ReportesService.generarRegistracionesIniciosSesion(fechaDesde, fechaHasta, 0, 0, 0, horas);
+            data = await ReportesService.generarRegistracionesIniciosSesion(desde, hasta, 0, 0, 0, horas);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -187,11 +197,11 @@
                 if (cantidad === undefined) cantidad = 1;
                 
                 let initDate = new Date(Number(l)*1000);
-                let from = formatDate(initDate, true);
+                let from = formatDate(initDate, usarHoras);
                 
                 let endDate = new Date(Number(l)*1000 + cantidad * unidadSeleccionada * 60 * 60 * 1000);               
                 //endDate.setTime(endDate.getTime() + cantidad * unidadSeleccionada);
-                let to = formatDate(endDate, true);   
+                let to = formatDate(endDate, usarHoras);   
                 
                 return from + " - \n" + to;
             },
@@ -212,7 +222,7 @@
         Analizar intervalos de tiempo entre cierto rango de fechas para saber cuántas veces los usuarios iniciaron sesión, se registraron y qué relación hay entre estas dos variables.
     </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <DatePicker time={usarHoras} range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
         <div class="flex flex-col md:flex-row items-center gap-2">
             <h1 class="text-xxs whitespace-nowrap">Separar en intervalos de</h1>
             <TextField bind:value={cantidad} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
@@ -255,8 +265,8 @@
     <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Desde", "Hasta", "Registraciones", "Inicios de sesión", "Inicios de sesión / registraciones"]}>
         {#each data.datos as d}
         <tr>
-            <td>{formatDate(d.inicio, true)}</td>
-            <td>{formatDate(d.fin, true)}</td>
+            <td>{formatDate(d.inicio, usarHoras)}</td>
+            <td>{formatDate(d.fin, usarHoras)}</td>
             <td>{d.registraciones.toFixed(0)}</td>
             <td>{d.iniciosSesion.toFixed(0)}</td>
             <td>{Number.isNaN((d.iniciosSesion / d.registraciones)) || !Number.isFinite((d.iniciosSesion / d.registraciones)) ? "-" : (d.iniciosSesion / d.registraciones).toFixed(2).replaceAll(".", ",")}</td>
@@ -273,7 +283,7 @@
                 [
                     "evtnet - Registraciones e inicios de sesión",
                     `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
-                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                    `Fechas: ${formatDate(fechaDesde, usarHoras)} - ${formatDate(fechaHasta, usarHoras)}`,
                     `Longitud de intervalos: ${cantidad} ${unidades.get(unidadSeleccionada)}`
                 ])
             }>

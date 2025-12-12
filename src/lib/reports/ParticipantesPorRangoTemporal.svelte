@@ -68,6 +68,8 @@
     fechaDesde.setDate(fechaDesde.getDate() - 7);
     let fechaHasta : Date | null = new Date();   
 
+    $: usarHoras = unidadSeleccionada === 1;
+
     // @ts-ignore
     $: completo = fechaDesde !== null && fechaHasta !== null && cantidad !== undefined && unidadSeleccionada !== null;
     let textoWarning = ""
@@ -119,8 +121,16 @@
 
         let horas = unidadSeleccionada * cantidad;
 
+        let desde = new Date(fechaDesde);
+        let hasta = new Date(fechaHasta);
+
+        if (!usarHoras) {
+            desde = new Date(desde.toDateString());
+            hasta = new Date(hasta.toDateString());
+        }
+
         try {
-            data = await ReportesService.generarParticipantesPorRangoTemporal(todosLosEspacios, Array.from(espacios.keys()), fechaDesde, fechaHasta, 0, 0, 0, horas);
+            data = await ReportesService.generarParticipantesPorRangoTemporal(todosLosEspacios, Array.from(espacios.keys()), desde, hasta, 0, 0, 0, horas);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -194,11 +204,11 @@
                 if (cantidad === undefined) cantidad = 1;
                 
                 let initDate = new Date(Number(l)*1000);
-                let from = formatDate(initDate, true);
+                let from = formatDate(initDate, usarHoras);
                 
                 let endDate = new Date(Number(l)*1000 + cantidad * unidadSeleccionada * 60 * 60 * 1000);               
                 //endDate.setTime(endDate.getTime() + cantidad * unidadSeleccionada);
-                let to = formatDate(endDate, true);   
+                let to = formatDate(endDate, usarHoras);   
                 
                 return from + " - \n" + to;
             },
@@ -230,7 +240,7 @@
         <Button action={() => popupUsuarioVisible = true}>Seleccionar</Button>
     </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <DatePicker time={usarHoras} range label="Generar entre las fechas: " classes="md:min-w-xl" {minDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
         <div class="flex flex-col md:flex-row items-center gap-2">
             <h1 class="text-xxs whitespace-nowrap">Separar en intervalos de</h1>
             <TextField bind:value={cantidad} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
@@ -254,7 +264,7 @@
         <div bind:this={refs} class="!w-fit [&_.bar_ref_color]:aspect-square"></div>
     </div>
 
-    <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Espacio - Subespacio", rangos.map(r => `${formatDate(r.inicio, true)} - ${formatDate(r.fin, true)}`)].flat()}>
+    <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Espacio - Subespacio", rangos.map(r => `${formatDate(r.inicio, usarHoras)} - ${formatDate(r.fin, usarHoras)}`)].flat()}>
         {#each data.datos as d}
         <tr>
             <td>{d.espacio}</td>
@@ -274,7 +284,7 @@
                 [
                     "evtnet - Participantes en eventos por rango temporal",
                     `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
-                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                    `Fechas: ${formatDate(fechaDesde, usarHoras)} - ${formatDate(fechaHasta, usarHoras)}`,
                     `Longitud de intervalos: ${cantidad} ${unidades.get(unidadSeleccionada)}`,
                     `Generado por: ${get(user)?.apellido}, ${get(user)?.nombre} (@${get(username)})`,
                     `Espacios: ${espacios.size === 0 ? "Todos los espacios de los que el usuario es propietario" :  espacios.values().reduce((acc, curr) => `${acc}, ${curr}`)}`,
