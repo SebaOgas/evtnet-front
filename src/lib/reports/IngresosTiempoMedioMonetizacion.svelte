@@ -40,7 +40,8 @@
     let fechaDesde : Date | null = new Date();
     fechaDesde.setDate(fechaDesde.getDate() - 7);
     let fechaHasta : Date | null = new Date(); 
- 
+
+    $: usarHoras = unidadSeleccionada === 1;
 
     // @ts-ignore
     $: completo = fechaDesde !== null && fechaHasta !== null && cantidad !== undefined && unidadSeleccionada !== null;
@@ -88,9 +89,17 @@
         if (fechaDesde === null || fechaHasta === null || cantidad === undefined || !completo) return;
 
         let horas = unidadSeleccionada * cantidad;
+        
+        let desde = new Date(fechaDesde);
+        let hasta = new Date(fechaHasta);
+
+        if (!usarHoras) {
+            desde = new Date(desde.toDateString());
+            hasta = new Date(hasta.toDateString());
+        }
 
         try {
-            data = await ReportesService.generarTiempoMedioMonetizacion(fechaDesde, fechaHasta, 0, 0, 0, horas);
+            data = await ReportesService.generarTiempoMedioMonetizacion(desde, hasta, 0, 0, 0, horas);
         } catch (e) {
 			if (e instanceof HttpError) {
 				error = e.message;
@@ -136,8 +145,20 @@
 
         refs.innerHTML = "";
 
+        let xLabelFunction = (i: Date, f: Date) => {                
+            if (cantidad === undefined) cantidad = 1;
+            
+            let initDate = new Date(i);
+            let from = formatDate(initDate, usarHoras);
+            
+            let endDate = new Date(f);               
+            let to = formatDate(endDate, usarHoras); 
+            
+            return from + " - \n" + to;
+        }
+
         // @ts-ignore
-        plotBar(canvas, series, rangos.map(r => `${formatDate(r.inicio, true)} -\n ${formatDate(r.fin, true)}`), {
+        plotBar(canvas, series, rangos.map(r => xLabelFunction(r.inicio, r.fin)), {
             height: 600,
             width: (rangos.length * 400),
             scaledWidth : rangos.length * 14,
@@ -173,7 +194,7 @@
         Analizar intervalos de tiempo entre cierto rango de fechas para saber cuántos ingresos generó cada tipo de comisión.
     </div>
     <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:items-center justify-between">
-        <DatePicker time range label="Generar entre las fechas:" classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
+        <DatePicker time={usarHoras} range label="Generar entre las fechas:" classes="md:min-w-xl" {minDate} {maxDate} bind:startDate={fechaDesde} bind:endDate={fechaHasta}/>
         <div class="flex flex-col md:flex-row items-center gap-2">
             <h1 class="text-xxs whitespace-nowrap">Separar en intervalos de</h1>
             <TextField bind:value={cantidad} label={null} classes="min-w-16 max-w-20 [&>input]:w-full"/>
@@ -200,7 +221,7 @@
     <Table bind:raw={raw} classes="md:min-h-fit [&_th]:[white-space:normal!important]" cols={["Rango", ...data.datos[0].medios.map(m => m.nombre)]}>
         {#each data.datos as d}
         <tr>
-            <td>{formatDate(d.inicio, true)} - {formatDate(d.fin, true)}</td>
+            <td>{formatDate(d.inicio, usarHoras)} - {formatDate(d.fin, usarHoras)}</td>
             {#each d.medios as m}
                 <td>{m.monto.toFixed(2).replaceAll(".", ",")}</td>
             {/each}
@@ -217,7 +238,7 @@
                 [
                     "evtnet - Ingresos por medio de monetización",
                     `Reporte generado al ${ data !== null ? formatDate(data.fechaHoraGeneracion, true) : formatDate(new Date(), true)}`,
-                    `Fechas: ${formatDate(fechaDesde, true)} - ${formatDate(fechaHasta, true)}`,
+                    `Fechas: ${formatDate(fechaDesde, usarHoras)} - ${formatDate(fechaHasta, usarHoras)}`,
                     `Longitud de intervalos: ${cantidad} ${unidades.get(unidadSeleccionada)}`
                 ])
             }>
